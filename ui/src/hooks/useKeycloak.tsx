@@ -84,7 +84,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
               setTokenExpired(true);
               setAuthenticated(false);
               setAuthenticating(false);
-              setLoggingOut(false);
+              setLogingOut(false);
             });
         };
         const initOptions = adapter.initOptions?{
@@ -100,7 +100,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
             setInitialized(false);
             setInitializing (false);
             setAuthenticating(false);
-            setLoggingOut(false);
+            setLogingOut(false);
           });
       } catch (e) { // if keycloak script url return unexpected content
         setError('Failed to initialize authentication');
