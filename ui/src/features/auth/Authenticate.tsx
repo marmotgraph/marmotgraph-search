@@ -48,7 +48,7 @@ const Authenticate = ({children}: AuthenticateProps) => {
     isAuthenticated,
     isAuthenticating,
     loginRequired,
-    isLogingOut,
+    isLoggingOut,
     authenticate,
     login
   } = useAuth();
@@ -107,7 +107,7 @@ const Authenticate = ({children}: AuthenticateProps) => {
     );
   }
 
-  if (isLogingOut) {
+  if (isLoggingOut) {
     return (
       <FetchingPanel message="Logging out..." />
     );

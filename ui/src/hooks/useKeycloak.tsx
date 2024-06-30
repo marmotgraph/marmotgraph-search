@@ -37,7 +37,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
   const [isTokenExpired, setTokenExpired] = useState<boolean|undefined>(undefined);
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [isAuthenticating, setAuthenticating] = useState(false);
-  const [isLogingOut, setLogingOut] = useState(false);
+  const [isLoggingOut, setLoggingOut] = useState(false);
   const [userId, setUserId] = useState<string|undefined>(undefined);
 
   const authenticate = async () => {
@@ -73,7 +73,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
           setInitializing(false);
           setAuthenticated (false);
           setAuthenticating(false);
-          setLogingOut(false);
+          setLoggingOut(false);
         };
         keycloak.onTokenExpired = () => {
           keycloak
@@ -84,7 +84,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
               setTokenExpired(true);
               setAuthenticated(false);
               setAuthenticating(false);
-              setLogingOut(false);
+              setLoggingOut(false);
             });
         };
         const initOptions = adapter.initOptions?{
@@ -100,7 +100,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
             setInitialized(false);
             setInitializing (false);
             setAuthenticating(false);
-            setLogingOut(false);
+            setLoggingOut(false);
           });
       } catch (e) { // if keycloak script url return unexpected content
         setError('Failed to initialize authentication');
@@ -128,11 +128,11 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
     if (!adapter.keycloak || isUninitialized || isInitializing || isAuthenticating || isError) {
       throw new Error('logout cannot be called when keycloak is not initialized!');
     }
-    setLogingOut(true);
+    setLoggingOut(true);
     adapter.keycloak.clearToken();
     const options = adapter.redirectUri ? {redirectUri: adapter.redirectUri} : undefined;
     await adapter.keycloak.logout(options);
-    setLogingOut(false);
+    setLoggingOut(false);
     setTokenExpired(true);
     setAuthenticated(false);
   };
@@ -147,7 +147,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
     isInitializing: isInitializing,
     isAuthenticated: isAuthenticated,
     isAuthenticating: isAuthenticating,
-    isLogingOut: isLogingOut,
+    isLoggingOut: isLoggingOut,
     loginRequired: loginRequired ?? adapter.initOptions?.onLoad === 'login-required',
     userId: userId,
     authenticate: authenticate,

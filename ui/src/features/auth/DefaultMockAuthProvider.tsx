@@ -35,7 +35,7 @@ const mockAuth: Auth = {
   isInitializing: false,
   isAuthenticated: false,
   isAuthenticating: false,
-  isLogingOut: false,
+  isLoggingOut: false,
   loginRequired: false,
   userId: undefined,
   authenticate: async () => Promise.resolve(undefined),
