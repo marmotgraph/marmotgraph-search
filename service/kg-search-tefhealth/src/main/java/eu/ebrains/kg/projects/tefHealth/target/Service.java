@@ -24,13 +24,7 @@
 package eu.ebrains.kg.projects.tefHealth.target;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import eu.ebrains.kg.common.model.target.FieldInfo;
-import eu.ebrains.kg.common.model.target.MetaInfo;
-import eu.ebrains.kg.common.model.target.TargetInstance;
-import eu.ebrains.kg.common.model.target.ElasticSearchInfo;
-import eu.ebrains.kg.common.model.target.TargetInternalReference;
-import eu.ebrains.kg.common.model.target.Value;
-import eu.ebrains.kg.common.model.target.SchemaOrgInstance;
+import eu.ebrains.kg.common.model.target.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,8 +48,10 @@ public class Service implements TargetInstance {
     @ElasticSearchInfo(type = "keyword")
     private Value<String> type = new Value<>("Service");
 
-    @FieldInfo(label = "Name", layout = "header", labelHidden = true)
+    @FieldInfo(label = "Name", layout = "header", labelHidden = true, boost = 20, useForSuggestion = true)
     private Value<String> title;
+
+    private Tags tags;
 
     @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
@@ -66,26 +62,44 @@ public class Service implements TargetInstance {
     @FieldInfo(ignoreForSearch = true, visible = false)
     private SchemaOrgInstance meta;
 
+    @FieldInfo(layout="header", label = "Provided by", labelHidden = true, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true, overview = true)
+    private TargetInternalReference providedBy;
+
+    @FieldInfo(label = "Service category", visible = false, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
+    private List<Value<String>> serviceCategories;
+
+    @FieldInfo(label = "Offerings",facet = FieldInfo.Facet.LIST, isFilterableFacet = true, useForSuggestion = true)
+    private List<Value<String>> offerings;
+
+    @FieldInfo(label = "Contact")
+    private TargetExternalReference contact;
+
+    @FieldInfo(label = "Calls", isFilterableFacet = true,  labelHidden = true, facet = FieldInfo.Facet.LIST, separator = " & ")
+    private List<Value<String>> calls;
+
     @FieldInfo(label = "Description", labelHidden = true, fieldType = FieldInfo.FieldType.MARKDOWN, boost = 2, useForSuggestion = true, overview = true)
     private Value<String> description;
 
-    @FieldInfo(label = "Provided by", facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true, overview = true)
-    private List<TargetInternalReference> providedBy;
+    @FieldInfo(label = "Service input")
+    private Value<String> serviceInput;
 
-    @FieldInfo(label = "Countries", facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
-    private List<TargetInternalReference> countries;
+    @FieldInfo(label = "Service output")
+    private Value<String> serviceOutput;
 
-    @FieldInfo(label = "Service category", facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
-    private List<Value<String>> serviceCategories;
+    @FieldInfo(label = "Certification support")
+    private List<Value<String>> certificationSupport;
 
-    @FieldInfo(label = "Categories", facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
-    private List<Value<String>> useCaseCategories;
+    @FieldInfo(label = "Dependencies and restrictions")
+    private List<Value<String>> dependenciesAndRestrictions;
 
-    @FieldInfo(label = "Domain", facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
-    private List<Value<String>> useCaseDomains;
+    @FieldInfo(label = "Service standards")
+    private List<Value<String>> serviceStandards;
 
-    @FieldInfo(labelHidden = true, type = FieldInfo.Type.TEXT)
-    private Value<String> useCaseDomainOtherDescription;
+    @FieldInfo(layout = "Pricing", fieldType = FieldInfo.FieldType.MARKDOWN)
+    private Value<String> pricing;
+
+    @FieldInfo(layout = "Pricing", fieldType = FieldInfo.FieldType.MARKDOWN)
+    private Value<String> pricingDetails;
 
 
     @Override
