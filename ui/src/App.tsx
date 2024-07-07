@@ -96,7 +96,6 @@ const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
         setReady(true);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!isReady) {
@@ -111,20 +110,20 @@ const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
         <Notification className={undefined} text={notification} />
         <ErrorBoundary>
           <Settings authAdapter={authAdapter} >
-            <Authenticate>
-              <Groups>
-                <Suspense fallback={<FetchingPanel message="Loading resource..." />}>
-                  <Routes>
-                    <Route path="/" element={<SearchComp />} />
-                    <Route path="/instances/:id" element={<InstanceComp />} />
-                    <Route path="/instances/:type/:id" element={<InstanceComp />} />
-                    <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp />} />
-                    <Route path="/live/:id" element={<PreviewComp />} />
-                    <Route path="*" element={<Navigate to="/" replace={true} />} />
-                  </Routes>
-                </Suspense>
-              </Groups>
-            </Authenticate>
+              <Authenticate>
+                  <Groups>
+                    <Suspense fallback={<FetchingPanel message="Loading resource..." />}>
+                      <Routes>
+                        <Route path="/" element={<SearchComp />} />
+                        <Route path="/instances/:id" element={<InstanceComp />} />
+                        <Route path="/instances/:type/:id" element={<InstanceComp />} />
+                        <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp />} />
+                        <Route path="/live/:id" element={<PreviewComp />} />
+                        <Route path="*" element={<Navigate to="/" replace={true} />} />
+                      </Routes>
+                    </Suspense>
+                  </Groups>
+              </Authenticate>
           </Settings>
         </ErrorBoundary>
         <InfoPanel />

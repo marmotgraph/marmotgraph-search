@@ -24,7 +24,7 @@
 import Keycloak from 'keycloak-js';
 import { useState } from 'react';
 import type Auth from '../services/Auth';
-import type KeycloakAuthAdapter from '../services/KeycloakAuthAdapter';
+import type KeycloakAuthAdapter from '../../services/KeycloakAuthAdapter';
 import type { KeycloakError } from 'keycloak-js';
 
 const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Auth => {
@@ -38,84 +38,117 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [isAuthenticating, setAuthenticating] = useState(false);
   const [isLoggingOut, setLoggingOut] = useState(false);
+  const [isAuthEndpointAvailable, setAuthEndpointAvailable] = useState(false);
   const [userId, setUserId] = useState<string|undefined>(undefined);
 
+
   const authenticate = async () => {
-    if (adapter.config?.url) {
+    console.log('Running authenticate');
+    try {
+      const available = await runPreflightCheck();
+      if (!available) {
+        console.error('IAM endpoint is not available');
+        setError('IAM endpoint is not available...');
+        return;
+      }
+
+      if (!adapter.config?.url) {
+        console.error('Keycloak config URL missing');
+        setError('Failed to initialize authentication');
+        setInitialized(false);
+        setInitializing(false);
+        setAuthenticating(false);
+        return;
+      }
+
       setUninitialized(false);
       setInitializing(true);
       setAuthenticating(true);
       setError(undefined);
       setIsError(false);
-      try {
-        const keycloak = new Keycloak(adapter.config);
-        adapter.setKeycloak(keycloak);
-        keycloak.onReady = (authenticated: boolean) => {
-          setAuthenticated(authenticated);
-          setInitialized(true);
-          setInitializing(false);
-          setAuthenticating(false);
-          setTokenExpired(false);
-        };
-        keycloak.onAuthSuccess = () => {
-          setUserId(keycloak.subject);
-          setAuthenticated(true);
-          setAuthenticating(false);
-          setTokenExpired(false);
-        };
-        keycloak.onAuthError = (e: KeycloakError) => {
-          keycloak.clearToken();
-          setUserId(undefined);
-          setTokenExpired(undefined);
-          const message = (e?.error_description)?e.error_description:'Failed to authenticate';
-          setError(message);
-          setIsError(true);
-          setInitializing(false);
-          setAuthenticated (false);
-          setAuthenticating(false);
-          setLoggingOut(false);
-        };
-        keycloak.onTokenExpired = () => {
-          keycloak
-            .updateToken(30)
-            .catch(() => {
-              keycloak.clearToken();
-              setUserId(undefined);
-              setTokenExpired(true);
-              setAuthenticated(false);
-              setAuthenticating(false);
-              setLoggingOut(false);
-            });
-        };
-        const initOptions = adapter.initOptions?{
-          ...adapter.initOptions,
-          onLoad: loginRequired?'login-required':adapter.initOptions.onLoad,
-          checkLoginIframe: !!adapter.initOptions.checkLoginIframe && !window.location.host.startsWith('localhost') // avoid CORS error with UI running on localhost with Firefox
-        }:{};
-        keycloak
-          .init(initOptions)
-          .catch(() => {
-            setError('Failed to initialize authentication');
-            setIsError(true);
-            setInitialized(false);
-            setInitializing (false);
-            setAuthenticating(false);
-            setLoggingOut(false);
-          });
-      } catch (e) { // if keycloak script url return unexpected content
-        setError('Failed to initialize authentication');
-        setInitialized(false);
+
+      const keycloak = new Keycloak(adapter.config);
+      adapter.setKeycloak(keycloak);
+
+      keycloak.onReady = (authenticated) => {
+        console.log('Keycloak onReady', authenticated);
+        setAuthenticated(authenticated);
+        setInitialized(true);
         setInitializing(false);
         setAuthenticating(false);
-      }
-    } else {
-      //throw new Error("keycloak cannot be initialized due to missing/uncomplete config!");
+        setTokenExpired(false);
+      };
+
+      keycloak.onAuthSuccess = () => {
+        console.log('Keycloak onAuthSuccess');
+        setUserId(keycloak.subject);
+        setAuthenticated(true);
+        setAuthenticating(false);
+        setTokenExpired(false);
+      };
+
+      keycloak.onAuthError = (e) => {
+        console.error('Keycloak onAuthError', e);
+        keycloak.clearToken();
+        setUserId(undefined);
+        setTokenExpired(undefined);
+        const message = e?.error_description ? e.error_description : 'Failed to authenticate';
+        setError(message);
+        setIsError(true);
+        setInitializing(false);
+        setAuthenticated(false);
+        setAuthenticating(false);
+        setLoggingOut(false);
+      };
+
+      keycloak.onTokenExpired = () => {
+        console.log('Keycloak onTokenExpired');
+        keycloak.updateToken(30).catch(() => {
+          console.error('Failed to update token');
+          keycloak.clearToken();
+          setUserId(undefined);
+          setTokenExpired(true);
+          setAuthenticated(false);
+          setAuthenticating(false);
+          setLoggingOut(false);
+        });
+      };
+
+      const initOptions = adapter.initOptions
+        ? {
+            ...adapter.initOptions,
+          }
+        : {};
+
+      await keycloak.init(initOptions);
+    } catch (e) {
+      console.error('Keycloak initialization error', e);
       setError('Failed to initialize authentication');
       setInitialized(false);
       setInitializing(false);
       setAuthenticating(false);
     }
   };
+
+
+  const runPreflightCheck = async (): Promise<boolean> => {
+      try {
+        const endpointURL = import.meta.env.VITE_KG_API_TARGET_URL;
+        const response = await fetch(`${endpointURL}/preflight`, { method: 'GET' });
+        if (response.ok) {
+          console.log(`IAM endpoint is available!`);
+          setAuthEndpointAvailable(true);
+          return true;
+        } else {
+          console.error('Preflight check failed');
+          return false;
+        }
+      } catch (error) {
+        console.error('Preflight check error', error);
+        return false;
+      }
+    };
+
 
   const login = async (): Promise<void> => {
     if (!adapter.keycloak || isUninitialized || isInitializing || isAuthenticating || isError) {
@@ -152,7 +185,8 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
     userId: userId,
     authenticate: authenticate,
     login: login,
-    logout: logout
+    logout: logout,
+    isAuthEndpointAvailable: isAuthEndpointAvailable
   };
 
 };

@@ -21,7 +21,7 @@
  *
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import {useLocation} from 'react-router-dom';
 
@@ -35,8 +35,7 @@ interface AuthenticateProps {
   children?: ReactNode;
 }
 
-const Authenticate = ({children}: AuthenticateProps) => {
-
+const Authenticate = ({ children }: AuthenticateProps) => {
   const initializedRef = useRef(false);
 
   const {
@@ -50,11 +49,11 @@ const Authenticate = ({children}: AuthenticateProps) => {
     loginRequired,
     isLoggingOut,
     authenticate,
-    login
+    login,
+    isAuthEndpointAvailable
   } = useAuth();
 
   const location = useLocation();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,65 +61,97 @@ const Authenticate = ({children}: AuthenticateProps) => {
       initializedRef.current = true;
       authenticate();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isTokenExpired) {
       dispatch(api.util.invalidateTags(tagsToInvalidateOnLogout));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTokenExpired]);
 
   const cancelLogin = () => {
-    window.location.replace(location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, ''));
+    window.location.replace(
+      location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, '')
+    );
   };
 
-  if (isTokenExpired) {
-    return (
-      <BgError message="Your session has expired" onCancelClick={cancelLogin} cancelLabel="Browse public webpage"  onRetryClick={login} retryLabel="Re-Login" retryVariant="primary" />
-    );
-  }
-
-  if (isError) {
-
-    if (loginRequired) {
+  const renderContent = useMemo(() => {
+    if (isTokenExpired) {
       return (
-        <BgError message={getError(error)} onCancelClick={cancelLogin} cancelLabel="Browse public webpage"  onRetryClick={login} retryLabel="Retry" retryVariant="primary" />
+        <BgError
+          message="Your session has expired"
+          onCancelClick={cancelLogin}
+          cancelLabel="Browse public webpage"
+          onRetryClick={login}
+          retryLabel="Re-Login"
+          retryVariant="primary"
+        />
       );
     }
 
-    return (
-      <BgError message={error} onRetryClick={authenticate} retryLabel="Retry" retryVariant="primary" />
-    );
-  }
+    if (isError) {
+      if (loginRequired) {
 
-  if (isUninitialized || isInitializing) {
-    return (
-      <FetchingPanel message={loginRequired?'Initializing authentication...':'Initializing application...'} />
-    );
-  }
+        return (
+          <BgError
+            message={getError(error)}
+            onCancelClick={cancelLogin}
+            cancelLabel="Browse public webpage"
+            onRetryClick={login}
+            retryLabel="Retry"
+            retryVariant="primary"
+          />
+        );
+      }
 
-  if (isAuthenticating) {
-    return (
-      <FetchingPanel message="Authenticating..." />
-    );
-  }
+      return (
 
-  if (isLoggingOut) {
-    return (
-      <FetchingPanel message="Logging out..." />
-    );
-  }
+        <BgError
+          message={error}
+          onRetryClick={authenticate}
+          retryLabel="Retry"
+          retryVariant="primary"
+        />
+      );
+    }
 
-  if (isAuthenticated || !loginRequired) {
-    return (
-      <>
-        {children}
-      </>
-    );
-  }
-  return null;
+    if ((isUninitialized || isInitializing) & isAuthEndpointAvailable) {
+      return (
+        <FetchingPanel
+          message={loginRequired ? 'Initializing authentication...' : 'Initializing application...'}
+        />
+      );
+    }
+
+    if (isAuthenticating) {
+      return <FetchingPanel message="Authenticating..." />;
+    }
+
+    if (isLoggingOut) {
+      return <FetchingPanel message="Logging out..." />;
+    }
+
+    if (isAuthenticated || !loginRequired) {
+      console.log('Component rendered - authenticated or no login required');
+      return <>{children}</>;
+    }
+
+    return null;
+  }, [
+    isTokenExpired,
+    isError,
+    loginRequired,
+    error,
+    isUninitialized,
+    isInitializing,
+    isAuthEndpointAvailable,
+    isAuthenticating,
+    isLoggingOut,
+    isAuthenticated,
+//     children
+  ]);
+
+  return renderContent;
 };
 
 export default Authenticate;

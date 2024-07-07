@@ -76,6 +76,7 @@ interface AuthProviderProps extends AuthProviderPropsType {
 const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthProviderProps) => {
   const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';
   const canBypassAuth = noSilentSSO || (import.meta.env.VITE_APP_BYPASS_AUTH === 'true' && window.location.host.startsWith('localhost') && !isLoginRequired);
+
   if (canBypassAuth) {
     console.info('%cAuth: Authentication is disabled for local development', 'color: #f88900;');
   }
