@@ -1,10 +1,11 @@
 import {faBars} from '@fortawesome/free-solid-svg-icons/faBars';
+import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons/faCircleExclamation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import SignIn from '../../features/auth/SignIn';
+import AuthEndpointAvailabilityBanner from '../../components/AuthEndpointAvailabilityBanner/AuthEndpointAvailabilityBanner';
 import { reset } from '../../features/instance/instanceSlice';
 
 
@@ -33,10 +34,13 @@ const Header = () => {
   const showSearchLink  = location.pathname.startsWith('/instances');
 
   return (
+    <div>
+        <AuthEndpointAvailabilityBanner/>
     <nav className="navbar navbar-expand-lg navbar-light kgs-navbar">
+
       <div className="container-fluid">
         <a href={profiles[profile]["home"]} aria-label={profiles[profile]["name"]+` homepage`} className="logo nuxt-link-active navbar-brand">
-          <img src={`/static/img/${theme === 'dark'? profiles[profile]["logo_dark"] : profiles[profile]["logo"]}`} alt={profile} height="100" />
+          <img src={`/static/img/${theme === 'dark'? profiles[profile]["logo_dark"] : profiles[profile]["logo"]}`} alt={profile} height="80" />
         </a>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <FontAwesomeIcon icon={faBars} />
@@ -58,6 +62,7 @@ const Header = () => {
         </div>
       </div>
     </nav>
+    </div>
   );
 };
 

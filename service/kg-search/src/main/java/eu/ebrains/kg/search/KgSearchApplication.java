@@ -34,6 +34,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 
 @SuppressWarnings("SpringComponentScan") //The package "eu.ebrains.kg.projects" is going to be fulfilled by the customization package
 @SpringBootApplication
@@ -54,6 +55,11 @@ public class KgSearchApplication {
         http.oauth2ResourceServer(c -> c.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 

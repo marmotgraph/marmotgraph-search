@@ -44,7 +44,7 @@ import type TokenProvider from './TokenProvider';
   isInitializing: boolean;
   isAuthenticated: boolean;
   isAuthenticating: boolean;
-  isLogingOut: boolean;
+  isLoggingOut: boolean;
   loginRequired: boolean;
   userId?: string;
   authenticate(): Promise<void>;
