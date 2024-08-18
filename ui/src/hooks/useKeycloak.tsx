@@ -26,6 +26,7 @@ import { useState } from 'react';
 import type Auth from '../services/Auth';
 import type KeycloakAuthAdapter from '../../services/KeycloakAuthAdapter';
 import type { KeycloakError } from 'keycloak-js';
+import { useGetSettingsQuery } from '../../services/api';
 
 const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Auth => {
 
@@ -43,14 +44,15 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
 
 
   const authenticate = async () => {
-    console.log('Running authenticate');
     try {
-      const available = await runPreflightCheck();
+      const available = adapter.config?.authEndpointAvailable;
       if (!available) {
         console.error('IAM endpoint is not available');
         setError('IAM endpoint is not available...');
         return;
       }
+
+      setAuthEndpointAvailable(available);
 
       if (!adapter.config?.url) {
         console.error('Keycloak config URL missing');
@@ -129,26 +131,6 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
       setAuthenticating(false);
     }
   };
-
-
-  const runPreflightCheck = async (): Promise<boolean> => {
-      try {
-        const endpointURL = import.meta.env.VITE_KG_API_TARGET_URL;
-        const response = await fetch(`${endpointURL}/preflight`, { method: 'GET' });
-        if (response.ok) {
-          console.log(`IAM endpoint is available!`);
-          setAuthEndpointAvailable(true);
-          return true;
-        } else {
-          console.error('Preflight check failed');
-          return false;
-        }
-      } catch (error) {
-        console.error('Preflight check error', error);
-        return false;
-      }
-    };
-
 
   const login = async (): Promise<void> => {
     if (!adapter.keycloak || isUninitialized || isInitializing || isAuthenticating || isError) {

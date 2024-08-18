@@ -38,17 +38,17 @@ import UnauthorizedRequestResponseHandlerProvider from './UnauthorizedRequestRes
 import type AuthAdapter from './AuthAdapter';
 import type {
   KeycloakInstance,
-  KeycloakConfig,
   KeycloakInitOptions,
   KeycloakOnLoad
 } from 'keycloak-js';
+import type ExtendedKeycloakConfig from './ExtendedKeycloakConfig'
 
 class KeycloakAuthAdapter implements AuthAdapter {
   private _tokenProvider: KeyCloakTokenProvider;
   private _unauthorizedRequestResponseHandlerProvider: UnauthorizedRequestResponseHandlerProvider;
   private _initOptions: KeycloakInitOptions | undefined;
   private _redirectUri: string | undefined;
-  private _config: KeycloakConfig | undefined = undefined;
+  private _config: ExtendedKeycloakConfig | undefined = undefined;
   private _keycloak: KeycloakInstance | undefined = undefined;
 
   constructor(initOptions?: KeycloakInitOptions, redirectUri?: string) {
@@ -92,13 +92,13 @@ class KeycloakAuthAdapter implements AuthAdapter {
     return this._redirectUri;
   }
 
-  get config(): KeycloakConfig | undefined {
+  get config(): ExtendedKeycloakConfig | undefined {
     return this._config ? { ...this._config } : undefined;
   }
 
   setConfig(config: Record<string, unknown> | undefined) {
     if (config) {
-      this._config = {...config} as unknown as KeycloakConfig;
+      this._config = {...config} as unknown as ExtendedKeycloakConfig;
     }
   }
 
