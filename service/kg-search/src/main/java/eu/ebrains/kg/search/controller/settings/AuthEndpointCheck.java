@@ -21,11 +21,13 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package eu.ebrains.kg.search.api;
+package eu.ebrains.kg.search.controller.settings;
 
 import eu.ebrains.kg.common.services.KGServiceClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class AuthEndpointCheck {
 
     private final RestTemplate restTemplate = new RestTemplate();

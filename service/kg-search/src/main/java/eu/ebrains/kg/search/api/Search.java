@@ -34,6 +34,7 @@ import eu.ebrains.kg.common.services.KGServiceClient;
 import eu.ebrains.kg.common.utils.MetaModelUtils;
 import eu.ebrains.kg.common.utils.TranslationException;
 import eu.ebrains.kg.search.controller.search.SearchController;
+import eu.ebrains.kg.search.controller.settings.AuthEndpointCheck;
 import eu.ebrains.kg.search.controller.settings.SettingsController;
 import eu.ebrains.kg.search.model.FacetValue;
 import eu.ebrains.kg.search.security.UserRoles;
@@ -63,10 +64,10 @@ public class Search {
     private final DOICitationFormatter doiCitationFormatter;
     private final TranslatorRegistry translatorRegistry;
 
-    public Search(KGServiceClient kgv3ServiceClient, SettingsController definitionController, SearchController searchController, TranslationController translationController, KG kgV3, DOICitationFormatter doiCitationFormatter, TranslatorRegistry translatorRegistry) {
+    public Search(KGServiceClient kgv3ServiceClient, SettingsController definitionController, SearchController searchController, TranslationController translationController, KG kgV3, DOICitationFormatter doiCitationFormatter, TranslatorRegistry translatorRegistry, AuthEndpointCheck authEndpointCheck) {
         this.kgv3ServiceClient = kgv3ServiceClient;
         this.definitionController = definitionController;
-        this.authEndpointCheck = new AuthEndpointCheck(this.kgv3ServiceClient);
+        this.authEndpointCheck = authEndpointCheck;
         this.searchController = searchController;
         this.translationController = translationController;
         this.kgV3 = kgV3;
