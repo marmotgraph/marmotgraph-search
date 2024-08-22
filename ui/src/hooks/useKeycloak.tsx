@@ -23,10 +23,10 @@
 
 import Keycloak from 'keycloak-js';
 import { useState } from 'react';
-import type Auth from '../services/Auth';
 import type KeycloakAuthAdapter from '../../services/KeycloakAuthAdapter';
-import type { KeycloakError } from 'keycloak-js';
-import { useGetSettingsQuery } from '../../services/api';
+import type Auth from '../services/Auth';
+
+
 
 const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Auth => {
 
@@ -118,8 +118,8 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
 
       const initOptions = adapter.initOptions
         ? {
-            ...adapter.initOptions,
-          }
+          ...adapter.initOptions,
+        }
         : {};
 
       await keycloak.init(initOptions);

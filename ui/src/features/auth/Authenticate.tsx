@@ -61,21 +61,22 @@ const Authenticate = ({ children }: AuthenticateProps) => {
       initializedRef.current = true;
       authenticate();
     }
-  }, []);
+  }, [authenticate]);
 
   useEffect(() => {
     if (isTokenExpired) {
       dispatch(api.util.invalidateTags(tagsToInvalidateOnLogout));
     }
-  }, [isTokenExpired]);
+  }, [isTokenExpired, dispatch]);
 
-  const cancelLogin = () => {
-    window.location.replace(
-      location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, '')
-    );
-  };
 
   const renderContent = useMemo(() => {
+    const cancelLogin = () => {
+      window.location.replace(
+        location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, '')
+      );
+    };
+
     if (isTokenExpired) {
       return (
         <BgError
@@ -138,6 +139,9 @@ const Authenticate = ({ children }: AuthenticateProps) => {
 
     return null;
   }, [
+    authenticate,
+    children,
+    login,
     isTokenExpired,
     isError,
     loginRequired,
@@ -148,7 +152,8 @@ const Authenticate = ({ children }: AuthenticateProps) => {
     isAuthenticating,
     isLoggingOut,
     isAuthenticated,
-//     children
+    location.pathname,
+    //     children
   ]);
 
   return renderContent;

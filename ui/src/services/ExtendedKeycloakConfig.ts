@@ -1,5 +1,7 @@
-import { KeycloakConfig } from 'keycloak-js';
+import type { KeycloakConfig } from 'keycloak-js';
 
 interface ExtendedKeycloakConfig extends KeycloakConfig {
     authEndpointAvailable: boolean;
 }
+
+export default ExtendedKeycloakConfig;

@@ -36,12 +36,12 @@ import KeycloakAuthProvider from '../features/auth/KeycloakAuthProvider';
 import KeyCloakTokenProvider from './KeycloakTokenProvider';
 import UnauthorizedRequestResponseHandlerProvider from './UnauthorizedRequestResponseHandlerProvider';
 import type AuthAdapter from './AuthAdapter';
+import type { ExtendedKeycloakConfig } from './ExtendedKeycloakConfig';
 import type {
   KeycloakInstance,
   KeycloakInitOptions,
   KeycloakOnLoad
 } from 'keycloak-js';
-import type ExtendedKeycloakConfig from './ExtendedKeycloakConfig'
 
 class KeycloakAuthAdapter implements AuthAdapter {
   private _tokenProvider: KeyCloakTokenProvider;
