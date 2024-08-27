@@ -23,7 +23,7 @@
 
 import Keycloak from 'keycloak-js';
 import { useState } from 'react';
-import type KeycloakAuthAdapter from '../../services/KeycloakAuthAdapter';
+import type KeycloakAuthAdapter from '../services/KeycloakAuthAdapter';
 import type Auth from '../services/Auth';
 
 
@@ -72,7 +72,7 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
       const keycloak = new Keycloak(adapter.config);
       adapter.setKeycloak(keycloak);
 
-      keycloak.onReady = (authenticated) => {
+      keycloak.onReady = (authenticated: boolean) => {
         console.log('Keycloak onReady', authenticated);
         setAuthenticated(authenticated);
         setInitialized(true);
