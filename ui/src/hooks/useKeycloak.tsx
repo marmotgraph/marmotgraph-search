@@ -23,8 +23,8 @@
 
 import Keycloak from 'keycloak-js';
 import { useState } from 'react';
-import type KeycloakAuthAdapter from '../services/KeycloakAuthAdapter';
 import type Auth from '../services/Auth';
+import type KeycloakAuthAdapter from '../services/KeycloakAuthAdapter';
 
 
 
