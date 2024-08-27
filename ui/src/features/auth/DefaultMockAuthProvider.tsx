@@ -35,6 +35,7 @@ const mockAuth: Auth = {
   isInitializing: false,
   isAuthenticated: false,
   isAuthenticating: false,
+  isAuthEndpointAvailable: true,
   isLoggingOut: false,
   loginRequired: false,
   userId: undefined,

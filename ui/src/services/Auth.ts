@@ -44,6 +44,7 @@ import type TokenProvider from './TokenProvider';
   isInitializing: boolean;
   isAuthenticated: boolean;
   isAuthenticating: boolean;
+  isAuthEndpointAvailable: boolean;
   isLoggingOut: boolean;
   loginRequired: boolean;
   userId?: string;

@@ -116,7 +116,7 @@ const Authenticate = ({ children }: AuthenticateProps) => {
       );
     }
 
-    if ((isUninitialized || isInitializing) & isAuthEndpointAvailable) {
+    if ((isUninitialized || isInitializing) && isAuthEndpointAvailable) {
       return (
         <FetchingPanel
           message={loginRequired ? 'Initializing authentication...' : 'Initializing application...'}
