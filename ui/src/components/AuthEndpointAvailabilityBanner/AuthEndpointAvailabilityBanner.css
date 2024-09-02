@@ -20,33 +20,11 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-import React from 'react';
-import AuthContext from '../../contexts/AuthContext';
-import type Auth from '../../services/Auth';
-import type { AuthProviderProps } from '../../services/AuthProvider';
 
-const mockAuth: Auth = {
-  tokenProvider: undefined,
-  isTokenExpired: false,
-  error: undefined,
-  isError: false,
-  isUninitialized: false,
-  isInitialized: true,
-  isInitializing: false,
-  isAuthenticated: false,
-  isAuthenticating: false,
-  isAuthEndpointAvailable: true,
-  isLoggingOut: false,
-  loginRequired: false,
-  userId: undefined,
-  authenticate: async () => Promise.resolve(undefined),
-  login: async () => Promise.resolve(undefined),
-  logout: async () => Promise.resolve(undefined)
-};
-
-const DefaultMockAuthProvider = ({ children }: AuthProviderProps) => (
-  <AuthContext.Provider value={mockAuth} >
-    {children}
-  </AuthContext.Provider>
-);
-export default DefaultMockAuthProvider;
+.alert {
+    margin-bottom: 0;
+    padding: 8px;
+    color: #7f8c8d;
+    background-color: #ecf0f1;
+    border-radius: 0;
+}

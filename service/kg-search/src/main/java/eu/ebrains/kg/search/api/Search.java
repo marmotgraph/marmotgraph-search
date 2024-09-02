@@ -34,6 +34,7 @@ import eu.ebrains.kg.common.services.KGServiceClient;
 import eu.ebrains.kg.common.utils.MetaModelUtils;
 import eu.ebrains.kg.common.utils.TranslationException;
 import eu.ebrains.kg.search.controller.search.SearchController;
+import eu.ebrains.kg.search.controller.settings.AuthEndpointCheck;
 import eu.ebrains.kg.search.controller.settings.SettingsController;
 import eu.ebrains.kg.search.model.FacetValue;
 import eu.ebrains.kg.search.security.UserRoles;
@@ -56,15 +57,17 @@ import java.util.*;
 public class Search {
     private final KGServiceClient kgv3ServiceClient;
     private final SettingsController definitionController;
+    private final AuthEndpointCheck authEndpointCheck;
     private final SearchController searchController;
     private final TranslationController translationController;
     private final KG kgV3;
     private final DOICitationFormatter doiCitationFormatter;
     private final TranslatorRegistry translatorRegistry;
 
-    public Search(KGServiceClient kgv3ServiceClient, SettingsController definitionController, SearchController searchController, TranslationController translationController, KG kgV3, DOICitationFormatter doiCitationFormatter, TranslatorRegistry translatorRegistry) {
+    public Search(KGServiceClient kgv3ServiceClient, SettingsController definitionController, SearchController searchController, TranslationController translationController, KG kgV3, DOICitationFormatter doiCitationFormatter, TranslatorRegistry translatorRegistry, AuthEndpointCheck authEndpointCheck) {
         this.kgv3ServiceClient = kgv3ServiceClient;
         this.definitionController = definitionController;
+        this.authEndpointCheck = authEndpointCheck;
         this.searchController = searchController;
         this.translationController = translationController;
         this.kgV3 = kgV3;
@@ -96,13 +99,16 @@ public class Search {
             }
         }
 
+
         String authEndpoint = kgv3ServiceClient.getAuthEndpoint();
         if (StringUtils.isNotBlank(authEndpoint)) {
             result.put("keycloak", Map.of(
                     "realm", keycloakRealm,
                     "url", authEndpoint,
-                    "clientId", keycloakClientId
+                    "clientId", keycloakClientId,
+                    "authEndpointAvailable", authEndpointCheck.checkAuthEndpointIsAlive()
             ));
+
         }
         if (StringUtils.isNotBlank(matomoUrl) && StringUtils.isNotBlank(matomoSiteId)) {
             result.put("matomo", Map.of(

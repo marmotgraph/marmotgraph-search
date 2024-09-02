@@ -65,7 +65,7 @@ const Group = ({ group }) => {
 
 const SignIn = ({ className, Tag }) => {
 
-  const { isUninitialized, isAuthenticating, isAuthenticated, isLogingOut, login, logout } = useAuth();
+  const { isUninitialized, isAuthenticating, isAuthenticated, isLoggingOut, login, logout } = useAuth();
 
   const groups = useSelector(state => state.groups.groups);
 
@@ -92,7 +92,7 @@ const SignIn = ({ className, Tag }) => {
           {groups.map(g => (
             <Group key={g.value} group={g} />
           ))}
-          {!isLogingOut && (
+          {!isLoggingOut && (
             <>
               {!!groups.length && (
                 <div className="dropdown-divider" />

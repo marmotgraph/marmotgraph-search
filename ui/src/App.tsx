@@ -96,8 +96,7 @@ const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
         setReady(true);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, location.hash, location.pathname, navigate]);
 
   if (!isReady) {
     return null;
