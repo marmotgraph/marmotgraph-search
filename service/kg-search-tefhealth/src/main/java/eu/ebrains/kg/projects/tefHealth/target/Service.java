@@ -65,8 +65,6 @@ public class Service implements TargetInstance {
     @FieldInfo(layout="header", label = "Provided by", labelHidden = true, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true, overview = true)
     private TargetInternalReference providedBy;
 
-    @FieldInfo(fieldType = FieldInfo.FieldType.MARKDOWN, labelHidden = true)
-    private Value<String> businessCards;
 
     @FieldInfo(label = "Service category", visible = false, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
     private List<Value<String>> serviceCategories;
@@ -104,12 +102,6 @@ public class Service implements TargetInstance {
 
     @FieldInfo(layout = "Pricing", fieldType = FieldInfo.FieldType.MARKDOWN)
     private Value<String> pricingDetails;
-//
-//    @FieldInfo(label = "Price example", facet = FieldInfo.Facet.EXISTS)
-//    private boolean hasPriceExample;
-//
-//    @FieldInfo(fieldType = FieldInfo.FieldType.FILE_PREVIEW, layout = "Description", labelHidden = true)
-//    private TargetExternalReference businessCard;
 
     @Override
     public boolean isSearchableInstance() {

@@ -47,7 +47,6 @@ public class ServiceFromKG extends SourceInstance {
     private List<NameRef> offerings;
     private PricingInformation pricing;
     private Provider provider;
-    private List<String> businessCards;
 
 
 

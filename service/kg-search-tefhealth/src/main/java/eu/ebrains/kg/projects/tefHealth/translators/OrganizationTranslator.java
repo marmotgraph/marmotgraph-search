@@ -26,7 +26,6 @@ package eu.ebrains.kg.projects.tefHealth.translators;
 import eu.ebrains.kg.common.controller.translation.models.Translator;
 import eu.ebrains.kg.common.model.DataStage;
 import eu.ebrains.kg.common.model.source.ResultsOfKG;
-import eu.ebrains.kg.common.model.target.TargetExternalReference;
 import eu.ebrains.kg.common.model.target.Value;
 import eu.ebrains.kg.common.utils.IdUtils;
 import eu.ebrains.kg.common.utils.TranslationException;
@@ -34,6 +33,7 @@ import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.tefHealth.source.OrganizationFromKG;
 import eu.ebrains.kg.projects.tefHealth.target.Organization;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,6 +81,10 @@ public class OrganizationTranslator extends Translator<OrganizationFromKG, Organ
         t.setTitle(value(title));
         if(tefHealthInstitutionV3.getServices()!=null) {
             t.setProvidedServices(ref(tefHealthInstitutionV3.getServices(), true));
+        }
+        if(!CollectionUtils.isEmpty(tefHealthInstitutionV3.getBusinessCards())){
+            String collect = tefHealthInstitutionV3.getBusinessCards().stream().sorted().map(c -> "<img src=\""+c+"\" width=\"100%\">").collect(Collectors.joining("<br/>\n"));
+            t.setBusinessCards(value(collect));
         }
         t.setCountry(ref(tefHealthInstitutionV3.getCountry()));
         return t;

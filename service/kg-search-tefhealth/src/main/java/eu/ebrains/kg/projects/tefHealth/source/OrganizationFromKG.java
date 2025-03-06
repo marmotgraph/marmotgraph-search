@@ -39,6 +39,6 @@ public class OrganizationFromKG extends SourceInstance {
     private String abbreviation;
     private List<ServiceRef> services;
     private NameRef country;
-    private String businessCard;
+    private List<String> businessCards;
 
 }

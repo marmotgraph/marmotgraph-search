@@ -77,6 +77,19 @@
     {
       "propertyName": "query:businessCard",
       "path": "https://tefhealth.eu/serviceCatalogue/vocab/businessCard"
+    },
+    {
+      "propertyName": "query:businessCards",
+      "path": [
+        {
+          "@id": "https://tefhealth.eu/serviceCatalogue/vocab/references",
+          "reverse": true,
+          "typeFilter": {
+            "@id": "https://tefhealth.eu/serviceCatalogue/types/BusinessCard"
+          }
+        },
+        "https://tefhealth.eu/serviceCatalogue/vocab/url"
+      ]
     }
   ]
 }
