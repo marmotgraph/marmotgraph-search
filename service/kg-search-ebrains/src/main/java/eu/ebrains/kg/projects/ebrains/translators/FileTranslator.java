@@ -46,6 +46,19 @@ public class FileTranslator extends EBRAINSTranslator<FileV3, File, FileTranslat
     public static class Result extends ResultsOfKG<FileV3> {
     }
 
+    private static final List<String> EXCLUDED_FORMATS_FOR_LINKING = Arrays.asList(
+            "application/json",
+            "application/ld+json",
+            "application/octet-stream",
+            "application/xml",
+            "application/yaml",
+            "application/zip",
+            "text/csv",
+            "text/plain",
+            "text/semicolon-separated-values",
+            "text/tab-separated-values"
+    );
+
     @Override
     public Class<FileV3> getSourceType() {
         return FileV3.class;
@@ -74,7 +87,7 @@ public class FileTranslator extends EBRAINSTranslator<FileV3, File, FileTranslat
     public File translate(FileV3 file, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {
         String fileRepository = file.getFileRepository();
 
-        if(StringUtils.isBlank(fileRepository) || StringUtils.isBlank(file.getIri()) || StringUtils.isBlank(file.getName())) {
+        if (StringUtils.isBlank(fileRepository) || StringUtils.isBlank(file.getIri()) || StringUtils.isBlank(file.getName())) {
             return null;
         }
 
@@ -88,7 +101,7 @@ public class FileTranslator extends EBRAINSTranslator<FileV3, File, FileTranslat
         f.setIdentifier(IdUtils.getUUID(file.getIdentifier()).stream().distinct().collect(Collectors.toList()));
         f.setFileRepository(IdUtils.getUUID(fileRepository));
         f.setTitle(value(file.getName()));
-        if(!CollectionUtils.isEmpty(file.getServiceLinks())){
+        if (!CollectionUtils.isEmpty(file.getServiceLinks())) {
             f.setViewer(file.getServiceLinks().stream().sorted(Comparator.comparing(ServiceLink::displayLabel)).map(s -> new TargetExternalReference(s.getUrl(), String.format("Open %s in %s", s.getLabel(), s.getService()))).collect(Collectors.toList()));
         }
         String iri = file.getIri();
@@ -96,17 +109,19 @@ public class FileTranslator extends EBRAINSTranslator<FileV3, File, FileTranslat
             f.setIri(new TargetExternalReference(iri, iri));
         }
         FileV3.Size size = file.getSize();
-        if(size != null && StringUtils.isNotBlank(size.getUnit())) {
+        if (size != null && StringUtils.isNotBlank(size.getUnit())) {
             f.setSize(value(FileUtils.byteCountToDisplaySize(size.getValue())));
         }
-        if(file.getFormat()!=null){
+        if (file.getFormat() != null) {
             f.setFormat(ref(file.getFormat()));
-            f.setInputTypeForSoftware(refVersion(file.getFormat().getInputFormatForSoftware(), true));
+            if(!EXCLUDED_FORMATS_FOR_LINKING.contains(file.getFormat().getFullName())) {
+                f.setInputTypeForSoftware(refVersion(file.getFormat().getInputFormatForSoftware(), true));
+            }
         }
         Map<String, File.GroupingType> groupingTypes = new HashMap<>();
         file.getFileBundles().forEach(fileBundle -> {
             String groupingTypeName = fileBundle.groupingTypeLabel();
-            TargetInternalReference fb =  new TargetInternalReference(
+            TargetInternalReference fb = new TargetInternalReference(
                     IdUtils.getUUID(fileBundle.getId()), fileBundle.getName());
             if (!groupingTypes.containsKey(groupingTypeName)) {
                 File.GroupingType groupingType = new File.GroupingType();
