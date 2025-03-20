@@ -21,7 +21,7 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package eu.ebrains.kg.search.api;
+package eu.ebrains.kg.common.api;
 
 import eu.ebrains.kg.common.utils.TranslationException;
 import org.springframework.http.HttpStatus;

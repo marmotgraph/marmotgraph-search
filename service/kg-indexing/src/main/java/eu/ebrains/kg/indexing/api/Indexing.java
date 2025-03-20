@@ -27,6 +27,7 @@ import eu.ebrains.kg.common.controller.translation.TranslatorRegistry;
 import eu.ebrains.kg.common.controller.translation.models.TranslatorModel;
 import eu.ebrains.kg.common.model.DataStage;
 import eu.ebrains.kg.common.model.ErrorReportResult;
+import eu.ebrains.kg.common.security.UserRoles;
 import eu.ebrains.kg.common.services.DOICitationFormatter;
 import eu.ebrains.kg.indexing.controller.indexing.IndexingController;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,15 +59,18 @@ public class Indexing {
     }
 
     @PostMapping("/doiCitations")
+    @UserRoles.MustBeAdmin
     public void refreshDOICitation(@RequestParam("doi") String doi, @RequestParam(value = "style", defaultValue = "apa") String style, @RequestParam(value = "contentType", defaultValue = "text/x-bibliography") String contentType){
         this.doiCitationFormatter.refreshDOICitation(doi, style, contentType);
     }
 
+    @UserRoles.MustBeAdmin
     @PostMapping("/evictDoiCitations")
     public void evictDoiCitations(Authentication token){
         this.doiCitationFormatter.evictAll();
     }
 
+    @UserRoles.MustBeAdmin
     @PostMapping
     @Operation(summary="Full replacement")
     public ResponseEntity<ErrorReportResult> fullReplacement(@RequestParam("databaseScope") DataStage dataStage) {
@@ -88,6 +92,7 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PostMapping("categories/{category}")
     @Operation(summary="Full replacement by type")
     public ResponseEntity<ErrorReportResult> fullReplacementByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
@@ -108,6 +113,7 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PostMapping("/autorelease")
     @Operation(summary="full replacement auto release")
     public ResponseEntity<ErrorReportResult> fullReplacementAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
@@ -125,6 +131,7 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PutMapping
     @Operation(summary="incremental update")
     public ResponseEntity<ErrorReportResult> incrementalUpdate(@RequestParam("databaseScope") DataStage dataStage) {
@@ -143,6 +150,7 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PutMapping("categories/{category}")
     @Operation(summary="incremental update by type")
     public ResponseEntity<ErrorReportResult> incrementalUpdateByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
@@ -155,6 +163,7 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PutMapping("/autorelease")
     @Operation(summary="incremental auto release")
     public ResponseEntity<ErrorReportResult> incrementalUpdateAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
@@ -167,12 +176,14 @@ public class Indexing {
         }
     }
 
+    @UserRoles.MustBeAdmin
     @PutMapping(value = "/resources/{id}")
     @Operation(description="Add/update the JSON resource with the given id")
     public void addResource(@PathVariable("id") String id, @RequestBody Map<String, Object> payload) {
         indexingController.addResource(id, payload);
     }
 
+    @UserRoles.MustBeAdmin
     @DeleteMapping(value = "/resources/{id}")
     @Operation(description="Remove the JSON resource with the given id")
     public void deleteResource(@PathVariable("id") String id) {

@@ -22,7 +22,7 @@
  */
 package eu.ebrains.kg.search;
 
-import eu.ebrains.kg.search.security.JwtUserInfoConverter;
+import eu.ebrains.kg.common.security.JwtUserInfoConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

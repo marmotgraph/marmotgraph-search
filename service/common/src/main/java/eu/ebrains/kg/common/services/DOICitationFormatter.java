@@ -23,6 +23,7 @@
 
 package eu.ebrains.kg.common.services;
 
+import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class DOICitationFormatter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(
-            HttpClient.create().followRedirect(true)
+            HttpClient.create().followRedirect(true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
     )).build();
 
     @Cacheable(value = "doiCitation", unless = "#result == null", key = "#doi.concat('-').concat(#style).concat(#contentType)")

@@ -37,7 +37,7 @@ import eu.ebrains.kg.search.controller.search.SearchController;
 import eu.ebrains.kg.search.controller.settings.AuthEndpointCheck;
 import eu.ebrains.kg.search.controller.settings.SettingsController;
 import eu.ebrains.kg.search.model.FacetValue;
-import eu.ebrains.kg.search.security.UserRoles;
+import eu.ebrains.kg.common.security.UserRoles;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

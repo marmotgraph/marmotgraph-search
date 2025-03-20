@@ -21,7 +21,7 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package eu.ebrains.kg.search.security;
+package eu.ebrains.kg.common.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

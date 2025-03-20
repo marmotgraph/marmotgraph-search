@@ -24,7 +24,7 @@
 package eu.ebrains.kg.search.api;
 
 import eu.ebrains.kg.common.services.DOICitationFormatter;
-import eu.ebrains.kg.search.security.UserRoles;
+import eu.ebrains.kg.common.security.UserRoles;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

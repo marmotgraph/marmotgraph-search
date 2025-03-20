@@ -21,7 +21,7 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package eu.ebrains.kg.search.security;
+package eu.ebrains.kg.common.security;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

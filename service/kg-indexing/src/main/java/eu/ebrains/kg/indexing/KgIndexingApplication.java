@@ -22,12 +22,14 @@
  */
 package eu.ebrains.kg.indexing;
 
+import eu.ebrains.kg.common.security.JwtUserInfoConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,6 +39,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @SpringBootApplication
 @EnableAsync
 @EnableWebSecurity
+@EnableMethodSecurity
 @ComponentScan(basePackages = {"eu.ebrains.kg.common", "eu.ebrains.kg.indexing", "eu.ebrains.kg.projects"})
 public class KgIndexingApplication {
 
@@ -45,11 +48,9 @@ public class KgIndexingApplication {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //TODO protect the indexing endpoints by oauth to allow its exposure to the outside world.
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUserInfoConverter jwtConverter) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
-        http.oauth2ResourceServer(c ->  c.jwt(Customizer.withDefaults()));
+        http.oauth2ResourceServer(c -> c.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
