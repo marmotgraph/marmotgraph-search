@@ -61,7 +61,9 @@ const Header = ({title, version, tags, badges, fields, versions, customNavigatio
     <div className="kgs-instance__header" style={style}>
       <Navigation />
       <div className="kgs-instance__header_fields">
-        {customNavigationComponent ? <TagsAndBadges tags={tags} badges={badges} /> : <Badges badges={badges} /> }
+        {customNavigationComponent && (
+          <TagsAndBadges tags={tags} badges={badges} />
+        )}
         <div className="kgs-instance__header_title">
           <Title text={title} />
           <VersionSelector version={version} versions={versions} onChange={onVersionChange} />
