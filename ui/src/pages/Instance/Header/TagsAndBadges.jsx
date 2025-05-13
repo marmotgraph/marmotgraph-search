@@ -24,9 +24,11 @@
 import React from 'react';
 import HeaderTags from '../../../components/HeaderTags/HeaderTags';
 import MetaBadges from '../../../components/MetaBadges/MetaBadges';
+import Badges from '../../../components/Badges/Badges';
 
 const TagsAndBadges = ({ tags, badges }) => (
   <div className="kgs-header-tags-and-badges">
+    {badges && <Badges badges={badges} />}
     <HeaderTags tags={tags} />
     <MetaBadges badges={badges} />
   </div>

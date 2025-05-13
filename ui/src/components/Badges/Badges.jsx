@@ -41,12 +41,14 @@ const Badges = ({ badges }) => {
     }
     else{
       const splittedBadge = b.split(";");
-      allBadges.push({
-        name: splittedBadge[0].trim(),
-        title: splittedBadge[0].trim(),
-        color: splittedBadge.size > 1 ? splittedBadge[1].trim() : '#0DCAF0FF',
-        fontColor: splittedBadge.size>2 ? splittedBadge[2].trim() : '#FFFFFFFF'
-      })
+      if(splittedBadge.length>1) {
+        allBadges.push({
+          name: splittedBadge[0].trim(),
+          title: splittedBadge[0].trim(),
+          color: splittedBadge[1].trim(),
+          fontColor: splittedBadge.length > 2 ? splittedBadge[2].trim() : '#FFFFFFFF'
+        })
+      }
     }
   })
   return (

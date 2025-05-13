@@ -23,6 +23,7 @@
 
 .kgs-badges {
   display: inline-block;
+  margin-right: 10px;
 }
 
 .kgs-badge + .kgs-badge {
