@@ -268,6 +268,7 @@ public class SearchController extends FacetAggregationUtils {
             hit.put("group", getGroup(dataStage));
             hit.put("category", CastingUtils.getStringValueField(source, "category"));
             hit.put("title", CastingUtils.getStringValueField(source, "title"));
+            hit.put("highlightColor", CastingUtils.getStringValueField(source, "highlightColor"));
             List<String> badges = new ArrayList<>();
             Object oBadges = source.get("badges");
             if (oBadges instanceof List) {
@@ -320,6 +321,7 @@ public class SearchController extends FacetAggregationUtils {
         res.put("category", CastingUtils.getStringValueField(source, "category"));
         res.put("title", CastingUtils.getStringValueField(source, "title"));
         res.put("badges", source.get("badges"));
+        res.put("highlightColor", CastingUtils.getStringValueField(source, "highlightColor"));
 
         String disclaimer = CastingUtils.getStringValueField(source, "disclaimer");
         if (StringUtils.isNotBlank(disclaimer)) {

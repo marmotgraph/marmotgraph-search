@@ -32,8 +32,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@MetaInfo(name = "Service", defaultSelection = true, searchable = true)
-public class Service implements TargetInstance {
+@MetaInfo(name = "Service", defaultSelection = true, searchable = true, sortByRelevance=false)
+public class Service implements TargetInstance, HasBadges{
 
     @JsonIgnore
     private List<String> allIdentifiers;
@@ -47,6 +47,15 @@ public class Service implements TargetInstance {
 
     @ElasticSearchInfo(type = "keyword")
     private Value<String> type = new Value<>("Service");
+
+    @FieldInfo(visible = false, facet = FieldInfo.Facet.LIST)
+    private Value<String> serviceType;
+
+    @ElasticSearchInfo(type = "keyword")
+    private List<String> badges;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> highlightColor;
 
     @FieldInfo(label = "Name", layout = "header", labelHidden = true, boost = 20, useForSuggestion = true)
     private Value<String> title;
@@ -65,7 +74,6 @@ public class Service implements TargetInstance {
     @FieldInfo(layout="header", label = "Provided by", labelHidden = true, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true, overview = true)
     private TargetInternalReference providedBy;
 
-
     @FieldInfo(label = "Service category", visible = false, facet = FieldInfo.Facet.LIST, type = FieldInfo.Type.TEXT, isFilterableFacet = true, useForSuggestion = true)
     private List<Value<String>> serviceCategories;
 
@@ -78,7 +86,6 @@ public class Service implements TargetInstance {
     @FieldInfo(label = "Calls for discount application", isFilterableFacet = true,  labelHidden = true, facet = FieldInfo.Facet.LIST, separator = " & ")
     private List<Value<String>> calls;
 
-
     @FieldInfo(label = "Description", labelHidden = true, fieldType = FieldInfo.FieldType.MARKDOWN, boost = 2, useForSuggestion = true, overview = true)
     private Value<String> description;
 
@@ -87,6 +94,7 @@ public class Service implements TargetInstance {
 
     @FieldInfo(label = "Service output")
     private Value<String> serviceOutput;
+
 
     @FieldInfo(label = "Certification support")
     private List<Value<String>> certificationSupport;
@@ -107,4 +115,5 @@ public class Service implements TargetInstance {
     public boolean isSearchableInstance() {
         return true;
     }
+
 }

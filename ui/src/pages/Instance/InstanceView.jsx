@@ -202,7 +202,7 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
 
   return (
     <div className="kgs-instance" data-type={type}>
-      <Header title={data?.title} version={version} tags={tags} badges={badges} fields={headerFields} versions={versions} customNavigationComponent={customNavigationComponent} onVersionChange={onVersionChange} />
+      <Header title={data?.title} version={version} tags={tags} badges={badges} fields={headerFields} versions={versions} customNavigationComponent={customNavigationComponent} onVersionChange={onVersionChange} highlightColor={data?.highlightColor}/>
       <OutdatedVersionDisclaimer type={type} version={version} versions={versions} overviewVersion={data?.allVersionRef} onVersionChange={onVersionChange} />
       <Tabs tabs={tabs} selectedTab={selectedTab} onTabClick={handleTabClick} />
       <Disclaimer content={data?.disclaimer} />
