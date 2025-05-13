@@ -39,6 +39,7 @@ public class ServiceFromKG extends SourceInstance {
     private String description;
     private String serviceInput;
     private String serviceOutput;
+    private Boolean externalService;
     private List<NameRef> calls;
     private List<NameRef> category;
     private List<NameRef> serviceStandards;
