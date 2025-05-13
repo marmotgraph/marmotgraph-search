@@ -30,6 +30,7 @@ import { Field, Title } from '../../Field/Field';
 import TagsAndBadges from './TagsAndBadges';
 
 import './Header.css';
+import Badges from '../../../components/Badges/Badges';
 
 const DefaultNavigation = ({ tags, badges }) => (
   <div className="kgs-instance__header_navigation">
@@ -48,17 +49,19 @@ const getDefaultNavigation = (tags, badges) => {
   return Navigation;
 };
 
-const Header = ({title, version, tags, badges, fields, versions, customNavigationComponent, onVersionChange}) => {
+const Header = ({title, version, tags, badges, fields, versions, customNavigationComponent, onVersionChange, highlightColor}) => {
 
   const Navigation = customNavigationComponent?customNavigationComponent:getDefaultNavigation(tags, badges);
+  const style = {}
+  if(highlightColor !== undefined){
+    style['backgroundColor'] = highlightColor;
+  }
 
   return (
-    <div className="kgs-instance__header">
+    <div className="kgs-instance__header" style={style}>
       <Navigation />
       <div className="kgs-instance__header_fields">
-        {customNavigationComponent && (
-          <TagsAndBadges tags={tags} badges={badges} />
-        )}
+        {customNavigationComponent ? <TagsAndBadges tags={tags} badges={badges} /> : <Badges badges={badges} /> }
         <div className="kgs-instance__header_title">
           <Title text={title} />
           <VersionSelector version={version} versions={versions} onChange={onVersionChange} />

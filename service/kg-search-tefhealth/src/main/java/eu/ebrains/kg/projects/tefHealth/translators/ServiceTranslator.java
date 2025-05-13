@@ -37,6 +37,7 @@ import eu.ebrains.kg.projects.tefHealth.source.models.NameRef;
 import eu.ebrains.kg.projects.tefHealth.target.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -81,6 +82,7 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         Service t = new Service();
         t.setDisclaimer(new Value<>("Please alert us at [info@tefhealth.eu](mailto:info@tefhealth.eu) for errors or quality concerns."));
         t.setId(IdUtils.getUUID(tefHealthServiceV3.getId()));
+        boolean isExternal = tefHealthServiceV3.getExternalService() != null && tefHealthServiceV3.getExternalService();
         if(tefHealthServiceV3.getProvider() != null && !CollectionUtils.isEmpty(tefHealthServiceV3.getProvider().getContacts())) {
             t.setContact(tefHealthServiceV3.getProvider().getContacts().stream().map(c -> new TargetExternalReference(String.format("mailto:%s", c), c)).toList());
         }
@@ -104,6 +106,11 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         }
         t.setIdentifier(IdUtils.getUUID(tefHealthServiceV3.getIdentifier()).stream().distinct().collect(Collectors.toList()));
         t.setTitle(title);
+        if(tefHealthServiceV3.getExternalService() != null && tefHealthServiceV3.getExternalService()) {
+            t.setServiceType(value("External service"));
+            t.setBadges(Collections.singletonList("External service;#0dcaf0"));
+            t.setHighlightColor(value("lightyellow"));
+        }
         t.setDescription(value(tefHealthServiceV3.getDescription()));
         t.setServiceInput(value(tefHealthServiceV3.getServiceInput()));
         t.setServiceOutput(value(tefHealthServiceV3.getServiceOutput()));

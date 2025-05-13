@@ -26,17 +26,35 @@ import React from 'react';
 import './Badges.css';
 
 const BadgesEnum = [
-  { name: 'isNew', title: 'New' },
-  { name: 'isTrending', title: 'Top trending' }
+  { name: 'isNew', title: 'New', color: '#0DCAF0FF', fontColor: '#FFFFFFFF' },
+  { name: 'isTrending', title: 'Top trending', color: '#20C997FF', fontColor: '#FFFFFFFF' }
 ];
 
-const Badge = ({ name, title }) => <span className={`badge rounded-pill kgs-badge kgs-badge-${name}`}>{title}</span>;
+const Badge = ({ name, title, style }) => <span className={`badge rounded-pill kgs-badge kgs-badge-${name}`} style={style}>{title}</span>;
 
 const Badges = ({ badges }) => {
-  const list = Array.isArray(badges)?BadgesEnum.filter(badge => badges.includes(badge.name)):[];
+  const allBadges = [];
+  badges.forEach(b => {
+    const fixedBadge = BadgesEnum.filter(fixedBadge => fixedBadge.name === b)[0]
+    if(fixedBadge !== undefined){
+      allBadges.push(fixedBadge);
+    }
+    else{
+      const splittedBadge = b.split(";");
+      allBadges.push({
+        name: splittedBadge[0].trim(),
+        title: splittedBadge[0].trim(),
+        color: splittedBadge.size > 1 ? splittedBadge[1].trim() : '#0DCAF0FF',
+        fontColor: splittedBadge.size>2 ? splittedBadge[2].trim() : '#FFFFFFFF'
+      })
+    }
+  })
   return (
     <div className="kgs-badges">
-      {list.map(badge => <Badge key={badge.name} name={badge.name} title={badge.title} />)}
+      {allBadges.map(badge => <Badge key={badge.name} name={badge.name} title={badge.title} style={{
+        background: badge.color,
+        color: badge.fontColor
+      }} />)}
     </div>
   );
 };

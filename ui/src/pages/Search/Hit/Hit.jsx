@@ -148,15 +148,18 @@ export const Hit = ({ data }) => {
   const fields = getFields(data?.fields, data?.highlight, mapping);
   const previewImage = data?.previewImage;
   const badges = (data?.badges && data.badges.length)?data.badges:null;
+  const highlightColor = {
+    backgroundColor: data?.highlightColor
+  }
   const highlightsField = {
     fields: filterHighlightFields(data?.highlight, ['title.value', 'description.value']),
     mapping: mapping
   };
   //['structural connectivity','functional connectivity', 'connectome', 'fMRI time series', 'Preparation', 'Experimental approach', 'Technique', 'tractography', 'anatomical segmentation technique']
   return (
-    <div className="kgs-hit" data-type={type}>
+    <div className="kgs-hit" data-type={type} style={highlightColor}>
       <HitBadges badges={badges} />
-      <div className={`kgs-hit__body ${previewImage? 'has-previewImage':''} ${badges?'has-badges':''}`}>
+      <div className={`kgs-hit__body ${previewImage? 'has-previewImage':''} ${badges?'has-badges':''}`} >
         <div className="kgs-hit__content">
           <Title key="title" text={title} />
           <HighlightsField key="highlights" {...highlightsField} />

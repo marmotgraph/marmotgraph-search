@@ -45,6 +45,10 @@
       "path": "https://tefhealth.eu/serviceCatalogue/vocab/serviceOutput"
     },
     {
+      "propertyName": "query:externalService",
+      "path": "https://tefhealth.eu/serviceCatalogue/vocab/externalService"
+    },
+    {
       "propertyName": "query:calls",
       "path": "https://tefhealth.eu/serviceCatalogue/vocab/calls",
       "structure": [
