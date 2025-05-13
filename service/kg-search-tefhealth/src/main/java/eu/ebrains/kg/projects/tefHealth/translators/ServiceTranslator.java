@@ -106,9 +106,13 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         }
         t.setIdentifier(IdUtils.getUUID(tefHealthServiceV3.getIdentifier()).stream().distinct().collect(Collectors.toList()));
         t.setTitle(title);
-        if(tefHealthServiceV3.getExternalService() != null && tefHealthServiceV3.getExternalService()) {
+        if(isExternal) {
             t.setServiceType(value("External service"));
             t.setBadges(Collections.singletonList("External service;#0dcaf0"));
+        }
+        else{
+            t.setServiceType(value("TEF-Health service"));
+            t.setBadges(Collections.singletonList("TEF-Health service;#20C997"));
             t.setHighlightColor(value("lightyellow"));
         }
         t.setDescription(value(tefHealthServiceV3.getDescription()));
