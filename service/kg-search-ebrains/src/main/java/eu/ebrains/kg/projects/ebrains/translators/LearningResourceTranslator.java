@@ -64,7 +64,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
 
     @Override
     public List<String> getQueryIds() {
-        return Collections.singletonList("7728c2dc-5782-4852-a24a-a15623b78d32");
+        return Collections.singletonList("7285f05c-6626-4295-b464-9fb6070f58cc");
     }
 
     @Override
