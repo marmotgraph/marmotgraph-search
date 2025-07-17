@@ -197,7 +197,21 @@ const SearchBase = () => {
 
   const profile = useSelector(state => state.application.profile);
   useEffect(() => {
-    document.title = profiles[profile]['name']+' - Knowledge Graph Search';
+    document.title = profiles[profile]['name'] + ' Search';
+    const ogTitle = document.createElement("meta")
+    ogTitle.setAttribute("name", "og:title")
+    ogTitle.setAttribute("content", profiles[profile]['name'])
+    document.head.append(ogTitle)
+    const ogDescription = document.createElement("meta")
+    ogDescription.setAttribute("name", "og:description")
+    ogDescription.setAttribute("content", profiles[profile]['description'])
+    document.head.append(ogDescription)
+
+    const description = document.createElement("meta")
+    description.setAttribute("name", "description")
+    description.setAttribute("content", profiles[profile]['description'])
+    document.head.append(description)
+
     if (!initializedRef.current) {
       initializedRef.current = true;
       const params = getSearchParametersFromUrl();
