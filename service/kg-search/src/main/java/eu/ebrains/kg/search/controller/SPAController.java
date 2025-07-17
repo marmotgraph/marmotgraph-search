@@ -25,40 +25,38 @@
 package eu.ebrains.kg.search.controller;
 
 import eu.ebrains.kg.common.controller.translation.IndexHtmlExtension;
-import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Map;
 
 @Component
 public class SPAController {
 
-    private IndexHtmlExtension indexHtmlExtension;
+    private final IndexHtmlExtension indexHtmlExtension;
+    private final Resource indexHtml;
 
-    public SPAController(IndexHtmlExtension indexHtmlExtension) {
+    public SPAController(IndexHtmlExtension indexHtmlExtension, @Value("classpath:public/index.html") Resource indexHtml) {
         this.indexHtmlExtension = indexHtmlExtension;
+        this.indexHtml = indexHtml;
     }
 
     @Cacheable("index")
-    public String getIndexHTML(){
+    public String getIndexHTML() {
+        String payload = null;
         try {
-            File resource = new ClassPathResource("public/index.html").getFile();
-            String payload = Files.readString(resource.toPath());
+            payload = indexHtml.getContentAsString(StandardCharsets.UTF_8);
             String headerAdditions = indexHtmlExtension.getHeaderAdditions();
-            if(headerAdditions != null){
-                headerAdditions = headerAdditions+"</head>";
+            if (headerAdditions != null) {
+                headerAdditions = headerAdditions + "</head>";
                 payload = payload.replace("</head>", headerAdditions);
             }
             return payload;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Was not able to read the index.html from classpath", e);
         }
     }
 
