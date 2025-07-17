@@ -22,11 +22,10 @@ import static org.springframework.web.servlet.function.RouterFunctions.route;
 public class SPARouting {
 
     @Bean
-    RouterFunction<ServerResponse> spaRouter() {
-        ClassPathResource index = new ClassPathResource("public/index.html");
+    RouterFunction<ServerResponse> spaRouter(SPAController controller) {
         List<String> extensions = Arrays.asList("js", "css", "ico", "png", "jpg", "gif", "html", "svg");
         RequestPredicate spaPredicate = path("/api/**").or(path("/internal/**")).or(path("/sitemap/**")).or(path("/error")).or(pathExtension(extensions::contains)).negate();
-        return route(spaPredicate, request -> ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(index));
+        return route(spaPredicate, request -> ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(controller.getIndexHTML()));
     }
 
     /**

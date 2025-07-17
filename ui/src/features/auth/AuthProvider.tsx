@@ -79,6 +79,10 @@ const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthPro
   // @ts-expect-error n/a
   const profile: string = useSelector(state => state.application.profile);
 
+  // @ts-expect-error n/a
+  if(!profiles[profile]['login']){
+    loginRequired = false;
+  }
   const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';
   const canBypassAuth = noSilentSSO || (import.meta.env.VITE_APP_BYPASS_AUTH === 'true' && window.location.host.startsWith('localhost') && !isLoginRequired);
 
