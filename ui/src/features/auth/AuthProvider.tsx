@@ -34,6 +34,8 @@
  */
 
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import profiles from '../../data/profiles';
 import useAuth from '../../hooks/useAuth';
 import DefaultMockAuthProvider from './DefaultMockAuthProvider';
 import type AuthAdapter from '../../services/AuthAdapter';
@@ -52,8 +54,8 @@ interface AuthSetupProps {
 }
 
 const AuthSetup = ({ adapter, children }: AuthSetupProps) => {
-  const { isAuthenticated, logout } = useAuth();
 
+  const { isAuthenticated, logout } = useAuth();
   useEffect(() => {
     if (adapter.unauthorizedRequestResponseHandlerProvider) {
       adapter.unauthorizedRequestResponseHandlerProvider.unauthorizedRequestResponseHandler = () => {
@@ -74,13 +76,15 @@ interface AuthProviderProps extends AuthProviderPropsType {
 
 // loginRequired allow to overrule the onLoad option of the keycloak adapter when the authentidation should differ depenging on the route
 const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthProviderProps) => {
+  const profile: string = useSelector(state => state.application.profile);
+
   const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';
   const canBypassAuth = noSilentSSO || (import.meta.env.VITE_APP_BYPASS_AUTH === 'true' && window.location.host.startsWith('localhost') && !isLoginRequired);
 
   if (canBypassAuth) {
     console.info('%cAuth: Authentication is disabled for local development', 'color: #f88900;');
   }
-  const Provider = canBypassAuth?DefaultMockAuthProvider:adapter.authProvider;
+  const Provider = canBypassAuth || profiles[profile]['login'] ? DefaultMockAuthProvider : adapter.authProvider;
 
   return (
     <Provider adapter={adapter} loginRequired={loginRequired}>
