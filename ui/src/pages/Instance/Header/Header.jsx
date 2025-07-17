@@ -54,7 +54,7 @@ const Header = ({title, version, tags, badges, fields, versions, customNavigatio
   const Navigation = customNavigationComponent?customNavigationComponent:getDefaultNavigation(tags, badges);
   const style = {}
   if(highlightColor !== undefined){
-    style['backgroundColor'] = highlightColor;
+    style['borderLeft'] = "10px solid "+highlightColor;
   }
 
   return (
