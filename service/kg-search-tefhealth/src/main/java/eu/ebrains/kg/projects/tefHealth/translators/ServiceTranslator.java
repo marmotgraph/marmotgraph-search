@@ -109,11 +109,12 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         if(isExternal) {
             t.setServiceType(value("External service"));
             t.setBadges(Collections.singletonList("External service;#0dcaf0"));
+            t.setHighlightColor(value("#0dcaf0"));
         }
         else{
             t.setServiceType(value("TEF-Health service"));
-            t.setBadges(Collections.singletonList("TEF-Health service;#20C997"));
-            t.setHighlightColor(value("lightyellow"));
+            t.setBadges(Collections.singletonList("TEF-Health service;seagreen"));
+            t.setHighlightColor(value("seagreen"));
         }
         t.setDescription(value(tefHealthServiceV3.getDescription()));
         t.setServiceInput(value(tefHealthServiceV3.getServiceInput()));

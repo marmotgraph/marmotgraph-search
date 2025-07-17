@@ -58,6 +58,7 @@ import Hits from './Search/Hit/Hits';
 import HitsInfo from './Search/HitsInfo/HitsInfo';
 import SearchFetching from './Search/SearchFetching';
 
+import profiles from "../data/profiles";
 import './Search.css';
 
 const calculateFacetList = facets => facets.reduce((acc, facet) => {
@@ -194,8 +195,9 @@ const SearchBase = () => {
     refetch
   } = useGetSearchQuery(searchParams, { skip: !isInitialized });
 
+  const profile = useSelector(state => state.application.profile);
   useEffect(() => {
-    document.title = 'EBRAINS - Knowledge Graph Search';
+    document.title = profiles[profile]['name']+' - Knowledge Graph Search';
     if (!initializedRef.current) {
       initializedRef.current = true;
       const params = getSearchParametersFromUrl();

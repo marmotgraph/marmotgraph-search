@@ -149,7 +149,7 @@ export const Hit = ({ data }) => {
   const previewImage = data?.previewImage;
   const badges = (data?.badges && data.badges.length)?data.badges:null;
   const highlightColor = {
-    backgroundColor: data?.highlightColor
+    borderLeft: "5px solid "+data?.highlightColor
   }
   const highlightsField = {
     fields: filterHighlightFields(data?.highlight, ['title.value', 'description.value']),
