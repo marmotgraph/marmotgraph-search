@@ -8,7 +8,8 @@ const profiles = {
         "searchExample": "",
         "logo": "",
         "logo_dark": "",
-        "login": false
+        "login": false,
+        "description": ""
     },
     "ebrains": {
         "home": "https://ebrains.eu",
@@ -19,7 +20,8 @@ const profiles = {
         "searchExample": "(e.g. mouse hippocampus or calbindin)",
         "logo": "ebrains_logo.svg",
         "logo_dark": "ebrains_logo_dark.svg",
-        "login": true
+        "login": true,
+        "description": "EBRAINS offers advanced tools and resources for brain research, allowing scientists to study the brain at various scales. Join us in better understanding the brain's complexity."
     },
     "tefhealth": {
         "home": "https://tefhealth.eu",
@@ -30,7 +32,8 @@ const profiles = {
         "searchExample": "(e.g. imaging or operating room)",
         "logo": "tefhealth_logo.png",
         "logo_dark": "tefhealth_logo.png",
-        "login": false
+        "login": false,
+        "description": ""
     }
 }
 export default profiles;

@@ -98,12 +98,14 @@ public class KGServiceClient {
     private final String kgCoreEndpoint;
     private final WebClient serviceAccountWebClient;
     private final WebClient userWebClient;
+    private final String serviceClientId;
 
 
-    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint) {
+    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId) {
         this.kgCoreEndpoint = kgCoreEndpoint;
         this.serviceAccountWebClient = serviceAccountWebClient;
         this.userWebClient = userWebClient;
+        this.serviceClientId = serviceClientId;
     }
 
     @Cacheable(value = "authEndpoint", unless = "#result == null")
@@ -309,7 +311,7 @@ public class KGServiceClient {
                 serviceAccountWebClient.put().uri(String.format("%s/instances/%s", kgCoreEndpoint, typeSpecificBadgeRegistration)).body(BodyInserters.fromValue(document)).headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                         .retrieve().bodyToMono(Void.class).block();
             } catch (WebClientResponseException.NotFound e) {
-                serviceAccountWebClient.post().uri(String.format("%s/instances/%s?space=kg-search", kgCoreEndpoint, typeSpecificBadgeRegistration)).body(BodyInserters.fromValue(document)).headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                serviceAccountWebClient.post().uri(String.format("%s/instances/%s?space=%s", kgCoreEndpoint, typeSpecificBadgeRegistration, serviceClientId)).body(BodyInserters.fromValue(document)).headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                         .retrieve().bodyToMono(Void.class).block();
             }
             serviceAccountWebClient.put().uri(String.format("%s/instances/%s/release", kgCoreEndpoint, typeSpecificBadgeRegistration)).retrieve().bodyToMono(Void.class).block();
@@ -319,7 +321,7 @@ public class KGServiceClient {
     }
 
     public void uploadQuery(String queryId, String payload) {
-        String url = String.format("%s/queries/%s?space=kg-search", kgCoreEndpoint, queryId);
+        String url = String.format("%s/queries/%s?space=%s", kgCoreEndpoint, queryId, serviceClientId);
         serviceAccountWebClient.put()
                 .uri(url)
                 .body(BodyInserters.fromValue(payload))
