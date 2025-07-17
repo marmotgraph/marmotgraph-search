@@ -7,7 +7,8 @@ const profiles = {
         "copyrightAddition": null,
         "searchExample": "",
         "logo": "",
-        "logo_dark": ""
+        "logo_dark": "",
+        "login": false
     },
     "ebrains": {
         "home": "https://ebrains.eu",
@@ -17,7 +18,8 @@ const profiles = {
         "copyrightAddition": null,
         "searchExample": "(e.g. mouse hippocampus or calbindin)",
         "logo": "ebrains_logo.svg",
-        "logo_dark": "ebrains_logo_dark.svg"
+        "logo_dark": "ebrains_logo_dark.svg",
+        "login": true
     },
     "tefhealth": {
         "home": "https://tefhealth.eu",
@@ -27,7 +29,8 @@ const profiles = {
         "copyrightSince": "2024",
         "searchExample": "(e.g. imaging or operating room)",
         "logo": "tefhealth_logo.png",
-        "logo_dark": "tefhealth_logo.png"
+        "logo_dark": "tefhealth_logo.png",
+        "login": false
     }
 }
 export default profiles;
