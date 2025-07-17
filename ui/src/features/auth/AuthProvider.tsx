@@ -76,6 +76,7 @@ interface AuthProviderProps extends AuthProviderPropsType {
 
 // loginRequired allow to overrule the onLoad option of the keycloak adapter when the authentidation should differ depenging on the route
 const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthProviderProps) => {
+  // @ts-ignore
   const profile: string = useSelector(state => state.application.profile);
 
   const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';
@@ -84,6 +85,7 @@ const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthPro
   if (canBypassAuth) {
     console.info('%cAuth: Authentication is disabled for local development', 'color: #f88900;');
   }
+  // @ts-ignore
   const Provider = canBypassAuth || profiles[profile]['login'] ? DefaultMockAuthProvider : adapter.authProvider;
 
   return (
