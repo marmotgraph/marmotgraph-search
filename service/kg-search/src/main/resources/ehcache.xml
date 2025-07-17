@@ -152,4 +152,12 @@
             <heap>1</heap>
         </resources>
     </cache>
+
+    <cache alias="index" uses-template="inmemory">
+        <key-type>org.springframework.cache.interceptor.SimpleKey</key-type>
+        <value-type>java.lang.String</value-type>
+        <resources>
+            <heap>1</heap>
+        </resources>
+    </cache>
 </config>

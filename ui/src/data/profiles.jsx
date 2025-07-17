@@ -9,7 +9,6 @@ const profiles = {
         "logo": "",
         "logo_dark": "",
         "login": false,
-        "description": ""
     },
     "ebrains": {
         "home": "https://ebrains.eu",
@@ -21,7 +20,6 @@ const profiles = {
         "logo": "ebrains_logo.svg",
         "logo_dark": "ebrains_logo_dark.svg",
         "login": true,
-        "description": "EBRAINS offers advanced tools and resources for brain research, allowing scientists to study the brain at various scales. Join us in better understanding the brain's complexity."
     },
     "tefhealth": {
         "home": "https://tefhealth.eu",
@@ -33,7 +31,6 @@ const profiles = {
         "logo": "tefhealth_logo.png",
         "logo_dark": "tefhealth_logo.png",
         "login": false,
-        "description": ""
     }
 }
 export default profiles;
