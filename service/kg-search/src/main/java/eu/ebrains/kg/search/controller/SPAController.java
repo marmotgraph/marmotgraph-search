@@ -27,11 +27,14 @@ package eu.ebrains.kg.search.controller;
 import eu.ebrains.kg.common.controller.translation.IndexHtmlExtension;
 import org.apache.commons.io.FileUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 
 @Component
@@ -46,7 +49,8 @@ public class SPAController {
     @Cacheable("index")
     public String getIndexHTML(){
         try {
-            String payload = FileUtils.readFileToString(ResourceUtils.getFile("classpath:public/index.html"), StandardCharsets.UTF_8);
+            File resource = new ClassPathResource("public/index.html").getFile();
+            String payload = Files.readString(resource.toPath());
             String headerAdditions = indexHtmlExtension.getHeaderAdditions();
             if(headerAdditions != null){
                 headerAdditions = headerAdditions+"</head>";
