@@ -48,7 +48,7 @@ public class SPARouting {
     @Bean
     RouterFunction<ServerResponse> spaRouter(SPAController controller) {
         List<String> extensions = Arrays.asList("js", "css", "ico", "png", "jpg", "gif", "html", "svg");
-        RequestPredicate spaPredicate = path("/api/**").or(path("/internal/**")).or(path("/sitemap/**")).or(path("/error")).or(pathExtension(extensions::contains)).negate();
+        RequestPredicate spaPredicate = path("/api/**").or(path("/internal/**")).or(path("/sitemap/**")).or(path("/error")).or(path("/assets/**")).or(pathExtension(extensions::contains)).negate();
         return route(spaPredicate, request -> ServerResponse.ok().contentType(MediaType.TEXT_HTML).body(controller.getIndexHTML()));
     }
 
