@@ -34,7 +34,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@MetaInfo(name = "LearningResource")
+@MetaInfo(name = "LearningResource", searchable = true)
 public class LearningResource implements TargetInstance {
 
     @JsonIgnore
