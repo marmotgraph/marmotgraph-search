@@ -282,6 +282,7 @@
     {
       "propertyName": "query:requiredTime",
       "path": "https://openminds.ebrains.eu/vocab/requiredTime",
+      "singleValue": "FIRST",
       "structure": [
         {
           "propertyName": "query:value",

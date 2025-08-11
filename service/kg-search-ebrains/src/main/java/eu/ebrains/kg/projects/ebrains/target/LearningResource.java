@@ -120,7 +120,7 @@ public class LearningResource implements TargetInstance {
     @Override
     @JsonIgnore
     public boolean isSearchableInstance() {
-        return false;
+        return true;
     }
 
 }
