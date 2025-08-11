@@ -54,9 +54,9 @@ public class LearningResourceV3 extends SourceInstance {
     private List<RelatedPublication> publications;
     private String topic;
     private String versionIdentifier;
-    private Date creationDate;
-    private Date modificationDate;
-    private Date publicationDate;
+    private String creationDate;
+    private String modificationDate;
+    private String publicationDate;
     private String doi;
     private List<FullNameRef> educationalLevel;
     private List<String> keyword;

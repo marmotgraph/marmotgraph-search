@@ -80,6 +80,7 @@
     {
       "propertyName": "query:copyright",
       "path": "https://openminds.ebrains.eu/vocab/copyright",
+      "singleValue": "FIRST",
       "structure": [
         {
           "propertyName": "query:year",
@@ -115,6 +116,7 @@
       "structure": [
         {
           "propertyName": "query:fallbackName",
+          "singleValue": "FIRST",
           "path": [
             {
               "@id": "https://openminds.ebrains.eu/vocab/hasVersion",
@@ -192,7 +194,8 @@
       "path": [
         "https://openminds.ebrains.eu/vocab/digitalIdentifier",
         "https://openminds.ebrains.eu/vocab/identifier"
-      ]
+      ],
+      "singleValue": "FIRST"
     },
     {
       "propertyName": "query:editor",

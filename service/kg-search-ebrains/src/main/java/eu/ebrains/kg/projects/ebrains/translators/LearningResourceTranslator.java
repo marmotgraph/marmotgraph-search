@@ -107,7 +107,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
             target.setRequiredTime(value(source.getRequiredTime().displayString()));
         }
         target.setKeywords(value(source.getKeyword()));
-        target.setPublicationDate(value(source.getPublicationDate()));
+        //target.setPublicationDate(value(source.getPublicationDate()));
         return target;
     }
 }
