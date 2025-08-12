@@ -41,7 +41,7 @@ public class LearningResource implements TargetInstance {
     private List<String> allIdentifiers;
 
     @ElasticSearchInfo(type = "keyword")
-    private final Value<String> type = new Value<>("LearningResource");
+    private final Value<String> type = new Value<>("Learning Resource");
 
     @FieldInfo(ignoreForSearch = true, visible = false)
     private String id;
