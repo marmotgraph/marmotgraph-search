@@ -34,14 +34,14 @@ import java.util.List;
 
 @Getter
 @Setter
-@MetaInfo(name = "LearningResource", searchable = true)
+@MetaInfo(name = "Learning Resource", searchable = true)
 public class LearningResource implements TargetInstance {
 
     @JsonIgnore
     private List<String> allIdentifiers;
 
     @ElasticSearchInfo(type = "keyword")
-    private final Value<String> type = new Value<>("Learning Resource");
+    private final Value<String> type = new Value<>("LearningResource");
 
     @FieldInfo(ignoreForSearch = true, visible = false)
     private String id;
