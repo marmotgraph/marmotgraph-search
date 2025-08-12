@@ -58,6 +58,7 @@
     {
       "propertyName": "query:custodian",
       "path": "https://openminds.ebrains.eu/vocab/custodian",
+      "ensureOrder": true,
       "structure": [
         {
           "propertyName": "query:familyName",
@@ -200,6 +201,7 @@
     {
       "propertyName": "query:editor",
       "path": "https://openminds.ebrains.eu/vocab/editor",
+      "ensureOrder": true,
       "structure": [
         {
           "propertyName": "query:givenName",
@@ -260,6 +262,7 @@
     {
       "propertyName": "query:publisher",
       "path": "https://openminds.ebrains.eu/vocab/publisher",
+      "ensureOrder": true,
       "structure": [
         {
           "propertyName": "query:id",
@@ -303,6 +306,7 @@
         {
           "propertyName": "query:typeOfUncertainty",
           "path": "https://openminds.ebrains.eu/vocab/typeOfUncertainty",
+          "singleValue": "FIRST",
           "structure": [
             {
               "propertyName": "query:id",
@@ -317,6 +321,7 @@
         {
           "propertyName": "query:unit",
           "path": "https://openminds.ebrains.eu/vocab/unit",
+          "singleValue": "FIRST",
           "structure": [
             {
               "propertyName": "query:id",
@@ -331,6 +336,7 @@
         {
           "propertyName": "query:maxValueUnit",
           "path": "https://openminds.ebrains.eu/vocab/maxValueUnit",
+          "singleValue": "FIRST",
           "structure": [
             {
               "propertyName": "query:id",
@@ -345,6 +351,7 @@
         {
           "propertyName": "query:minValueUnit",
           "path": "https://openminds.ebrains.eu/vocab/minValueUnit",
+          "singleValue": "FIRST",
           "structure": [
             {
               "propertyName": "query:id",
