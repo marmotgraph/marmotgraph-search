@@ -25,13 +25,14 @@
 package eu.ebrains.kg.projects.ebrains.source.commons;
 
 import eu.ebrains.kg.common.model.source.ExternalRef;
+import eu.ebrains.kg.common.model.source.FullNameRef;
 import eu.ebrains.kg.common.model.source.ServiceLink;
 
 import java.util.List;
 
 public interface HasMetaBadges {
 
-    List<LearningResource> getLearningResource();
+    List<FullNameRef> getLearningResource();
 
     Versions getParentOfVersion();
 

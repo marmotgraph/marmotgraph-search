@@ -35,7 +35,6 @@ import eu.ebrains.kg.common.utils.TranslationException;
 import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.EBRAINSTranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.source.SoftwareVersionV3;
-import eu.ebrains.kg.projects.ebrains.source.commons.LearningResource;
 import eu.ebrains.kg.projects.ebrains.source.commons.Version;
 import eu.ebrains.kg.projects.ebrains.target.SoftwareVersion;
 import eu.ebrains.kg.projects.ebrains.translators.commons.Constants;
@@ -287,9 +286,7 @@ public class SoftwareVersionTranslator extends EBRAINSTranslator<SoftwareVersion
             }).collect(Collectors.toList()));
         }
         translatorUtils.defineBadgesAndTrendingState(s, softwareVersion.getIssueDate(), releaseDate, softwareVersion.getLast30DaysViews(), MetaBadgeUtils.evaluateMetaBadgeUtils(softwareVersion, false, false));
-        if(!CollectionUtils.isEmpty(softwareVersion.getLearningResource())) {
-            s.setLearningResources(softwareVersion.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        s.setLearningResources(ref(softwareVersion.getLearningResource()));
         s.setLivePapers(link(softwareVersion.getLivePapers()));
         return s;
     }

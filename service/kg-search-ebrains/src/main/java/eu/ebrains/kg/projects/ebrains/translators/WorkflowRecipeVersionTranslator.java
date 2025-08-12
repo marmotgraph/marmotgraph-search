@@ -37,7 +37,6 @@ import eu.ebrains.kg.common.utils.TranslationException;
 import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.EBRAINSTranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.source.WorkflowRecipeVersionV3;
-import eu.ebrains.kg.projects.ebrains.source.commons.LearningResource;
 import eu.ebrains.kg.projects.ebrains.source.commons.Version;
 import eu.ebrains.kg.projects.ebrains.target.WorkflowRecipeVersion;
 import eu.ebrains.kg.projects.ebrains.translators.commons.Constants;
@@ -232,9 +231,7 @@ public class WorkflowRecipeVersionTranslator extends EBRAINSTranslator<WorkflowR
                 w.setWorkflow(new ValueWithDetails<>((String)mermaid, details instanceof Map ? (Map<String, Object>)details : null));
             }
         }
-        if(!CollectionUtils.isEmpty(source.getLearningResource())) {
-            w.setLearningResources(source.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        w.setLearningResources(ref(source.getLearningResource()));
         w.setLivePapers(link(source.getLivePapers()));
         w.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(source.getPrimaryType(), w.getId())));
         translatorUtils.defineBadgesAndTrendingState(w, null, releaseDate, null, MetaBadgeUtils.evaluateMetaBadgeUtils(source, false, false));

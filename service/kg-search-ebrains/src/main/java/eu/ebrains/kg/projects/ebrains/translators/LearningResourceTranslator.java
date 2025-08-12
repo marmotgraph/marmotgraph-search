@@ -37,10 +37,7 @@ import eu.ebrains.kg.projects.ebrains.target.LearningResource;
 import eu.ebrains.kg.projects.ebrains.translators.commons.EBRAINSTranslator;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LearningResourceTranslator extends EBRAINSTranslator<LearningResourceV3, LearningResource, LearningResourceTranslator.Result> {
@@ -86,15 +83,15 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
         target.setLastRelease(value(source.getLastReleasedAt()));
         target.setReleasedDateForSorting(value(releaseDateForSorting));
         target.setAllIdentifiers(source.getIdentifier());
-
+        target.setBadges(source.getLearningResourceType());
         target.setTitle(value(source.getName()));
         target.setDescription(value(source.getAbstractText()));
-        target.setAbout(ref(source.getAbout()));
+        target.setAbout(refVersion(source.getAbout(), true));
         target.setTopic(value(source.getTopic()));
-        target.setAuthors(ref(source.getAuthor()));
-        target.setCustodians(ref(source.getCustodian()));
-        target.setEditors(ref(source.getEditor()));
-        target.setPublishers(ref(source.getPublisher()));
+        target.setAuthors(EBRAINSTranslatorUtils.refPerson(source.getAuthor()));
+        target.setCustodians(EBRAINSTranslatorUtils.refPerson(source.getCustodian()));
+        target.setEditors(EBRAINSTranslatorUtils.refPerson(source.getEditor()));
+        target.setPublishers(EBRAINSTranslatorUtils.refPerson(source.getPublisher()));
         target.setLearningOutcome(value(source.getLearningOutcome()));
         target.setPrerequisites(value(source.getPrerequisite()));
 
@@ -107,7 +104,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
             target.setRequiredTime(value(source.getRequiredTime().displayString()));
         }
         target.setKeywords(value(source.getKeyword()));
-        //target.setPublicationDate(value(source.getPublicationDate()));
+        target.setPublicationDate(value(source.getPublicationDate()));
         return target;
     }
 }

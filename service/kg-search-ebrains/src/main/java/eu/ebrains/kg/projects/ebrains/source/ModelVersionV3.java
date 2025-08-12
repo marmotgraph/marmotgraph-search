@@ -84,7 +84,7 @@ public class ModelVersionV3 extends SourceInstance implements IsCiteable, HasMet
     private String issueDate;
 
 
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
     private List<ExternalRef> livePapers;
 
     @JsonIgnore

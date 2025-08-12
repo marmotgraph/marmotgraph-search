@@ -98,7 +98,7 @@ public class DatasetVersionV3 extends SourceInstance implements IsCiteable, HasM
     private List<FullNameRefForResearchProductVersion> inputResearchProductsFromReverseOutputFiles;
     private List<FullNameRefForResearchProductVersionTarget> inputResearchProductsFromInputBrainAtlasVersions;
     private String issueDate;
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
 
     private List<ExternalRef> livePapers;
     private List<ProtocolExecution> protocolExecutionByFile;

@@ -33,6 +33,7 @@ import lombok.Setter;
 import java.util.Comparator;
 import java.util.List;
 
+@Setter
 @Getter
 @EqualsAndHashCode
 public class TargetInternalReference implements Comparable<TargetInternalReference> {
@@ -62,30 +63,14 @@ public class TargetInternalReference implements Comparable<TargetInternalReferen
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Context context;
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
     @JsonIgnore
     private String getLowerCaseValue() {
         return value != null ? value.toLowerCase() : null;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     @Override
     public int compareTo(TargetInternalReference targetInternalReference) {
         return targetInternalReference == null ? -1 : Comparator.comparing(TargetInternalReference::getLowerCaseValue).compare(this, targetInternalReference);
-    }
-
-    public void setCount(List<String> count) {
-        this.count = count;
     }
 
     @Setter

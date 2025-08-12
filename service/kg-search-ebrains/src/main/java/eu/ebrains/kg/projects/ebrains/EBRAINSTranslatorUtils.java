@@ -31,7 +31,6 @@ import eu.ebrains.kg.common.model.target.TargetInternalReference;
 import eu.ebrains.kg.common.services.DOICitationFormatter;
 import eu.ebrains.kg.common.utils.IdUtils;
 import eu.ebrains.kg.projects.ebrains.source.commons.*;
-import eu.ebrains.kg.projects.ebrains.translators.commons.EBRAINSTranslator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -313,18 +312,31 @@ public class EBRAINSTranslatorUtils {
         return null;
     }
 
-    public static TargetInternalReference refAnatomical(AnatomicalLocation a){
-        if(StringUtils.isNotBlank(a.getBrainAtlas())){
-            return new TargetInternalReference(null, String.format("%s (%s)", StringUtils.isNotBlank(a.getFullName()) ? a.getFullName() : a.getFallbackName(),  a.getBrainAtlas()));
-        }
-        else if(a.getBrainAtlasVersion() != null){
+    public static TargetInternalReference refAnatomical(AnatomicalLocation a) {
+        if (StringUtils.isNotBlank(a.getBrainAtlas())) {
+            return new TargetInternalReference(null, String.format("%s (%s)", StringUtils.isNotBlank(a.getFullName()) ? a.getFullName() : a.getFallbackName(), a.getBrainAtlas()));
+        } else if (a.getBrainAtlasVersion() != null) {
             String name = String.format("%s %s", StringUtils.isNotBlank(a.getBrainAtlasVersion().getFullName()) ? a.getBrainAtlasVersion().getFullName() : a.getBrainAtlasVersion().getFallbackName(), a.getBrainAtlasVersion().getVersionIdentifier());
             return new TargetInternalReference(null, String.format("%s (%s)", StringUtils.isNotBlank(a.getFullName()) ? a.getFullName() : a.getFallbackName(), name));
-        }
-        else{
+        } else {
             return ref(a);
         }
     }
+
+    public static TargetInternalReference refPerson(PersonOrOrganizationRef p) {
+        return new TargetInternalReference(
+                IdUtils.getUUID(p.getId()),
+                EBRAINSTranslatorUtils.getFullName(p.getFullName(), p.getFamilyName(), p.getGivenName())
+        );
+    }
+
+    public static List<TargetInternalReference> refPerson(List<PersonOrOrganizationRef> collection) {
+        if (!CollectionUtils.isEmpty(collection)) {
+            return collection.stream().map(EBRAINSTranslatorUtils::refPerson).toList();
+        }
+        return null;
+    }
+
 
 
     public static TargetInternalReference ref(FullNameRefForResearchProductVersion ref) {

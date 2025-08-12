@@ -65,7 +65,7 @@ public class WorkflowRecipeVersionV3 extends SourceInstance implements HasMetric
     private String version;
     private Integer last30DaysViews;
 
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
     private List<ExternalRef> livePapers;
 
     @Getter

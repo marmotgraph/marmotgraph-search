@@ -84,7 +84,7 @@ public class SoftwareVersionV3 extends SourceInstance implements IsCiteable, Has
     private Integer last30DaysViews;
     private String issueDate;
 
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
     private List<ExternalRef> livePapers;
 
     @Override

@@ -206,7 +206,7 @@ public class ModelVersion implements TargetInstance, VersionedInstance, HasCitat
     private List<TargetExternalReference> externalOutputData;
 
     @FieldInfo(layout = "How to use", label ="Learning resources", useForSuggestion = true)
-    private List<TargetExternalReference> learningResources;
+    private List<TargetInternalReference> learningResources;
 
     @FieldInfo(layout = "How to use", label = "Programmatic access to metadata", ignoreForSearch = true)
     private Value<String> queryBuilderText;

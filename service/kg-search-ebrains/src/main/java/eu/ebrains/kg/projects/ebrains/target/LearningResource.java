@@ -41,10 +41,13 @@ public class LearningResource implements TargetInstance {
     private List<String> allIdentifiers;
 
     @ElasticSearchInfo(type = "keyword")
-    private final Value<String> type = new Value<>("LearningResource");
+    private final Value<String> type = new Value<>("Learning Resource");
 
     @FieldInfo(ignoreForSearch = true, visible = false)
     private String id;
+
+    @ElasticSearchInfo(type = "keyword")
+    private List<String> badges;
 
     @ElasticSearchInfo(type = "keyword")
     @FieldInfo(ignoreForSearch = true, visible = false)
@@ -61,9 +64,6 @@ public class LearningResource implements TargetInstance {
 
     @FieldInfo(label = "Name", layout = "header")
     private Value<String> title;
-
-    @FieldInfo(label = "Description", labelHidden = true, fieldType = FieldInfo.FieldType.MARKDOWN, boost = 2, overview = true)
-    private Value<String> description;
 
     @FieldInfo(label = "About")
     private List<TargetInternalReference> about;
@@ -82,6 +82,9 @@ public class LearningResource implements TargetInstance {
 
     @FieldInfo(label = "Publishers", separator = "; ", boost = 10)
     private List<TargetInternalReference> publishers;
+
+    @FieldInfo(label = "Description", labelHidden = true, fieldType = FieldInfo.FieldType.MARKDOWN, boost = 2, overview = true)
+    private Value<String> description;
 
     @FieldInfo(label = "Learning outcome", fieldType = FieldInfo.FieldType.MARKDOWN, boost = 2)
     private Value<String> learningOutcome;
@@ -102,7 +105,7 @@ public class LearningResource implements TargetInstance {
     private List<Value<String>> keywords;
 
     @FieldInfo(label = "Publication date", layout = "summary", useForSuggestion = true)
-    private ISODateValue publicationDate;
+    private Value<String> publicationDate;
 
     @JsonProperty("first_release")
     @FieldInfo(label = "First release", ignoreForSearch = true, visible = false, type = FieldInfo.Type.DATE)

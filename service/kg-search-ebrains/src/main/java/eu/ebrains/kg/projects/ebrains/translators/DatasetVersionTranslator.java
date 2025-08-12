@@ -516,11 +516,8 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
 
         d.setMeta(SchemaOrgConverter.translateDatasetVersion(datasetVersion));
         translatorUtils.defineBadgesAndTrendingState(d, datasetVersion.getIssueDate(), releaseDate, datasetVersion.getLast30DaysViews(), MetaBadgeUtils.evaluateMetaBadgeUtils(datasetVersion, !CollectionUtils.isEmpty(d.getOutputData()), !CollectionUtils.isEmpty(d.getInputData())));
-        if(!CollectionUtils.isEmpty(datasetVersion.getLearningResource())) {
-            d.setLearningResources(datasetVersion.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        d.setLearningResources(ref(datasetVersion.getLearningResource()));
         d.setLivePapers(link(datasetVersion.getLivePapers()));
-
         d.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(datasetVersion.getPrimaryType(), d.getId())));
         return d;
     }

@@ -24,17 +24,19 @@
 
 package eu.ebrains.kg.common.controller.translation.models;
 
-import eu.ebrains.kg.common.controller.translation.utils.TranslationUtils;
-import eu.ebrains.kg.common.model.source.*;
+import eu.ebrains.kg.common.model.source.ExternalRef;
+import eu.ebrains.kg.common.model.source.FullNameRef;
 import eu.ebrains.kg.common.model.target.*;
-import eu.ebrains.kg.common.model.target.HasCitation;
 import eu.ebrains.kg.common.utils.IdUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -145,10 +147,6 @@ public abstract class TranslatorBase {
         }
         return null;
     }
-
-
-
-
 
     protected TargetExternalReference link(ExternalRef ref) {
         if (ref != null && StringUtils.isNotBlank(ref.getUrl())) {

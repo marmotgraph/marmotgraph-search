@@ -74,7 +74,7 @@ public class MetadataModelVersionV3 extends SourceInstance implements IsCiteable
     private List<FullNameRefForResearchProductVersion> usedDatasets;
     private List<FullNameRefForResearchProductVersion> producedDatasets;
 
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
     private List<ExternalRef> livePapers;
 
     @Override

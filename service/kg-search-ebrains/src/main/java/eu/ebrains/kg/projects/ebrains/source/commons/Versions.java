@@ -24,6 +24,7 @@
 
 package eu.ebrains.kg.projects.ebrains.source.commons;
 
+import eu.ebrains.kg.common.model.source.FullNameRef;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,5 +39,5 @@ public class Versions {
     private String fullName;
     private String description;
     private List<Version> versions;
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
 }

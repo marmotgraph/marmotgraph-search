@@ -35,7 +35,6 @@ import eu.ebrains.kg.common.utils.TranslationException;
 import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.EBRAINSTranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.source.WebServiceVersionV3;
-import eu.ebrains.kg.projects.ebrains.source.commons.LearningResource;
 import eu.ebrains.kg.projects.ebrains.source.commons.Version;
 import eu.ebrains.kg.projects.ebrains.target.WebServiceVersion;
 import eu.ebrains.kg.projects.ebrains.translators.commons.Constants;
@@ -250,9 +249,7 @@ public class WebServiceVersionTranslator extends EBRAINSTranslator<WebServiceVer
                 return new TargetInternalReference(IdUtils.getUUID(c.getId()), String.format("%s %s", name, c.getVersionIdentifier()));
             }).collect(Collectors.toList()));
         }
-        if(!CollectionUtils.isEmpty(source.getLearningResource())) {
-            w.setLearningResources(source.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        w.setLearningResources(ref(source.getLearningResource()));
         w.setLivePapers(link(source.getLivePapers()));
         translatorUtils.defineBadgesAndTrendingState(w, null, releaseDate, null, MetaBadgeUtils.evaluateMetaBadgeUtils(source, false, false));
         return w;

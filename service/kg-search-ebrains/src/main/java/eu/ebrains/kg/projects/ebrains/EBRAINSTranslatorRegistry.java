@@ -39,7 +39,6 @@ import java.util.Optional;
 @Profile("ebrains")
 public class EBRAINSTranslatorRegistry implements TranslatorRegistry {
     private final List<TranslatorModel<?,?>> TRANSLATORS = Arrays.asList(
-            new TranslatorModel<>(LearningResource.class, new LearningResourceTranslator(), false, 1000, true),
             new TranslatorModel<>(Project.class, new ProjectTranslator(), false, 1000, true),
             new TranslatorModel<>(Dataset.class, new DatasetTranslator(), false, 1000, true),
             new TranslatorModel<>(DatasetVersion.class, new DatasetVersionTranslator(), false, 1, true),
@@ -52,6 +51,7 @@ public class EBRAINSTranslatorRegistry implements TranslatorRegistry {
             new TranslatorModel<>(SoftwareVersion.class, new SoftwareVersionTranslator(), false, 1000, true),
             new TranslatorModel<>(WebService.class, new WebServiceTranslator(), false, 1000, true),
             new TranslatorModel<>(WebServiceVersion.class, new WebServiceVersionTranslator(), false, 1000, true),
+            new TranslatorModel<>(LearningResource.class, new LearningResourceTranslator(), false, 1000, true),
             new TranslatorModel<>(Contributor.class, new ContributorTranslator(), false, 1000, true),
             new TranslatorModel<>(ControlledTerm.class, new ControlledTermTranslator(), false, 1000, true),
             new TranslatorModel<>(ContentType.class, new ContentTypeTranslator(), false, 1000, false),

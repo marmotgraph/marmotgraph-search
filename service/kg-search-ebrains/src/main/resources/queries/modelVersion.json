@@ -589,19 +589,12 @@
           },
           "structure": [
             {
-              "propertyName": "query:name",
+              "propertyName": "query:id",
+              "path": "@id"
+            },
+            {
+              "propertyName": "query:fullName",
               "path": "https://openminds.ebrains.eu/vocab/name"
-            },
-            {
-              "propertyName": "query:IRI",
-              "path": "https://openminds.ebrains.eu/vocab/IRI"
-            },
-            {
-              "propertyName": "query:type",
-              "path": [
-                "https://openminds.ebrains.eu/vocab/type",
-                "https://openminds.ebrains.eu/vocab/name"
-              ]
             }
           ]
         }
@@ -1183,19 +1176,12 @@
       },
       "structure": [
         {
-          "propertyName": "query:name",
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
           "path": "https://openminds.ebrains.eu/vocab/name"
-        },
-        {
-          "propertyName": "query:IRI",
-          "path": "https://openminds.ebrains.eu/vocab/IRI"
-        },
-        {
-          "propertyName": "query:type",
-          "path": [
-            "https://openminds.ebrains.eu/vocab/type",
-            "https://openminds.ebrains.eu/vocab/name"
-          ]
         }
       ]
     },

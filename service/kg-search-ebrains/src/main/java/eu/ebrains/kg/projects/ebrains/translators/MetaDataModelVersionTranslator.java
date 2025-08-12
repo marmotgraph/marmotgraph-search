@@ -31,14 +31,13 @@ import eu.ebrains.kg.common.model.target.TargetExternalReference;
 import eu.ebrains.kg.common.model.target.TargetInternalReference;
 import eu.ebrains.kg.common.model.target.Value;
 import eu.ebrains.kg.common.utils.IdUtils;
+import eu.ebrains.kg.common.utils.TranslationException;
+import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.EBRAINSTranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.source.MetadataModelVersionV3;
-import eu.ebrains.kg.projects.ebrains.source.commons.LearningResource;
 import eu.ebrains.kg.projects.ebrains.source.commons.PersonOrOrganizationRef;
 import eu.ebrains.kg.projects.ebrains.source.commons.Version;
 import eu.ebrains.kg.projects.ebrains.target.MetaDataModelVersion;
-import eu.ebrains.kg.common.utils.TranslationException;
-import eu.ebrains.kg.common.utils.TranslatorUtils;
 import eu.ebrains.kg.projects.ebrains.translators.commons.Accessibility;
 import eu.ebrains.kg.projects.ebrains.translators.commons.Constants;
 import eu.ebrains.kg.projects.ebrains.translators.commons.EBRAINSTranslator;
@@ -219,9 +218,7 @@ public class MetaDataModelVersionTranslator extends EBRAINSTranslator<MetadataMo
             Collections.sort(metadataModelVersionV3.getKeyword());
             m.setKeywords(value(metadataModelVersionV3.getKeyword()));
         }
-        if(!CollectionUtils.isEmpty(metadataModelVersionV3.getLearningResource())) {
-            m.setLearningResources(metadataModelVersionV3.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        m.setLearningResources(ref(metadataModelVersionV3.getLearningResource()));
         m.setLivePapers(link(metadataModelVersionV3.getLivePapers()));
         translatorUtils.defineBadgesAndTrendingState(m, null, releaseDate, null, MetaBadgeUtils.evaluateMetaBadgeUtils(metadataModelVersionV3, false, false));
         m.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(metadataModelVersionV3.getPrimaryType(), m.getId())));

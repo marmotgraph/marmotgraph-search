@@ -70,7 +70,7 @@ public class WebServiceVersionV3 extends SourceInstance implements HasMetrics, H
     private String version;
     private Integer last30DaysViews;
 
-    private List<LearningResource> learningResource;
+    private List<FullNameRef> learningResource;
     private List<ExternalRef> livePapers;
 
     @Getter

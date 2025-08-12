@@ -179,7 +179,7 @@ public class SoftwareVersion implements TargetInstance, VersionedInstance, HasCi
     private List<TargetExternalReference> documentation;
 
     @FieldInfo(layout = "How to use", label ="Learning resources", useForSuggestion = true)
-    private List<TargetExternalReference> learningResources;
+    private List<TargetInternalReference> learningResources;
 
 
     private String version;

@@ -259,9 +259,7 @@ public class ModelVersionTranslator extends EBRAINSTranslator<ModelVersionV3, Mo
             m.setExternalOutputData(externalOutputData.stream().sorted(Comparator.comparing(TargetExternalReference::getValue)).collect(Collectors.toList()));
         }
         translatorUtils.defineBadgesAndTrendingState(m, modelVersion.getIssueDate(), releaseDate, modelVersion.getLast30DaysViews(), MetaBadgeUtils.evaluateMetaBadgeUtils(modelVersion, !CollectionUtils.isEmpty(m.getOutputData()), !CollectionUtils.isEmpty(m.getInputData())));
-        if(!CollectionUtils.isEmpty(modelVersion.getLearningResource())) {
-            m.setLearningResources(modelVersion.getLearningResource().stream().map(LearningResource::toReference).filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        m.setLearningResources(ref(modelVersion.getLearningResource()));
         m.setLivePapers(link(modelVersion.getLivePapers()));
         m.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(modelVersion.getPrimaryType(), m.getId())));
         return m;
