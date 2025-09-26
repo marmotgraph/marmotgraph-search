@@ -21,11 +21,14 @@
  *
  */
 import React, { useState } from 'react';
+import showdown from 'showdown';
+import DOMPurify from 'dompurify';
 
 const FilePreview = ({ url, title }) => {
 
   const [tryLoading, setTryLoading] = useState(false);
   const [tryLoadSuccess, setTryLoadSuccess] = useState(false);
+  const [markdown, setMarkdown] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -34,7 +37,12 @@ const FilePreview = ({ url, title }) => {
   const tryLoad = async () => {
     setTryLoading(true);
     try {
-      await fetch(url);
+      let response = await fetch(url);
+      if(response.headers.get("content-type") === "text/markdown"){
+        const converter = new showdown.Converter();
+        setMarkdown(DOMPurify.sanitize(converter.makeHtml(await response.text())));
+        setLoading(false);
+      }
       setTryLoadSuccess(true);
     } catch (e) {
       setHasError(true);
@@ -61,7 +69,10 @@ const FilePreview = ({ url, title }) => {
           &nbsp;Retrieving {title?title:'file'}...
         </>
       )}
-      {tryLoadSuccess && (
+      {tryLoadSuccess && markdown != null && (
+        <div className="field-markdown" style={{ height:'850px', width: '100%'}} dangerouslySetInnerHTML={{ __html: markdown }}></div>
+      )}
+      {tryLoadSuccess && markdown == null &&(
         <iframe src={url} height="850" style={{width: '100%'}} onLoad={handleOnLoad}  />
       )}
     </>

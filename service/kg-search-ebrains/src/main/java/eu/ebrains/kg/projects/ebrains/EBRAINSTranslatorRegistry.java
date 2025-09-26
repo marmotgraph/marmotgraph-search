@@ -52,6 +52,8 @@ public class EBRAINSTranslatorRegistry implements TranslatorRegistry {
             new TranslatorModel<>(WebService.class, new WebServiceTranslator(), false, 1000, true),
             new TranslatorModel<>(WebServiceVersion.class, new WebServiceVersionTranslator(), false, 1000, true),
             new TranslatorModel<>(LearningResource.class, new LearningResourceTranslator(), false, 1000, true),
+            new TranslatorModel<>(LivePaper.class, new LivePaperTranslator(), false, 1000, true),
+            new TranslatorModel<>(LivePaperVersion.class, new LivePaperVersionTranslator(), false, 1000, true),
             new TranslatorModel<>(Contributor.class, new ContributorTranslator(), false, 1000, true),
             new TranslatorModel<>(ControlledTerm.class, new ControlledTermTranslator(), false, 1000, true),
             new TranslatorModel<>(ContentType.class, new ContentTypeTranslator(), false, 1000, false),
