@@ -429,6 +429,7 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
                     targetExternalReferences.sort(Comparator.comparing(TargetExternalReference::getValue));
                 }
             });
+            d.setViewersForFilter(value(new ArrayList<>(viewData.keySet())));
             d.setViewData(viewData);
         }
 
