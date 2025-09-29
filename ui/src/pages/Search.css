@@ -26,10 +26,26 @@
 }
 
 body[profile="tefhealth"] .kgs-search .kgs-search-panel {
-    background-color: #DDF8DC;
+    background-color: #ffffff;
     background-image: url("../../public/static/img/tefhealth_mainheader.png");
 
 }
+
+
+body[profile="tefhealth"] .kgs-search-panel input{
+   border: 1px solid black;
+    border-radius: 5rem;
+}
+
+body[profile="tefhealth"]  .kgs-fieldsFilter, body[profile="tefhealth"] .kgs-filters{
+    border-radius: 1rem;
+}
+
+body[profile="tefhealth"] .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active div{
+    color: white!important;
+    font-weight: 1.2;
+}
+
 
 .kgs-search .kgs-search__panel {
     display: block;

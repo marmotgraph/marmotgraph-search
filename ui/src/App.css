@@ -141,14 +141,20 @@
     --site-margin-desktop: 42px;
 }
 
+
+
 :root body[profile="tefhealth"] {
     --font-stack: "Montserrat", sans-serif;
     --font-stack-bold: "Montserrat", sans-serif;
-    --color-37: #4FD64B;
-    --color-29: #4FD64B;
-    --link-highlight-color: #4FD64B;
-    --color-32: #293984;
-    --color-selected: #4FD64B;
+    --color-37:#44505F;
+    --color-29: #f093f8;
+    --link-highlight-color:  #44505F;
+    --color-32: #44505F;
+    --color-selected: #44505F;
+    --color-selected-shadow: #44505F77;
+    --link-color-1: rgb(153, 0, 204, 0.6);
+    --link-color-active: rgba(153, 0, 204, 1.0);
+    --color-8: rgb(68, 80, 95);
 }
 
 /* TODO: Uncomment if you want dark mode enabled */

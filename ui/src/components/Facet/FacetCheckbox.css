@@ -96,6 +96,13 @@
     text-align: center;
 }
 
+body[profile="tefhealth"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count{
+    color: white;
+}
+body[profile="tefhealth"]  .kgs-facet-checkbox.is-active .fa-check {
+    color: white;
+}
+
 .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count {
     background-color: var(--color-selected);
     font-weight: 900;

@@ -31,10 +31,12 @@
 }
 
 body[profile="tefhealth"] .kgs-instance__header{
-
-  background-color: #DDF8DC;
+  background-color: white;
   background-image: url("../../../../public/static/img/tefhealth_mainheader.png");
+  box-shadow: 0 2px 6px var(--color-selected-shadow);
 }
+
+
 
 .kgs-instance__header_navigation {
   display: flex;

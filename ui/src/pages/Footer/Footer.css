@@ -22,44 +22,48 @@
  */
 
 .service-at {
-  margin-right: 2em;
+    margin-right: 2em;
 }
 
+
+body[profile="tefhealth"] .footer__menu{
+    display: none;
+}
 .site-footer {
     border-top: 1px solid var(--border-color);
     margin-left: auto;
     margin-right: auto;
     padding: 40px var(--site-margin) 0;
     display: grid;
-    grid-template-columns: 1fr min(1400px,100%) 1fr;
+    grid-template-columns: 1fr min(1400px, 100%) 1fr;
     font-size: 14px;
     font-size: var(--font-size-small);
     color: var(--light-text);
-  }
-  
-  .site-footer .footer__header {
+}
+
+.site-footer .footer__header {
     margin-bottom: auto;
-  }
-  
-  .site-footer .footer__header .footer__primary {
+}
+
+.site-footer .footer__header .footer__primary {
     margin-right: auto;
-  }
-  
-  .site-footer .footer__header .footer__primary img{
+}
+
+.site-footer .footer__header .footer__primary img {
     min-width: 220px;
     transform: translateX(-20px);
-  }
-  
-  .site-footer .footer__header .footer__secondary {
+}
+
+.site-footer .footer__header .footer__secondary {
     display: flex;
     padding-bottom: 10px;
-  }
-  
-  .site-footer .footer__header .footer__secondary .powered-by {
+}
+
+.site-footer .footer__header .footer__secondary .powered-by {
     margin-right: auto;
-  }
-  
-  .site-footer .footer__content {
+}
+
+.site-footer .footer__content {
     position: relative;
     display: grid;
     grid-gap: 10px;
@@ -67,197 +71,203 @@
     grid-template-columns: 46% 1fr 1fr 1fr;
     margin-top: 20px;
     margin-bottom: 32px;
-  }
-  
-  .site-footer>* {
+}
+
+.site-footer > * {
     grid-column: 2;
-  }
-  
-  .site-footer .footer__content .footer__menu {
+}
+
+.site-footer .footer__content .footer__menu {
     flex-basis: 33%;
-  }
-  
-  .site-footer .footer__content ul {
+}
+
+.site-footer .footer__content ul {
     list-style: none;
     padding-left: 0;
-  }
-  
-  .site-footer .footer__content + .footer__content ul {
+}
+
+.site-footer .footer__content + .footer__content ul {
     padding-left: 40px;
-  }
-  
-  .site-footer .footer__content ul .title {
+}
+
+.site-footer .footer__content ul .title {
     padding-bottom: 10px;
     text-transform: uppercase;
-  }
-  
-  .site-footer .footer__content .logo {
+}
+
+.site-footer .footer__content .logo {
     color: var(--color-1);
-  }
-  
-  .site-footer .footer__end {
+}
+
+.site-footer .footer__end {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     min-height: 65px;
-  }
-  
-  .site-footer .footer__end .footer__social {
+}
+
+.site-footer .footer__end .footer__social {
     display: flex;
     list-style: none;
     padding: 0;
-  }
-  
-  .site-footer .footer__end .footer__social li {
+}
+
+.site-footer .footer__end .footer__social li {
     margin: 0 8px;
-  }
-  
-  .site-footer .footer__end .footer__social li a:hover {
+}
+
+.site-footer .footer__end .footer__social li a:hover {
     color: var(--color-10);
-  }
-  
-  .footer__copyright_addition{
+}
+
+.footer__copyright_addition {
     font-size: 0.9em;
-  }
+}
 
-  .eu-logo{
-      display:inline-block;
-      height: 60px;
-      margin-top: 5px;
-      position: relative;
-  }
-  
-  .eu-logo img{
-      height: 100%;
-  }
-  
-  .powered-by {
-      display:inline-block;
-      font-size: 0.4em;
-      font-weight: bold;
-      margin-right: 1.5em;
-      word-wrap: none;
-  }
-  
-  .powered-by img{
-      height: 35px;
-      width: auto;
-  }
-  
-  .powered-by a, .powered-by a:hover{
-      margin-right: 60px;
-      color: var(--color-1);
-      text-decoration: none;
-  }
+.eu-logo {
+    display: inline-block;
+    height: 60px;
+    margin-top: 5px;
+    position: relative;
+}
 
-  .sprite-icons {
+.eu-logo img {
+    height: 100%;
+}
+
+.powered-by {
+    display: inline-block;
+    font-size: 0.4em;
+    font-weight: bold;
+    margin-right: 1.5em;
+    word-wrap: none;
+}
+
+.powered-by img {
+    height: 35px;
+    width: auto;
+}
+
+.powered-by a, .powered-by a:hover {
+    margin-right: 60px;
+    color: var(--color-1);
+    text-decoration: none;
+}
+
+.sprite-icons {
     width: 40px;
     height: 40px;
-  }
-  
-  @media (max-width: 670px) {
+}
+
+@media (max-width: 670px) {
     .site-footer {
-      width: 100%;
-      max-width: 670px;
-      margin-left: 0;
+        width: 100%;
+        max-width: 670px;
+        margin-left: 0;
     }
-  
+
     .site-footer .footer__content {
-      margin-bottom: 50px;
-      max-width: 670px;
+        margin-bottom: 50px;
+        max-width: 670px;
     }
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .site-footer {
-      height: auto;
+        height: auto;
     }
-  
+
     .site-footer .footer__content {
-      grid-template-columns: 1fr;
-      grid-template-areas:
+        grid-template-columns: 1fr;
+        grid-template-areas:
         "menu2"
         "menu3"  
         "menu1"
         "hbpEu";
     }
-  
+
     .site-footer .footer__header .footer__secondary {
-      grid-area: hbpEu;
+        grid-area: hbpEu;
     }
-  
+
     .site-footer .footer__content .footer__menu-1 {
-      grid-area: menu1;
+        grid-area: menu1;
     }
-    
+
     .site-footer .footer__content .footer__menu-2 {
-      grid-area: menu2;
+        grid-area: menu2;
     }
-    
+
     .site-footer .footer__content .footer__menu-3 {
-      grid-area: menu3;
+        grid-area: menu3;
     }
-  
+
     .site-footer .footer__end {
-      justify-content: center;
-      flex-flow: column-reverse;
-      line-height: 50px;
+        justify-content: center;
+        flex-flow: column-reverse;
+        line-height: 50px;
     }
 
     .commit {
-      display: none;
+        display: none;
     }
-  }
+}
 
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
     .site-footer .footer__header {
-      display: flex;
+        display: flex;
     }
-  
+
     .site-footer .footer__header .footer__secondary {
-      display: inline-block;
-      padding-bottom: 0;
+        display: inline-block;
+        padding-bottom: 0;
     }
-  
+
     .site-footer .footer__header .footer__secondary .powered-by {
-      margin-right: 0;
+        margin-right: 0;
     }
-  
+
     .site-footer .footer__content .footer__menu {
-      flex-basis: 20%;
+        flex-basis: 20%;
     }
-  
+
     #rootFooter {
-      position: relative;
-      margin-top: 0;
-      margin-bottom: 15px;
+        position: relative;
+        margin-top: 0;
+        margin-bottom: 15px;
     }
-  
-  }
-  
-  .logo {
-    display: inline-block; 
+
+}
+
+.logo {
+    display: inline-block;
     margin: -25px auto 0 0;
     color: var(--color-1);
     min-width: 200px;
-  }
+}
 
-  .logo img {
+
+body[profile="tefhealth"] .logo img{
+    height: 3em;
+
+}
+
+.logo img {
     display: inline-block;
-  }
-  
-  .logo svg {
+}
+
+.logo svg {
     height: 100%;
     min-width: 160px;
-  }
-  
-  .hbp-logo {
+}
+
+.hbp-logo {
     position: relative;
     display: inline-block;
-  }
-  
-  body[theme="dark"] .eu-logo:after {
+}
+
+body[theme="dark"] .eu-logo:after {
     content: "Co-funded by\A the European Union";
     display: inline-block;
     font-size: 9px;
@@ -271,9 +281,9 @@
     line-height: 1.4em;
     letter-spacing: 0.019em;
     text-align: right;
-  }
-  
-  body[theme="dark"] .hbp-logo:after {
+}
+
+body[theme="dark"] .hbp-logo:after {
     content: "Human Brain Project";
     display: inline-block;
     background: var(--background-color-2);
@@ -287,4 +297,4 @@
     text-align: right;
     font: initial;
     font-size: 15px;
-  }
+}

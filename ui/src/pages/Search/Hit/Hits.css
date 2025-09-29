@@ -26,6 +26,10 @@
     margin: 0 -20px;
 }
 
+body[profile="tefhealth"] .kgs-hit-button {
+    border-radius: 1rem;
+}
+
 @media (min-width: 576px) {
     .kgs-hits {
         margin: 0;

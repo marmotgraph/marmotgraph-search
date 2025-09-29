@@ -28,8 +28,8 @@ const profiles = {
         "copyrightAddition": "The TEF-Health Service Catalogue serves solely as an intermediary platform, where all service details and prices are indicative only and must be finalized directly between the Service Provider and the Customer. The information on this site/platform is provided for general purposes only and is non-binding, tentative, and subject to change. The TEF-Health consortium partners disclaim all liability for errors, omissions, or outdated information. Contract partners must independently verify all information before entering into agreements.",
         "copyrightSince": "2024",
         "searchExample": "(e.g. imaging or operating room)",
-        "logo": "tefhealth_logo.png",
-        "logo_dark": "tefhealth_logo.png",
+        "logo": "tefhealth_logo.svg",
+        "logo_dark": "tefhealth_logo.svg",
         "login": false,
     }
 }
