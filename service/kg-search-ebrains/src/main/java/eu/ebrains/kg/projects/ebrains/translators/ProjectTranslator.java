@@ -86,6 +86,9 @@ public class ProjectTranslator extends EBRAINSTranslator<ProjectV3, Project, Pro
         p.setSoftware(refExtendedVersion(project.getSoftware(), true));
         p.setMetaDataModels(refExtendedVersion(project.getMetaDataModels(), true));
         p.setTitle(value(project.getTitle()));
+        p.setShortName(value(project.getShortName()));
+        p.setCoordinator(ref(project.getCoordinator()));
+        p.setHomepage(link(project.getHomepage()));
         if(!CollectionUtils.isEmpty(project.getPublications())) {
             p.setPublications(value(project.getPublications().stream()
                     .map(rp -> EBRAINSTranslatorUtils.getFormattedDigitalIdentifier(translatorUtils.getDoiCitationFormatter(), rp.getIdentifier(), rp.resolvedType())).filter(Objects::nonNull).collect(Collectors.toList())));

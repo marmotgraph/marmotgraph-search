@@ -54,10 +54,10 @@ public class QueryController {
     }
 
     @Async
-    public void uploadQueries(){
+    public void uploadQueries() {
         logger.info("Now uploading queries for search...");
         translatorRegistry.getTranslators().parallelStream().map(TranslatorModel::getTranslator).filter(Objects::nonNull).forEach(t -> {
-            try{
+            try {
                 for (String semanticType : t.semanticTypes()) {
                     String filename = t.getQueryFileName(semanticType);
                     String payload = loadQuery(filename);
@@ -67,8 +67,7 @@ public class QueryController {
                     properties.put("type", semanticType);
                     kgv3ServiceClient.uploadQuery(queryId, StringSubstitutor.replace(payload, properties));
                 }
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });

@@ -51,47 +51,47 @@ import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 @Component
 public class KGServiceClient {
     private static final String BookmarkedInstancesOfParametrisedTypeQuery = """
-            {
-             "@context": {
-               "@vocab": "https://core.kg.ebrains.eu/vocab/query/",
-               "query": "https://schema.hbp.eu/myQuery/",
-               "propertyName": {
-                 "@id": "propertyName",
-                 "@type": "@id"
-               },
-               "path": {
-                 "@id": "path",
-                 "@type": "@id"
-               }
-             },
-             "meta": {
-               "name": "BookmarkOf",
-               "responseVocab": "https://schema.hbp.eu/myQuery/",
-               "type": "https://core.kg.ebrains.eu/vocab/type/Bookmark"
-             },
-             "structure": [
-               {
-                 "propertyName": "query:bookmarkOfId",
-                 "singleValue": "FIRST",
-                 "path": [
-                   "https://core.kg.ebrains.eu/vocab/bookmarkOf",
-                   "@id"
-                 ]
-               },
-               {
-                 "propertyName": "query:BookmarkOfType",
-                 "singleValue": "FIRST",
-                 "filter": {
-                   "op": "EQUALS",
-                   "parameter": "type"
-                 },
-                 "path": [
-                   "https://core.kg.ebrains.eu/vocab/bookmarkOf",
-                   "@type"
-                 ]
-               }
-             ]
-           }""";
+             {
+              "@context": {
+                "@vocab": "https://core.kg.ebrains.eu/vocab/query/",
+                "query": "https://schema.hbp.eu/myQuery/",
+                "propertyName": {
+                  "@id": "propertyName",
+                  "@type": "@id"
+                },
+                "path": {
+                  "@id": "path",
+                  "@type": "@id"
+                }
+              },
+              "meta": {
+                "name": "BookmarkOf",
+                "responseVocab": "https://schema.hbp.eu/myQuery/",
+                "type": "https://core.kg.ebrains.eu/vocab/type/Bookmark"
+              },
+              "structure": [
+                {
+                  "propertyName": "query:bookmarkOfId",
+                  "singleValue": "FIRST",
+                  "path": [
+                    "https://core.kg.ebrains.eu/vocab/bookmarkOf",
+                    "@id"
+                  ]
+                },
+                {
+                  "propertyName": "query:BookmarkOfType",
+                  "singleValue": "FIRST",
+                  "filter": {
+                    "op": "EQUALS",
+                    "parameter": "type"
+                  },
+                  "path": [
+                    "https://core.kg.ebrains.eu/vocab/bookmarkOf",
+                    "@type"
+                  ]
+                }
+              ]
+            }""";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -187,7 +187,7 @@ public class KGServiceClient {
 
     public void deleteBookmark(UUID bookmarkId) {
         //unrelease
-        String releaseUrl = String.format("%s/instances/%s/release", kgCoreEndpoint,  bookmarkId);
+        String releaseUrl = String.format("%s/instances/%s/release", kgCoreEndpoint, bookmarkId);
         userWebClient.delete()
                 .uri(releaseUrl)
                 .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
@@ -247,7 +247,7 @@ public class KGServiceClient {
             String encodedType = URLEncoder.encode(type, StandardCharsets.UTF_8.toString());
             String restrictToSpaces = "myspace,common,dataset,model,metadatamodel,software,webservice";
             String url = String.format("%s/queries?size=1000&from=0&stage=%s&&restrictToSpaces=%s&type=%s", kgCoreEndpoint, DataStage.RELEASED, restrictToSpaces, encodedType);
-            String payload =  BookmarkedInstancesOfParametrisedTypeQuery;
+            String payload = BookmarkedInstancesOfParametrisedTypeQuery;
 
             final Map<?, ?> result = userWebClient.post()
                     .uri(url)
@@ -323,13 +323,61 @@ public class KGServiceClient {
 
     public void uploadQuery(String queryId, String payload) {
         String url = String.format("%s/queries/%s?space=%s", kgCoreEndpoint, queryId, serviceClientId);
-        serviceAccountWebClient.put()
-                .uri(url)
-                .body(BodyInserters.fromValue(payload))
-                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        try {
+            serviceAccountWebClient.put()
+                    .uri(url)
+                    .body(BodyInserters.fromValue(payload))
+                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (WebClientResponseException.Conflict c) {
+            // The query is probably in a wrong space -> let's move it first
+
+            Map releaseStatus = serviceAccountWebClient.get()
+                    .uri(String.format("%s/instances/%s/release/status?releaseTreeScope=TOP_INSTANCE_ONLY", kgCoreEndpoint, queryId))
+                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            boolean released = false;
+            if (releaseStatus != null && releaseStatus.get("data") != null && !releaseStatus.get("data").equals("UNRELEASED")) {
+                released = true;
+            }
+            if (released) {
+                //Unrelease first
+                serviceAccountWebClient.delete()
+                        .uri(String.format("%s/instances/%s/release", kgCoreEndpoint, queryId))
+                        .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block();
+            }
+            // Move
+            serviceAccountWebClient.put()
+                    .uri(String.format("%s/instances/%s/spaces/%s", kgCoreEndpoint, queryId, serviceClientId))
+                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+            if (released) {
+                //Rerelease
+                serviceAccountWebClient.put()
+                        .uri(String.format("%s/instances/%s/release", kgCoreEndpoint, queryId))
+                        .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block();
+            }
+            //Update
+            serviceAccountWebClient.put()
+                    .uri(url)
+                    .body(BodyInserters.fromValue(payload))
+                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
     }
 
     private <T> T executeCallForInstance(Class<T> clazz, String url, boolean asServiceAccount) {

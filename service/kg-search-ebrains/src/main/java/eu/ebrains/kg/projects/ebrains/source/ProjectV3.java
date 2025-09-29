@@ -24,6 +24,7 @@
 
 package eu.ebrains.kg.projects.ebrains.source;
 
+import eu.ebrains.kg.common.model.source.FullNameRef;
 import eu.ebrains.kg.common.model.source.RelatedPublication;
 import eu.ebrains.kg.common.model.source.SourceInstance;
 import eu.ebrains.kg.projects.ebrains.source.commons.ExtendedFullNameRefForResearchProductVersion;
@@ -38,6 +39,9 @@ public class ProjectV3 extends SourceInstance {
     private String title;
     private String description;
     private List<RelatedPublication> publications;
+    private List<FullNameRef> coordinator;
+    private String homepage;
+    private String shortName;
     private List<ExtendedFullNameRefForResearchProductVersion> datasets;
     private List<ExtendedFullNameRefForResearchProductVersion> models;
     private List<ExtendedFullNameRefForResearchProductVersion> software;

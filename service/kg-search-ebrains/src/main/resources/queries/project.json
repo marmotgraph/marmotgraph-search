@@ -419,6 +419,31 @@
     {
       "propertyName": "query:id",
       "path": "@id"
+    },
+
+    {
+      "propertyName": "query:homepage",
+      "path": "https://openminds.ebrains.eu/vocab/homepage"
+    },
+
+    {
+      "propertyName": "query:shortName",
+      "path": "https://openminds.ebrains.eu/vocab/shortName"
+    },
+    {
+      "propertyName": "query:coordinator",
+      "path": "https://openminds.ebrains.eu/vocab/coordinator",
+      "ensureOrder": true,
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/fullName"
+        }
+      ]
     }
   ]
 }

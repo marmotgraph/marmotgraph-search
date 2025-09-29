@@ -26,6 +26,7 @@ const FilePreview = ({ url, title }) => {
 
   const [tryLoading, setTryLoading] = useState(false);
   const [tryLoadSuccess, setTryLoadSuccess] = useState(false);
+  const [markdown, setMarkdown] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -34,7 +35,12 @@ const FilePreview = ({ url, title }) => {
   const tryLoad = async () => {
     setTryLoading(true);
     try {
-      await fetch(url);
+      let response = await fetch(url);
+      if(response.headers.get("content-type") === "text/markdown"){
+        const converter = new showdown.Converter();
+        setMarkdown(DOMPurify.sanitize(converter.makeHtml(await response.text())));
+        setLoading(false);
+      }
       setTryLoadSuccess(true);
     } catch (e) {
       setHasError(true);

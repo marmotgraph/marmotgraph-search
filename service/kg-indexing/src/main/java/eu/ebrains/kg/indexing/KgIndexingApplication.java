@@ -40,7 +40,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @SpringBootApplication
 @EnableAsync
 @EnableWebSecurity
-@EnableMethodSecurity
 @ComponentScan(basePackages = {"eu.ebrains.kg.common", "eu.ebrains.kg.indexing", "eu.ebrains.kg.projects"})
 public class KgIndexingApplication {
 

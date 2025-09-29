@@ -62,11 +62,21 @@ public class Project implements TargetInstance {
     @FieldInfo(label = "Name", boost = 20)
     private Value<String> title;
 
+    @FieldInfo(label = "Short name")
+    private Value<String> shortName;
+
     @FieldInfo(layout="header")
     private Value<String> editorId;
 
+    @FieldInfo(label = "Homepage")
+    private TargetExternalReference homepage;
+
+    @FieldInfo(label = "Coordinator", separator = "; ", type = FieldInfo.Type.TEXT)
+    private List<TargetInternalReference> coordinator;
+
     @FieldInfo(label = "Description", fieldType = FieldInfo.FieldType.MARKDOWN, boost =  7.5f, labelHidden = true, overview = true)
     private Value<String> description;
+
 
     @FieldInfo(label = "Datasets", layout = "Datasets", labelHidden = true)
     private List<TargetInternalReference> dataset;

@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -98,15 +99,20 @@ public class OauthClient {
 
     @Bean
     @Qualifier("asUser")
-    WebClient userWebClient(HttpServletRequest request) {
-        return WebClient.builder().exchangeStrategies(exchangeStrategies).defaultRequest(r -> {
-            /**
-             * We just reuse the original authorization header for the given request and we
-             * explicitly don't want a client authorization to make the mechanism work with private
-             * spaces too.
-             */
-            r.header(Constants.AUTHORIZATION, request.getHeader(Constants.AUTHORIZATION));
-        }).build();
+    WebClient userWebClient(HttpServletRequest request, @Value("${developmentMode:false}") boolean developmentMode, @Qualifier("asServiceAccount") WebClient serviceAccountWebClient) {
+        if(!developmentMode) {
+            return WebClient.builder().exchangeStrategies(exchangeStrategies).defaultRequest(r -> {
+                /**
+                 * We just reuse the original authorization header for the given request and we
+                 * explicitly don't want a client authorization to make the mechanism work with private
+                 * spaces too.
+                 */
+                r.header(Constants.AUTHORIZATION, request.getHeader(Constants.AUTHORIZATION));
+            }).build();
+        }
+        else{
+            return serviceAccountWebClient;
+        }
     }
 
 }
