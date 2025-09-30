@@ -27,6 +27,7 @@ package eu.ebrains.kg.projects.ebrains.translators;
 
 import eu.ebrains.kg.common.model.DataStage;
 import eu.ebrains.kg.common.model.source.ResultsOfKG;
+import eu.ebrains.kg.common.model.target.TargetExternalReference;
 import eu.ebrains.kg.common.model.target.Value;
 import eu.ebrains.kg.common.utils.IdUtils;
 import eu.ebrains.kg.common.utils.TranslationException;
@@ -94,7 +95,9 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
         target.setPublishers(EBRAINSTranslatorUtils.refPerson(source.getPublisher()));
         target.setLearningOutcome(value(source.getLearningOutcome()));
         target.setPrerequisites(value(source.getPrerequisite()));
-
+        if(source.getIRI()!=null){
+            target.setUrl(new TargetExternalReference(source.getIRI(), source.getIRI()));
+        }
         if(!CollectionUtils.isEmpty(source.getPublications())){
             target.setPublications(source.getPublications().stream().map(p -> EBRAINSTranslatorUtils.getFormattedDigitalIdentifier(translatorUtils.getDoiCitationFormatter(), p.getIdentifier(), p.resolvedType())).filter(Objects::nonNull).map(Value::new).collect(Collectors.toList()));
         }

@@ -121,15 +121,17 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
         c.setIdentifier(identifiers.stream().distinct().collect(Collectors.toList()));
         c.setTitle(value(getTitle(personOrOrganization)));
         if (CollectionUtils.isEmpty(personOrOrganization.getCustodianOfDataset()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getCustodianOfSoftware()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getCustodianOfMetaDataModel())&&
-                        CollectionUtils.isEmpty(personOrOrganization.getCustodianOfModel()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getCustodianOfWebService()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getDatasetContributions()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getModelContributions()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getSoftwareContributions()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getWebServiceContributions()) &&
-                        CollectionUtils.isEmpty(personOrOrganization.getMetaDataModelContributions())
+            CollectionUtils.isEmpty(personOrOrganization.getCustodianOfSoftware()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getCustodianOfMetaDataModel()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getCustodianOfModel()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getCustodianOfWebService()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getCustodianOfLearningResource()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getDatasetContributions()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getModelContributions()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getSoftwareContributions()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getWebServiceContributions()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getMetaDataModelContributions()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getLearningResourceContributions())
         ) {
             //No contributions to anything - we don't index it...
             return null;
@@ -139,12 +141,14 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
         c.setCustodianOfSoftware(getReferences(personOrOrganization.getCustodianOfSoftware()));
         c.setCustodianOfMetaDataModels(getReferences(personOrOrganization.getCustodianOfMetaDataModel()));
         c.setCustodianOfWebService(getReferences(personOrOrganization.getCustodianOfWebService()));
+        c.setLearningResourceContribution(ref(personOrOrganization.getCustodianOfLearningResource()));
 
         c.setDatasetContributions(getReferences(personOrOrganization.getDatasetContributions()));
         c.setModelContributions(getReferences(personOrOrganization.getModelContributions()));
         c.setSoftwareContributions(getReferences(personOrOrganization.getSoftwareContributions()));
         c.setMetaDataModelContributions(getReferences(personOrOrganization.getMetaDataModelContributions()));
         c.setWebServiceContributions(getReferences(personOrOrganization.getWebServiceContributions()));
+        c.setLearningResourceContribution(ref(personOrOrganization.getLearningResourceContributions()));
 
         Map<String, Contributor.Citation> datasetCitations = new HashMap<>();
         addCitations(datasetCitations, personOrOrganization.getCustodianOfDataset());
@@ -186,11 +190,11 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
     private void addCitations(Map<String, Contributor.Citation> citations, List<ExtendedFullNameRefForResearchProductVersion> references) {
         if (!CollectionUtils.isEmpty(references)) {
             references.forEach(ref -> {
-                if(CollectionUtils.isEmpty(ref.getResearchProductVersions()) || ref.getResearchProductVersions().size()>1) {
+                if (CollectionUtils.isEmpty(ref.getResearchProductVersions()) || ref.getResearchProductVersions().size() > 1) {
                     addCitation(citations, ref);
                 }
                 //If the reference has research product versions (meaning it's a conceptual structure), we add a citation for all of those sub elements which do not have individual contributors set (since they are supposed to fall back on the conceptional contributors list)
-                if(!CollectionUtils.isEmpty(ref.getResearchProductVersions())){
+                if (!CollectionUtils.isEmpty(ref.getResearchProductVersions())) {
                     ref.getResearchProductVersions().stream().filter(r -> CollectionUtils.isEmpty(r.getContributors())).forEach(r -> addCitation(citations, r));
                 }
             });
@@ -221,31 +225,30 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
     }
 
     private String getTitle(PersonOrOrganizationV3 personOrOrganization) {
-        if(personOrOrganization.getFullName() != null) {
+        if (personOrOrganization.getFullName() != null) {
             return personOrOrganization.getFullName();
         }
-        if(personOrOrganization.getGivenName()==null) {
+        if (personOrOrganization.getGivenName() == null) {
             return personOrOrganization.getFamilyName();
         }
         return String.format("%s, %s", personOrOrganization.getFamilyName(), personOrOrganization.getGivenName());
     }
 
-    private List<TargetInternalReference> getReferences(List<ExtendedFullNameRefForResearchProductVersion> references){
-        if(references == null){
+    private List<TargetInternalReference> getReferences(List<ExtendedFullNameRefForResearchProductVersion> references) {
+        if (references == null) {
             return null;
         }
         final List<TargetInternalReference> result = references.stream().map(r -> {
             //Add all children elements if it has a research product version - but only if the underlying research product version doesn't provide its own contributor list...
             List<TargetInternalReference> refs;
-            if(!CollectionUtils.isEmpty(r.getResearchProductVersions())) {
+            if (!CollectionUtils.isEmpty(r.getResearchProductVersions())) {
                 final List<FullNameRefForResearchProductVersion> rpvsWithInheritedContributorList = r.getResearchProductVersions().stream().filter(rpv -> CollectionUtils.isEmpty(rpv.getContributors())).collect(Collectors.toList());
                 refs = refVersion(rpvsWithInheritedContributorList, true);
-                if(r.getResearchProductVersions().size()>1 && CollectionUtils.isEmpty(rpvsWithInheritedContributorList)){
+                if (r.getResearchProductVersions().size() > 1 && CollectionUtils.isEmpty(rpvsWithInheritedContributorList)) {
                     //The contributor is only contributor of the conceptual structure -> we therefore provide a reference to the general one
                     refs = Collections.singletonList(ref(r));
                 }
-            }
-            else{
+            } else {
                 refs = Collections.singletonList(ref(r));
             }
             return refs;

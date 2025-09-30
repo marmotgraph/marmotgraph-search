@@ -96,6 +96,9 @@ public class Contributor implements TargetInstance {
     @FieldInfo(type = FieldInfo.Type.TEXT, layout = "(Meta)Data model contributions", labelHidden = true, useForSuggestion = true)
     private List<TargetInternalReference> metaDataModelContributions;
 
+    @FieldInfo(type = FieldInfo.Type.TEXT, layout = "Learning resource contributions", labelHidden = true, useForSuggestion = true)
+    private List<TargetInternalReference> learningResourceContribution;
+
     @FieldInfo(label = "EBRAINS KG Datasets citations", layout = "Citations", fieldType = FieldInfo.FieldType.CITATION)
     private List<Citation> datasetCitations;
 

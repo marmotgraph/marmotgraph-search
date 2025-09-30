@@ -24,6 +24,7 @@
 
 package eu.ebrains.kg.projects.ebrains.source;
 
+import eu.ebrains.kg.common.model.source.FullNameRef;
 import eu.ebrains.kg.common.model.source.SourceInstance;
 import eu.ebrains.kg.projects.ebrains.source.commons.ExtendedFullNameRefForResearchProductVersion;
 import lombok.Getter;
@@ -48,9 +49,11 @@ public class PersonOrOrganizationV3 extends SourceInstance {
     private List<ExtendedFullNameRefForResearchProductVersion> custodianOfDataset;
     private List<ExtendedFullNameRefForResearchProductVersion> custodianOfSoftware;
     private List<ExtendedFullNameRefForResearchProductVersion> custodianOfWebService;
+    private List<FullNameRef> custodianOfLearningResource;
     private List<ExtendedFullNameRefForResearchProductVersion> modelContributions;
     private List<ExtendedFullNameRefForResearchProductVersion> metaDataModelContributions;
     private List<ExtendedFullNameRefForResearchProductVersion> datasetContributions;
     private List<ExtendedFullNameRefForResearchProductVersion> softwareContributions;
     private List<ExtendedFullNameRefForResearchProductVersion> webServiceContributions;
+    private List<FullNameRef> learningResourceContributions;
 }

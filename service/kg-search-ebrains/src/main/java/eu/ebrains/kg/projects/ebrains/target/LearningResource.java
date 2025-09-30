@@ -34,7 +34,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@MetaInfo(name = "Learning Resource", searchable = true)
+@MetaInfo(name = "Learning Resource")
 public class LearningResource implements TargetInstance {
 
     @JsonIgnore
@@ -67,6 +67,9 @@ public class LearningResource implements TargetInstance {
 
     @FieldInfo(label = "About")
     private List<TargetInternalReference> about;
+
+    @FieldInfo(label = "URL")
+    private TargetExternalReference url;
 
     @FieldInfo(label = "Topic")
     private Value<String> topic;

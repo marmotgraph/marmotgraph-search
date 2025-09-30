@@ -510,6 +510,46 @@
           ]
         }
       ]
+    },
+    {
+      "propertyName": "query:custodianOfLearningResource",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/custodian",
+        "reverse": true,
+        "typeFilter": {
+          "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+        }
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/name"
+        }
+      ]
+    },
+    {
+      "propertyName": "query:learningResourceContribution",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/author",
+        "reverse": true,
+        "typeFilter": {
+          "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+        }
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/name"
+        }
+      ]
     }
   ]
 }
