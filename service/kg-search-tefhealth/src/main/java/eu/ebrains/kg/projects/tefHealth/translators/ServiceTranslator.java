@@ -38,7 +38,6 @@ import eu.ebrains.kg.projects.tefHealth.source.models.NameRef;
 import eu.ebrains.kg.projects.tefHealth.target.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -99,7 +98,7 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         }
         if (tefHealthServiceV3.getPricing() != null) {
 //            t.setHasPriceExample(true);
-            t.setPricing(value(pricing(tefHealthServiceV3.getPricing())));
+            t.setPricing(value(pricing(tefHealthServiceV3.getPricing(), tefHealthServiceV3.getUUID())));
             t.setPricingDetails(value(tefHealthServiceV3.getPricing().getPricingDetails()));
         }
         if(!CollectionUtils.isEmpty(tefHealthServiceV3.getCalls())){
@@ -130,12 +129,18 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         return t;
     }
 
-    private String pricing(ServiceFromKG.PricingInformation pricingInformation) {
+    private String pricing(ServiceFromKG.PricingInformation pricingInformation, String uuid) {
         String template = """
                 Pricing can vary.
                           
                 **Non-binding example:**
-                %s""";
+                %s
+                
+                <div style="display: flex">
+                <a href=\"https://tef.charite.de/portal/application/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff; margin-right: 2em;\" target=\"_blank\">Apply for Discounted Service</a>
+                <a href=\"https://tef.charite.de/portal/service/request/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff;\" target=\"_blank\">Request Service for Full Price</a>
+                </div>
+                """;
         String pricing = "";
         if (pricingInformation.getFullPriceInEuro() != null) {
             pricing += String.format("%s%s %s\n", pricingInformation.getReducedPriceInEuro() != null ? "*Full price:* " : "", pricingInformation.getFullPriceInEuro(), Objects.toString(pricingInformation.getBilling(), ""));
@@ -144,7 +149,7 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         if (pricingInformation.getReducedPriceInEuro() != null) {
             pricing += String.format("*Reduced price:* %s %s", pricingInformation.getReducedPriceInEuro(), Objects.toString(pricingInformation.getBilling(), "")).trim();
         }
-        return String.format(template, pricing);
+        return String.format(template, pricing, uuid, uuid);
 
 
     }

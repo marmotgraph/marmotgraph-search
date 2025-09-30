@@ -112,6 +112,7 @@ public class Service implements TargetInstance, HasBadges{
     @FieldInfo(layout = "Pricing", fieldType = FieldInfo.FieldType.MARKDOWN)
     private Value<String> pricingDetails;
 
+
     @Override
     public boolean isSearchableInstance() {
         return true;
