@@ -166,11 +166,11 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
 
 
     //Start filter only
+    @FieldInfo(label = "Services", facet = FieldInfo.Facet.LIST, visible = false, type = FieldInfo.Type.TEXT, isFilterableFacet = true)
+    private List<Value<String>> viewersForFilter;
+
     @FieldInfo(label = "Species", facet = FieldInfo.Facet.LIST, visible = false, type = FieldInfo.Type.TEXT, isFilterableFacet = true)
     private List<Value<String>> speciesFilter;
-
-    @FieldInfo(label = "Online viewers", facet = FieldInfo.Facet.LIST, visible = false, type = FieldInfo.Type.TEXT, isFilterableFacet = true)
-    private List<Value<String>> viewersForFilter;
 
     @FieldInfo(label = "Experimental approach", type = FieldInfo.Type.TEXT, visible = false, facet = FieldInfo.Facet.LIST, isFilterableFacet = true, useForSuggestion = true)
     private List<Value<String>> experimentalApproachForFilter;
