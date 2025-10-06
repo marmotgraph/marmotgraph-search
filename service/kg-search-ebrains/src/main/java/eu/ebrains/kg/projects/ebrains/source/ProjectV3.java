@@ -28,6 +28,7 @@ import eu.ebrains.kg.common.model.source.FullNameRef;
 import eu.ebrains.kg.common.model.source.RelatedPublication;
 import eu.ebrains.kg.common.model.source.SourceInstance;
 import eu.ebrains.kg.projects.ebrains.source.commons.ExtendedFullNameRefForResearchProductVersion;
+import eu.ebrains.kg.projects.ebrains.source.commons.PersonOrOrganizationRef;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +40,7 @@ public class ProjectV3 extends SourceInstance {
     private String title;
     private String description;
     private List<RelatedPublication> publications;
-    private List<FullNameRef> coordinator;
+    private List<PersonOrOrganizationRef> coordinator;
     private String homepage;
     private String shortName;
     private List<ExtendedFullNameRefForResearchProductVersion> datasets;

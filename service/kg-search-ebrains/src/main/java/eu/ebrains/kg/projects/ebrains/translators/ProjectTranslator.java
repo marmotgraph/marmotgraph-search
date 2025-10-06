@@ -26,6 +26,7 @@ package eu.ebrains.kg.projects.ebrains.translators;
 
 import eu.ebrains.kg.common.model.DataStage;
 import eu.ebrains.kg.common.model.source.ResultsOfKG;
+import eu.ebrains.kg.common.model.target.TargetInternalReference;
 import eu.ebrains.kg.common.model.target.Value;
 import eu.ebrains.kg.common.utils.IdUtils;
 import eu.ebrains.kg.common.utils.TranslationException;
@@ -87,7 +88,13 @@ public class ProjectTranslator extends EBRAINSTranslator<ProjectV3, Project, Pro
         p.setMetaDataModels(refExtendedVersion(project.getMetaDataModels(), true));
         p.setTitle(value(project.getTitle()));
         p.setShortName(value(project.getShortName()));
-        p.setCoordinator(ref(project.getCoordinator()));
+        if(!CollectionUtils.isEmpty(project.getCoordinator())) {
+            p.setCoordinator(project.getCoordinator().stream()
+                    .map(a -> new TargetInternalReference(
+                            IdUtils.getUUID(a.getId()),
+                            EBRAINSTranslatorUtils.getFullName(a.getFullName(), a.getFamilyName(), a.getGivenName())
+                    )).collect(Collectors.toList()));
+        }
         p.setHomepage(link(project.getHomepage()));
         if(!CollectionUtils.isEmpty(project.getPublications())) {
             p.setPublications(value(project.getPublications().stream()
