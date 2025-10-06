@@ -920,6 +920,39 @@
       ]
     },
     {
+      "propertyName": "query:coordinatorOfProject",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/coordinator",
+        "reverse": true,
+        "typeFilter": [
+          {
+            "@id": "https://openminds.ebrains.eu/core/Project"
+          }
+        ]
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/fullName"
+        },
+        {
+          "propertyName": "query:fallbackName",
+          "path": [
+            {
+              "@id": "https://openminds.ebrains.eu/vocab/hasVersion",
+              "reverse": true
+            },
+            "https://openminds.ebrains.eu/vocab/fullName"
+          ],
+          "singleValue": "FIRST"
+        }
+      ]
+    },
+    {
       "propertyName": "query:custodianOfWebService",
       "path": {
         "@id": "https://openminds.ebrains.eu/vocab/custodian",
@@ -1276,6 +1309,46 @@
         {
           "propertyName": "query:howToCite",
           "path": "https://openminds.ebrains.eu/vocab/howToCite"
+        }
+      ]
+    },
+    {
+      "propertyName": "query:custodianOfLearningResource",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/custodian",
+        "reverse": true,
+        "typeFilter": {
+          "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+        }
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/name"
+        }
+      ]
+    },
+    {
+      "propertyName": "query:learningResourceContribution",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/author",
+        "reverse": true,
+        "typeFilter": {
+          "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+        }
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/name"
         }
       ]
     }

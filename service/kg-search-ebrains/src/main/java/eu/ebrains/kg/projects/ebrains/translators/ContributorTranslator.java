@@ -126,6 +126,7 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
             CollectionUtils.isEmpty(personOrOrganization.getCustodianOfModel()) &&
             CollectionUtils.isEmpty(personOrOrganization.getCustodianOfWebService()) &&
             CollectionUtils.isEmpty(personOrOrganization.getCustodianOfLearningResource()) &&
+            CollectionUtils.isEmpty(personOrOrganization.getCoordinatorOfProject()) &&
             CollectionUtils.isEmpty(personOrOrganization.getDatasetContributions()) &&
             CollectionUtils.isEmpty(personOrOrganization.getModelContributions()) &&
             CollectionUtils.isEmpty(personOrOrganization.getSoftwareContributions()) &&
@@ -142,6 +143,7 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
         c.setCustodianOfMetaDataModels(getReferences(personOrOrganization.getCustodianOfMetaDataModel()));
         c.setCustodianOfWebService(getReferences(personOrOrganization.getCustodianOfWebService()));
         c.setLearningResourceContribution(ref(personOrOrganization.getCustodianOfLearningResource()));
+        c.setCoordinatorOfProject(ref(personOrOrganization.getCoordinatorOfProject()));
 
         c.setDatasetContributions(getReferences(personOrOrganization.getDatasetContributions()));
         c.setModelContributions(getReferences(personOrOrganization.getModelContributions()));

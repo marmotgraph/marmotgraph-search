@@ -81,6 +81,9 @@ public class Contributor implements TargetInstance {
     @FieldInfo(label = "Custodian of (meta)data models", layout = "Custodian of (meta)data models", labelHidden = true, useForSuggestion = true)
     private List<TargetInternalReference> custodianOfMetaDataModels;
 
+    @FieldInfo(label = "Coordinator of project", layout = "Coordinator of project", labelHidden = true, useForSuggestion = true)
+    private List<TargetInternalReference> coordinatorOfProject;
+
     @FieldInfo(type = FieldInfo.Type.TEXT, layout = "Dataset contributions", labelHidden = true, useForSuggestion = true)
     private List<TargetInternalReference> datasetContributions;
 

@@ -550,6 +550,39 @@
           "path": "https://openminds.ebrains.eu/vocab/name"
         }
       ]
+    },
+    {
+      "propertyName": "query:coordinatorOfProject",
+      "path": {
+        "@id": "https://openminds.ebrains.eu/vocab/coordinator",
+        "reverse": true,
+        "typeFilter": [
+          {
+            "@id": "https://openminds.ebrains.eu/core/Project"
+          }
+        ]
+      },
+      "structure": [
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.ebrains.eu/vocab/fullName"
+        },
+        {
+          "propertyName": "query:fallbackName",
+          "path": [
+            {
+              "@id": "https://openminds.ebrains.eu/vocab/hasVersion",
+              "reverse": true
+            },
+            "https://openminds.ebrains.eu/vocab/fullName"
+          ],
+          "singleValue": "FIRST"
+        }
+      ]
     }
   ]
 }
