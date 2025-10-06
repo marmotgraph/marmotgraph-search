@@ -46,6 +46,8 @@ public class SoftwareVersionV3 extends SourceInstance implements IsCiteable, Has
     private String doi;
     private String swhid;
     private List<License> license;
+    @JsonDeserialize(using = ListOrSingleStringAsListDeserializer.class)
+    private List<String> keyword;
     private Copyright copyright;
     private List<FullNameRefForResearchProductVersion> projects;
     private List<PersonOrOrganizationRef> custodian;

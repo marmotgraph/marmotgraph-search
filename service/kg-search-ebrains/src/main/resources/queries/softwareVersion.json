@@ -70,6 +70,15 @@
       "propertyName": "query:howToCite",
       "path": "https://openminds.ebrains.eu/vocab/howToCite"
     },
+
+    {
+      "propertyName": "query:keyword",
+      "ensureOrder": true,
+      "path": [
+        "https://openminds.ebrains.eu/vocab/keyword",
+        "https://openminds.ebrains.eu/vocab/name"
+      ]
+    },
     {
       "propertyName": "query:doi",
       "path": [
