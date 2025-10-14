@@ -21,6 +21,9 @@
  *
  */
 import React, { useState } from 'react';
+import showdown from 'showdown';
+import DOMPurify from 'dompurify';
+import '../Text/Text.css';
 
 const FilePreview = ({ url, title }) => {
 
@@ -67,7 +70,10 @@ const FilePreview = ({ url, title }) => {
           &nbsp;Retrieving {title?title:'file'}...
         </>
       )}
-      {tryLoadSuccess && (
+      {tryLoadSuccess && markdown != null && (
+        <div className="field-markdown" style={{ height:'850px', width: '100%'}} dangerouslySetInnerHTML={{ __html: markdown }}></div>
+      )}
+      {tryLoadSuccess && markdown == null &&(
         <iframe src={url} height="850" style={{width: '100%'}} onLoad={handleOnLoad}  />
       )}
     </>
