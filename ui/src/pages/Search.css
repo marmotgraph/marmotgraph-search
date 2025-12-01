@@ -56,6 +56,11 @@ body[profile="tefhealth"] .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active
     width: 100%;
 }
 
+body[profile="ebrains"] .kgs-search .kgs-search__main {
+    position: relative;   /* Keeps the element in the normal flow */
+    top: -30px;
+}
+
 .kgs-search .kgs-search__panel .kgs-filters {
     margin-top: 15px;
 }

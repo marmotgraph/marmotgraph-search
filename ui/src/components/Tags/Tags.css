@@ -30,3 +30,19 @@
   background: var(--color-38);
   margin: 4px;
 }
+
+body[profile="ebrains"] .kgs-tags .kgs-tag {
+    background: none;
+    padding-block: 5px;
+    padding-inline: 10px;
+    color: var(--color-eb-darkgrey);
+    border: 1px solid var(--color-eb-darkgrey);
+    border-radius: 5px!important;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    font-family: var(--font-plexmono), serif;
+    --tw-leading: 1.15;
+    --tw-tracking: var(--tracking-wide);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}

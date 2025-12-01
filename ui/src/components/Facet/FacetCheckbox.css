@@ -86,6 +86,11 @@
     font-weight: 900;
 }
 
+body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text {
+    color: var(--color-eb-black);
+    font-weight: 600;
+}
+
 .kgs-facet-checkbox .kgs-facet-checkbox__count {
     display: inline-block;
     min-width: 36px;

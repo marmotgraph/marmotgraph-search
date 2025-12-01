@@ -108,6 +108,15 @@
     line-height: 1.3em;
 }
 
+body[profile="ebrains"] .kgs-hit[data-type] .kgs-field__title {
+    font-size: 1.75rem;
+    font-family: var(--font-inter), serif;
+    --tw-leading: 1.25;
+    --tw-font-weight: var(--font-weight-light);
+    line-height: 1.25;
+    font-weight: var(--font-weight-light)!important;
+}
+
 .kgs-hit[data-type] .kgs-field__title .field-label {
     display: none;
 }
