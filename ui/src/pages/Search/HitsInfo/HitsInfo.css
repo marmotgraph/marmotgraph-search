@@ -31,6 +31,16 @@
     text-align: left;
 }
 
+body[profile="ebrains"] .kgs-hitsInfos {
+    margin: 5px;
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+    font-family: var(--font-plexsans), serif;
+    --tw-leading: 1.4;
+    --tw-font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-normal);
+}
+
 .kgs-hitsInfos .kgs-hitsInfos-highlight {
     color: var(--color-10);
     font-weight: bold;
@@ -49,7 +59,7 @@
 }
 
 .kgs-hitsInfos button.kgs-suggestion__btn {
-    margin: 2px 0px;
+    margin: 2px 0;
     padding: 0;
     border: 0;
     color: var(--link-color-1);

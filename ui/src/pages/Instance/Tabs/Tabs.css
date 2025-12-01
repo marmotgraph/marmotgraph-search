@@ -43,7 +43,7 @@
     padding: 12px 0 8px 0;
     background: none;
     border: 0;
-    border-bottom: 3px solid transparent;
+    /*border-bottom: 3px solid transparent;*/
     color: var(--color-7);
     font-size: var(--font-size-small);
     font-weight: bold;
@@ -52,6 +52,25 @@
 
 .kgs-tabs__buttons > button.kgs-tabs__button.is-active {
     color: var(--link-highlight-color);
+    border-bottom-color: var(--link-highlight-color);
+}
+
+body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button {
+    font-weight: normal;
+    color: var(--color-eb-black);
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+
+body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button:hover {
+    color: var(--link-highlight-color);
+}
+
+body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active {
+    border-bottom: 1px solid var(--color-eb-black);
+}
+
+body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active:hover {
     border-bottom-color: var(--link-highlight-color);
 }
 

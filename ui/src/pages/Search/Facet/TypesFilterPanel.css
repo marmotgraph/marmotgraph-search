@@ -26,6 +26,7 @@
     width: 100%;
     background-color: var(--background-color-2);
     padding: 15px;
+    border-radius: var(--border-radius-1);
 }
 
 .kgs-fieldsFilter .kgs-fieldsFilter-title {

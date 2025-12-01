@@ -30,6 +30,10 @@ body[profile="tefhealth"] .kgs-hit-button {
     border-radius: 1rem;
 }
 
+body[profile="ebrains"] .kgs-hit-button {
+    border-radius: var(--border-radius-1);
+}
+
 @media (min-width: 576px) {
     .kgs-hits {
         margin: 0;

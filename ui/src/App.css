@@ -157,6 +157,90 @@
     --color-8: rgb(68, 80, 95);
 }
 
+:root body[profile="ebrains"] {
+    --font-stack: "IBM Plex Mono", sans-serif;
+    --font-stack-bold: "IBM Plex Mono", sans-serif;
+    --color-eb-black: #07140d;
+    --color-black: #000;
+    --color-white: #fff;
+    --color-eb-darkgreen: #00c87b;
+    --color-37: 'pink';
+    --color-selected: #00ff9d;
+    --background-color-1: #ECECEC;
+    --border-radius-1: 16px;
+    --border-radius-2: 20px;
+    --link-highlight-color: #00c87b;
+}
+
+:root body[profile="ebrains"] {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-stack: "IBM Plex Mono", sans-serif;
+    --font-stack-bold: "IBM Plex Mono", sans-serif;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-eb-black: #07140d;
+    --color-eb-lime: #00ff9d;
+    --color-eb-darkgreen: #00c87b;
+    --color-eb-darkgrey: #7a7b7a;
+    --color-eb-midgrey: #aaa;
+    --color-eb-linegrey: #ddd;
+    --color-eb-lightgrey: #ececec;
+    --color-eb-lightergrey: #f6f6f6;
+    --color-eb-overlay: #07140d33;
+    --color-37: 'pink';
+    --color-selected: #00ff9d;
+    --background-color-1: #ECECEC;
+    --border-radius-1: 16px;
+    --border-radius-2: 20px;
+    --border-radius-3: 5px;
+    --border-radius-4: 30px;
+
+    --color-primary-bg: var(--color-eb-black);
+    --color-primary-border: var(--color-eb-black);
+    --color-primary-hover-bg: var(--color-eb-darkgreen);
+    --color-primary-hover-border: var(--color-eb-darkgreen);
+    --color-primary-text: var(--color-white);
+    --color-primary-hover-text: var(--color-black);
+    --icon-color: var(--color-eb-darkgreen);
+
+    --spacing: .25rem;
+    --text-sm: .875rem;
+    --text-sm--line-height: calc(1.25 / .875);
+    --text-base: 1rem;
+    --text-base--line-height: 1.5;
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-4xl: 2.25rem;
+    --text-4xl--line-height: calc(2.5 / 2.25);
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --tracking-wide: .025em;
+    --leading-normal: 1.5;
+    --radius-lg: .5rem;
+    --radius-xl: .75rem;
+    --radius-2xl: 1rem;
+    --radius-3xl: 1.5rem;
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+    --font-inter: "Inter", sans-serif;
+    --font-plexsans: "IBM Plex Sans", sans-serif;
+    --font-plexmono: "IBM Plex Mono", sans-serif;
+    --spacing-eb-30: 1.875rem;
+    --spacing-eb-36: 2.25rem;
+    --spacing-eb-40: 2.5rem;
+    --spacing-eb-50: 3.125rem;
+    --spacing-eb-60: 3.75rem;
+    --spacing-eb-80: 5rem;
+    --spacing-eb-100: 6.25rem;
+    --spacing-eb-120: 7.5rem;
+}
+
 /* TODO: Uncomment if you want dark mode enabled */
 /* @media (prefers-color-scheme: dark) { */
 :root body[theme="dark"] {
@@ -217,7 +301,7 @@
     --button-default-background-color-hover: var(--color-35);
     --button-default-border-color: var(--color-35);
     --default-border-color:var(--color-35);
-    --link-color-active: var(--link-color-2);
+    /*--link-color-active: var(--link-color-2);*/
     --light-text: #828282;
     --background-color-1: #222;
     --background-color-2: #333;
@@ -248,6 +332,15 @@
     :root {
         --site-margin: var(--site-margin-desktop)
     }
+}
+
+/* inter-300 - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    src: url('./assets/fonts/inter-v20-latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
 /* Inter Regular */
@@ -296,12 +389,20 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+body[profile="ebrains"] {
+    background-color: var(--background-color-1);
+}
+body[profile="ebrains"] main {
+    background-color: var(--background-color-1);
+}
+
 body:before {
     content: "small";
     display: none;
 }
 
-@media (--medium-window) {
+/*@media (--medium-window) {*/
+@media (min-width: 768px) {
     body:before {
         content: "medium";
     }
@@ -324,7 +425,7 @@ html {
 body {
     display: block !important;
     overflow-x: hidden;
-    font-family: var(--font-stack);
+    font-family: var(--font-stack), sans-serif;
     font-weight: var(--regular);
     font-size: var(--font-size-small);
     line-height: var(--line-height);
@@ -363,7 +464,7 @@ main {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
-    font-family: var(--font-stack);
+    font-family: var(--font-stack) sans-serif;
     position: relative;
     min-height: 100vh;
     background: var(--background-color-2);
@@ -441,4 +542,27 @@ main .kgs-spinner-label {
     100% {
         transform: rotateZ(360deg);
     }
+}
+
+/* Links */
+
+body[profile="ebrains"] a, button[role="link"] {
+    text-decoration: underline!important;
+    text-underline-offset: 4px;
+    color: var(--color-eb-black)!important;
+}
+
+body[profile="ebrains"] a:hover, button[role="link"]:hover {
+    color: var(--color-eb-darkgreen)!important;
+}
+
+body[profile="ebrains"] .field-label {
+    font-family: var(--font-plexmono), serif;
+    font-weight: var(--font-weight-normal);
+    font-size: var(--text-base);
+    /*--tw-leading: 1.15;*/
+    --tw-tracking: var(--tracking-wide);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: var(--tw-leading, var(--text-base--line-height));
 }
