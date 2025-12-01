@@ -25,7 +25,7 @@
       "path": "https://openminds.ebrains.eu/vocab/name"
     },
     {
-      "propertyName": "query:IRI",
+      "propertyName": "query:iri",
       "path": "https://openminds.ebrains.eu/vocab/IRI"
     },
     {
