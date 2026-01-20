@@ -16,7 +16,7 @@
     }
   },
   "meta": {
-    "type": "https://openminds.ebrains.eu/core/WebServiceVersion",
+    "type": "https://openminds.om-i.org/types/WebServiceVersion",
     "name": "createSearch",
     "responseVocab": "https://schema.hbp.eu/myQuery/"
   },
@@ -37,15 +37,15 @@
     },
     {
       "propertyName": "query:fullName",
-      "path": "https://openminds.ebrains.eu/vocab/fullName"
+      "path": "https://openminds.om-i.org/props/fullName"
     },
     {
       "propertyName": "query:versionIdentifier",
-      "path": "https://openminds.ebrains.eu/vocab/versionIdentifier"
+      "path": "https://openminds.om-i.org/props/versionIdentifier"
     },
     {
       "propertyName": "query:developer",
-      "path": "https://openminds.ebrains.eu/vocab/developer",
+      "path": "https://openminds.om-i.org/props/developer",
       "ensureOrder": true,
       "structure": [
         {
@@ -54,34 +54,34 @@
         },
         {
           "propertyName": "query:familyName",
-          "path": "https://openminds.ebrains.eu/vocab/familyName"
+          "path": "https://openminds.om-i.org/props/familyName"
         },
         {
           "propertyName": "query:givenName",
-          "path": "https://openminds.ebrains.eu/vocab/givenName"
+          "path": "https://openminds.om-i.org/props/givenName"
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         }
       ]
     },
     {
       "propertyName": "query:howToCite",
-      "path": "https://openminds.ebrains.eu/vocab/howToCite"
+      "path": "https://openminds.om-i.org/props/howToCite"
     },
     {
       "propertyName": "query:copyright",
-      "path": "https://openminds.ebrains.eu/vocab/copyright",
+      "path": "https://openminds.om-i.org/props/copyright",
       "singleValue": "FIRST",
       "structure": [
         {
           "propertyName": "query:year",
-          "path": "https://openminds.ebrains.eu/vocab/year"
+          "path": "https://openminds.om-i.org/props/year"
         },
         {
           "propertyName": "query:holder",
-          "path": "https://openminds.ebrains.eu/vocab/holder",
+          "path": "https://openminds.om-i.org/props/holder",
           "structure": [
             {
               "propertyName": "query:id",
@@ -89,15 +89,15 @@
             },
             {
               "propertyName": "query:familyName",
-              "path": "https://openminds.ebrains.eu/vocab/familyName"
+              "path": "https://openminds.om-i.org/props/familyName"
             },
             {
               "propertyName": "query:givenName",
-              "path": "https://openminds.ebrains.eu/vocab/givenName"
+              "path": "https://openminds.om-i.org/props/givenName"
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/fullName"
+              "path": "https://openminds.om-i.org/props/fullName"
             }
           ]
         }
@@ -106,7 +106,7 @@
     {
       "propertyName": "query:projects",
       "path": {
-        "@id": "https://openminds.ebrains.eu/vocab/hasPart",
+        "@id": "https://openminds.om-i.org/props/hasPart",
         "reverse": true
       },
       "structure": [
@@ -116,13 +116,13 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         }
       ]
     },
     {
       "propertyName": "query:custodian",
-      "path": "https://openminds.ebrains.eu/vocab/custodian",
+      "path": "https://openminds.om-i.org/props/custodian",
       "ensureOrder": true,
       "structure": [
         {
@@ -131,29 +131,29 @@
         },
         {
           "propertyName": "query:familyName",
-          "path": "https://openminds.ebrains.eu/vocab/familyName"
+          "path": "https://openminds.om-i.org/props/familyName"
         },
         {
           "propertyName": "query:givenName",
-          "path": "https://openminds.ebrains.eu/vocab/givenName"
+          "path": "https://openminds.om-i.org/props/givenName"
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         }
       ]
     },
     {
       "propertyName": "query:description",
-      "path": "https://openminds.ebrains.eu/vocab/description"
+      "path": "https://openminds.om-i.org/props/description"
     },
     {
       "propertyName": "query:versionInnovation",
-      "path": "https://openminds.ebrains.eu/vocab/versionInnovation"
+      "path": "https://openminds.om-i.org/props/versionInnovation"
     },
     {
       "propertyName": "query:releaseDate",
-      "path": "https://openminds.ebrains.eu/vocab/releaseDate"
+      "path": "https://openminds.om-i.org/props/releaseDate"
     },
     {
       "propertyName": "query:firstReleasedAt",
@@ -165,12 +165,12 @@
     },
     {
       "propertyName": "query:publications",
-      "path": "https://openminds.ebrains.eu/vocab/relatedPublication",
+      "path": "https://openminds.om-i.org/props/relatedPublication",
       "ensureOrder": true,
       "structure": [
         {
           "propertyName": "query:identifier",
-          "path": "https://openminds.ebrains.eu/vocab/identifier",
+          "path": "https://openminds.om-i.org/props/identifier",
           "required": true
         },
         {
@@ -181,13 +181,13 @@
     },
     {
       "propertyName": "query:homepage",
-      "path": "https://openminds.ebrains.eu/vocab/homepage"
+      "path": "https://openminds.om-i.org/props/homepage"
     },
     {
       "propertyName": "query:repository",
       "path": [
-        "https://openminds.ebrains.eu/vocab/repository",
-        "https://openminds.ebrains.eu/vocab/IRI"
+        "https://openminds.om-i.org/props/repository",
+        "https://openminds.om-i.org/props/IRI"
       ],
       "singleValue": "FIRST"
     },
@@ -195,14 +195,14 @@
       "propertyName": "query:documentationFile",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/fullDocumentation",
+          "@id": "https://openminds.om-i.org/props/fullDocumentation",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/File"
+              "@id": "https://openminds.om-i.org/types/File"
             }
           ]
         },
-        "https://openminds.ebrains.eu/vocab/IRI"
+        "https://openminds.om-i.org/props/IRI"
       ],
       "singleValue": "FIRST"
     },
@@ -210,14 +210,14 @@
       "propertyName": "query:documentationDOI",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/fullDocumentation",
+          "@id": "https://openminds.om-i.org/props/fullDocumentation",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/DOI"
+              "@id": "https://openminds.om-i.org/types/DOI"
             }
           ]
         },
-        "https://openminds.ebrains.eu/vocab/identifier"
+        "https://openminds.om-i.org/props/identifier"
       ],
       "singleValue": "FIRST"
     },
@@ -225,28 +225,28 @@
       "propertyName": "query:documentationURL",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/fullDocumentation",
+          "@id": "https://openminds.om-i.org/props/fullDocumentation",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/WebResource"
+              "@id": "https://openminds.om-i.org/types/WebResource"
             }
           ]
         },
-        "https://openminds.ebrains.eu/vocab/IRI"
+        "https://openminds.om-i.org/props/IRI"
       ],
       "singleValue": "FIRST"
     },
     {
       "propertyName": "query:supportChannel",
-      "path": "https://openminds.ebrains.eu/vocab/supportChannel"
+      "path": "https://openminds.om-i.org/props/supportChannel"
     },
     {
       "propertyName": "query:version",
-      "path": "https://openminds.ebrains.eu/vocab/versionIdentifier"
+      "path": "https://openminds.om-i.org/props/versionIdentifier"
     },
     {
       "propertyName": "query:inputFormat",
-      "path": "https://openminds.ebrains.eu/vocab/inputFormat",
+      "path": "https://openminds.om-i.org/props/inputFormat",
       "structure": [
         {
           "propertyName": "query:id",
@@ -254,21 +254,21 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/name"
+          "path": "https://openminds.om-i.org/props/name"
         },
         {
           "propertyName": "query:fileExtension",
-          "path": "https://openminds.ebrains.eu/vocab/fileExtension"
+          "path": "https://openminds.om-i.org/props/fileExtension"
         },
         {
           "propertyName": "query:relatedMediaType",
-          "path": "https://openminds.ebrains.eu/vocab/relatedMediaType"
+          "path": "https://openminds.om-i.org/props/relatedMediaType"
         }
       ]
     },
     {
       "propertyName": "query:outputFormat",
-      "path": "https://openminds.ebrains.eu/vocab/outputFormat",
+      "path": "https://openminds.om-i.org/props/outputFormat",
       "structure": [
         {
           "propertyName": "query:id",
@@ -276,21 +276,21 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/name"
+          "path": "https://openminds.om-i.org/props/name"
         },
         {
           "propertyName": "query:fileExtension",
-          "path": "https://openminds.ebrains.eu/vocab/fileExtension"
+          "path": "https://openminds.om-i.org/props/fileExtension"
         },
         {
           "propertyName": "query:relatedMediaType",
-          "path": "https://openminds.ebrains.eu/vocab/relatedMediaType"
+          "path": "https://openminds.om-i.org/props/relatedMediaType"
         }
       ]
     },
     {
       "propertyName": "query:components",
-      "path": "https://openminds.ebrains.eu/vocab/hasPart",
+      "path": "https://openminds.om-i.org/props/hasPart",
       "structure": [
         {
           "propertyName": "query:id",
@@ -298,20 +298,20 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         },
         {
           "propertyName": "query:versionIdentifier",
-          "path": "https://openminds.ebrains.eu/vocab/versionIdentifier"
+          "path": "https://openminds.om-i.org/props/versionIdentifier"
         },
         {
           "propertyName": "query:fallbackFullName",
           "path": [
             {
-              "@id": "https://openminds.ebrains.eu/vocab/hasVersion",
+              "@id": "https://openminds.om-i.org/props/hasVersion",
               "reverse": true
             },
-            "https://openminds.ebrains.eu/vocab/fullName"
+            "https://openminds.om-i.org/props/fullName"
           ],
           "singleValue": "FIRST"
         }
@@ -321,14 +321,14 @@
       "propertyName": "query:accessibility",
       "singleValue": "FIRST",
       "path": [
-        "https://openminds.ebrains.eu/vocab/accessibility",
-        "https://openminds.ebrains.eu/vocab/name"
+        "https://openminds.om-i.org/props/accessibility",
+        "https://openminds.om-i.org/props/name"
       ]
     },
     {
       "propertyName": "query:webservice",
       "path": {
-        "@id": "https://openminds.ebrains.eu/vocab/hasVersion",
+        "@id": "https://openminds.om-i.org/props/hasVersion",
         "reverse": true
       },
       "singleValue": "FIRST",
@@ -339,16 +339,16 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         },
         {
           "propertyName": "query:description",
-          "path": "https://openminds.ebrains.eu/vocab/description"
+          "path": "https://openminds.om-i.org/props/description"
         },
         {
           "propertyName": "query:webserviceProjects",
           "path": {
-            "@id": "https://openminds.ebrains.eu/vocab/hasPart",
+            "@id": "https://openminds.om-i.org/props/hasPart",
             "reverse": true
           },
           "structure": [
@@ -358,13 +358,13 @@
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/fullName"
+              "path": "https://openminds.om-i.org/props/fullName"
             }
           ]
         },
         {
           "propertyName": "query:webserviceCustodian",
-          "path": "https://openminds.ebrains.eu/vocab/custodian",
+          "path": "https://openminds.om-i.org/props/custodian",
           "ensureOrder": true,
           "structure": [
             {
@@ -373,25 +373,25 @@
             },
             {
               "propertyName": "query:familyName",
-              "path": "https://openminds.ebrains.eu/vocab/familyName"
+              "path": "https://openminds.om-i.org/props/familyName"
             },
             {
               "propertyName": "query:givenName",
-              "path": "https://openminds.ebrains.eu/vocab/givenName"
+              "path": "https://openminds.om-i.org/props/givenName"
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/fullName"
+              "path": "https://openminds.om-i.org/props/fullName"
             }
           ]
         },
         {
           "propertyName": "query:webserviceHomepage",
-          "path": "https://openminds.ebrains.eu/vocab/homepage"
+          "path": "https://openminds.om-i.org/props/homepage"
         },
         {
           "propertyName": "query:webserviceDeveloper",
-          "path": "https://openminds.ebrains.eu/vocab/developer",
+          "path": "https://openminds.om-i.org/props/developer",
           "ensureOrder": true,
           "structure": [
             {
@@ -400,21 +400,21 @@
             },
             {
               "propertyName": "query:familyName",
-              "path": "https://openminds.ebrains.eu/vocab/familyName"
+              "path": "https://openminds.om-i.org/props/familyName"
             },
             {
               "propertyName": "query:givenName",
-              "path": "https://openminds.ebrains.eu/vocab/givenName"
+              "path": "https://openminds.om-i.org/props/givenName"
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/fullName"
+              "path": "https://openminds.om-i.org/props/fullName"
             }
           ]
         },
         {
           "propertyName": "query:versions",
-          "path": "https://openminds.ebrains.eu/vocab/hasVersion",
+          "path": "https://openminds.om-i.org/props/hasVersion",
           "structure": [
             {
               "propertyName": "query:id",
@@ -422,21 +422,21 @@
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/fullName"
+              "path": "https://openminds.om-i.org/props/fullName"
             },
             {
               "propertyName": "query:versionIdentifier",
-              "path": "https://openminds.ebrains.eu/vocab/versionIdentifier"
+              "path": "https://openminds.om-i.org/props/versionIdentifier"
             },
             {
               "propertyName": "query:versionInnovation",
-              "path": "https://openminds.ebrains.eu/vocab/versionInnovation"
+              "path": "https://openminds.om-i.org/props/versionInnovation"
             },
             {
               "propertyName": "query:isNewVersionOf",
               "path": [
-                "https://openminds.ebrains.eu/vocab/isNewVersionOf",
-                "https://openminds.ebrains.eu/vocab/versionIdentifier"
+                "https://openminds.om-i.org/props/isNewVersionOf",
+                "https://openminds.om-i.org/props/versionIdentifier"
               ],
               "singleValue": "FIRST"
             }
@@ -445,10 +445,10 @@
         {
           "propertyName": "query:learningResource",
           "path": {
-            "@id": "https://openminds.ebrains.eu/vocab/about",
+            "@id": "https://openminds.om-i.org/props/about",
             "reverse": true,
             "typeFilter": {
-              "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+              "@id": "https://openminds.om-i.org/types/LearningResource"
             }
           },
           "structure": [
@@ -458,7 +458,7 @@
             },
             {
               "propertyName": "query:fullName",
-              "path": "https://openminds.ebrains.eu/vocab/name"
+              "path": "https://openminds.om-i.org/props/name"
             }
           ]
         }
@@ -478,10 +478,10 @@
     {
       "propertyName": "query:learningResource",
       "path": {
-        "@id": "https://openminds.ebrains.eu/vocab/about",
+        "@id": "https://openminds.om-i.org/props/about",
         "reverse": true,
         "typeFilter": {
-          "@id": "https://openminds.ebrains.eu/publications/LearningResource"
+          "@id": "https://openminds.om-i.org/types/LearningResource"
         }
       },
       "structure": [
@@ -491,7 +491,7 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": "https://openminds.ebrains.eu/vocab/name"
+          "path": "https://openminds.om-i.org/props/name"
         }
       ]
     }

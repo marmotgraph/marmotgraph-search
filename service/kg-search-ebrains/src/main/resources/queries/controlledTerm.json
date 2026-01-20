@@ -37,31 +37,31 @@
     },
     {
       "propertyName": "query:name",
-      "path": "https://openminds.ebrains.eu/vocab/name"
+      "path": "https://openminds.om-i.org/props/name"
     },
     {
       "propertyName": "query:definition",
-      "path": "https://openminds.ebrains.eu/vocab/definition"
+      "path": "https://openminds.om-i.org/props/definition"
     },
     {
       "propertyName": "query:description",
-      "path": "https://openminds.ebrains.eu/vocab/description"
+      "path": "https://openminds.om-i.org/props/description"
     },
     {
       "propertyName": "query:knowledgeSpaceLink",
-      "path": "https://openminds.ebrains.eu/vocab/knowledgeSpaceLink"
+      "path": "https://openminds.om-i.org/props/knowledgeSpaceLink"
     },
     {
       "propertyName": "query:interlexIdentifier",
-      "path": "https://openminds.ebrains.eu/vocab/interlexIdentifier"
+      "path": "https://openminds.om-i.org/props/interlexIdentifier"
     },
     {
       "propertyName": "query:preferredOntologyIdentifier",
-      "path": "https://openminds.ebrains.eu/vocab/preferredOntologyIdentifier"
+      "path": "https://openminds.om-i.org/props/preferredOntologyIdentifier"
     },
     {
       "propertyName": "query:synonym",
-      "path": "https://openminds.ebrains.eu/vocab/synonym"
+      "path": "https://openminds.om-i.org/props/synonym"
     }
   ]
 }

@@ -16,7 +16,7 @@
     }
   },
   "meta": {
-    "type": "https://openminds.ebrains.eu/core/BehavioralProtocol",
+    "type": "https://openminds.om-i.org/types/BehavioralProtocol",
     "responseVocab": "https://schema.hbp.eu/myQuery/"
   },
   "structure": [
@@ -34,39 +34,39 @@
     },
     {
       "propertyName": "query:name",
-      "path": "https://openminds.ebrains.eu/vocab/name"
+      "path": "https://openminds.om-i.org/props/name"
     },
     {
       "propertyName": "query:internalIdentifier",
-      "path": "https://openminds.ebrains.eu/vocab/internalIdentifier"
+      "path": "https://openminds.om-i.org/props/internalIdentifier"
     },
     {
       "propertyName": "query:description",
-      "path": "https://openminds.ebrains.eu/vocab/description"
+      "path": "https://openminds.om-i.org/props/description"
     },
     {
       "propertyName": "query:describedInUrl",
       "singleValue": "FIRST",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/describedIn",
+          "@id": "https://openminds.om-i.org/props/describedIn",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/WebResource"
+              "@id": "https://openminds.om-i.org/types/WebResource"
             }
           ]
         },
-        "https://openminds.ebrains.eu/vocab/IRI"
+        "https://openminds.om-i.org/props/IRI"
       ]
     },
     {
       "propertyName": "query:describedInFile",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/describedIn",
+          "@id": "https://openminds.om-i.org/props/describedIn",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/File"
+              "@id": "https://openminds.om-i.org/types/File"
             }
           ]
         }
@@ -75,11 +75,11 @@
       "structure": [
         {
           "propertyName": "query:name",
-          "path": "https://openminds.ebrains.eu/vocab/name"
+          "path": "https://openminds.om-i.org/props/name"
         },
         {
           "propertyName": "query:iri",
-          "path": "https://openminds.ebrains.eu/vocab/IRI"
+          "path": "https://openminds.om-i.org/props/IRI"
         }
       ]
     },
@@ -88,14 +88,14 @@
       "singleValue": "FIRST",
       "path": [
         {
-          "@id": "https://openminds.ebrains.eu/vocab/describedIn",
+          "@id": "https://openminds.om-i.org/props/describedIn",
           "typeFilter": [
             {
-              "@id": "https://openminds.ebrains.eu/core/DOI"
+              "@id": "https://openminds.om-i.org/types/DOI"
             }
           ]
         },
-        "https://openminds.ebrains.eu/vocab/identifier"
+        "https://openminds.om-i.org/props/identifier"
       ]
     }
   ]

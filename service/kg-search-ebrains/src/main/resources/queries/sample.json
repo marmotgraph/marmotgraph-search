@@ -13,7 +13,7 @@
   },
   "meta": {
     "name": "Samples search query",
-    "type": "https://openminds.ebrains.eu/core/Sample",
+    "type": "https://openminds.om-i.org/types/Sample",
     "responseVocab": "https://schema.hbp.eu/myQuery/"
   },
   "structure": [

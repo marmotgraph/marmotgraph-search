@@ -68,7 +68,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/publications/LearningResource");
+        return Collections.singletonList("https://openminds.om-i.org/types/LearningResource");
     }
 
     public LearningResource translate(LearningResourceV3 source, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {
@@ -95,9 +95,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
         target.setPublishers(EBRAINSTranslatorUtils.refPerson(source.getPublisher()));
         target.setLearningOutcome(value(source.getLearningOutcome()));
         target.setPrerequisites(value(source.getPrerequisite()));
-        if(source.getIRI()!=null){
-            target.setUrl(new TargetExternalReference(source.getIRI(), source.getIRI()));
-        }
+        target.setUrl(link(source.getIri()));
         if(!CollectionUtils.isEmpty(source.getPublications())){
             target.setPublications(source.getPublications().stream().map(p -> EBRAINSTranslatorUtils.getFormattedDigitalIdentifier(translatorUtils.getDoiCitationFormatter(), p.getIdentifier(), p.resolvedType())).filter(Objects::nonNull).map(Value::new).collect(Collectors.toList()));
         }

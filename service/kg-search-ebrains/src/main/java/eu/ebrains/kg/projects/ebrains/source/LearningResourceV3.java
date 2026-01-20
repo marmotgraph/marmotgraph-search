@@ -44,7 +44,7 @@ public class LearningResourceV3 extends SourceInstance {
     private String abstractText;
     private String learningOutcome;
     private String prerequisite;
-    private String IRI;
+    private String iri;
     private List<PersonOrOrganizationRef> author;
     private List<PersonOrOrganizationRef> custodian;
     private List<PersonOrOrganizationRef> editor;

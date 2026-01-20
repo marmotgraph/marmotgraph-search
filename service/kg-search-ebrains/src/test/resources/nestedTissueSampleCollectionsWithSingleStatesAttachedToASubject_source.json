@@ -22,7 +22,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/Subject"
+      "https://openminds.om-i.org/types/Subject"
     ],
     "studiedState": [
       {
@@ -31,7 +31,7 @@
         "serviceLinks": [],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/SubjectState"
+          "https://openminds.om-i.org/types/SubjectState"
         ],
         "ageCategory": [
           {
@@ -95,7 +95,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/Subject"
+      "https://openminds.om-i.org/types/Subject"
     ],
     "studiedState": [
       {
@@ -104,7 +104,7 @@
         "serviceLinks": [],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/SubjectState"
+          "https://openminds.om-i.org/types/SubjectState"
         ],
         "ageCategory": [
           {
@@ -168,7 +168,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/Subject"
+      "https://openminds.om-i.org/types/Subject"
     ],
     "studiedState": [
       {
@@ -177,7 +177,7 @@
         "serviceLinks": [],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/SubjectState"
+          "https://openminds.om-i.org/types/SubjectState"
         ],
         "ageCategory": [
           {
@@ -241,7 +241,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/Subject"
+      "https://openminds.om-i.org/types/Subject"
     ],
     "studiedState": [
       {
@@ -250,7 +250,7 @@
         "serviceLinks": [],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/SubjectState"
+          "https://openminds.om-i.org/types/SubjectState"
         ],
         "ageCategory": [
           {
@@ -314,7 +314,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -334,7 +334,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -403,7 +403,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -423,7 +423,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -492,7 +492,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -512,7 +512,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -581,7 +581,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -601,7 +601,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -670,7 +670,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -690,7 +690,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -759,7 +759,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -779,7 +779,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -848,7 +848,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -868,7 +868,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -937,7 +937,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -957,7 +957,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1026,7 +1026,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1046,7 +1046,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1115,7 +1115,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1135,7 +1135,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1204,7 +1204,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1224,7 +1224,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1293,7 +1293,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1313,7 +1313,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1382,7 +1382,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1402,7 +1402,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
@@ -1471,7 +1471,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -1491,7 +1491,7 @@
         ],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [
