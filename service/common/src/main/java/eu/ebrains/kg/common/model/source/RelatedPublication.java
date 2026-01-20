@@ -40,11 +40,11 @@ public class RelatedPublication {
             return PublicationType.UNDEFINED;
         }
         switch (type.get(0)) {
-            case "https://openminds.ebrains.eu/core/DOI":
+            case "https://openminds.om-i.org/types/DOI":
                 return PublicationType.DOI;
-            case "https://openminds.ebrains.eu/core/HANDLE":
+            case "https://openminds.om-i.org/types/HANDLE":
                 return PublicationType.HANDLE;
-            case "https://openminds.ebrains.eu/core/ISBN":
+            case "https://openminds.om-i.org/types/ISBN":
                 return PublicationType.ISBN;
             default: return PublicationType.UNDEFINED;
         }

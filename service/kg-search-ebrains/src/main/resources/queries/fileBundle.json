@@ -16,7 +16,7 @@
     }
   },
   "meta": {
-    "type": "https://openminds.ebrains.eu/core/FileBundle",
+    "type": "https://openminds.om-i.org/types/FileBundle",
     "responseVocab": "https://schema.hbp.eu/myQuery/"
   },
   "structure": [
@@ -36,31 +36,31 @@
     },
     {
       "propertyName": "query:name",
-      "path": "https://openminds.ebrains.eu/vocab/name",
+      "path": "https://openminds.om-i.org/props/name",
       "required": true
     },
     {
       "propertyName": "query:serviceLinks",
       "path": {
-        "@id": "https://openminds.ebrains.eu/vocab/dataLocation",
+        "@id": "https://openminds.om-i.org/props/dataLocation",
         "reverse": true
       },
       "structure": [
         {
           "propertyName": "query:url",
-          "path": "https://openminds.ebrains.eu/vocab/openDataIn"
+          "path": "https://openminds.om-i.org/props/openDataIn"
         },
         {
           "propertyName": "query:service",
           "path": [
-            "https://openminds.ebrains.eu/vocab/service",
-            "https://openminds.ebrains.eu/vocab/name"
+            "https://openminds.om-i.org/props/service",
+            "https://openminds.om-i.org/props/name"
           ],
           "singleValue": "FIRST"
         },
         {
           "propertyName": "query:label",
-          "path": "https://openminds.ebrains.eu/vocab/name"
+          "path": "https://openminds.om-i.org/props/name"
         }
       ]
     }

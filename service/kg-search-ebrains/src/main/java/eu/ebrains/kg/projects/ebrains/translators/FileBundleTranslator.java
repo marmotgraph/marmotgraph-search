@@ -68,7 +68,7 @@ public class FileBundleTranslator extends EBRAINSTranslator<FileBundleV3, FileBu
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/FileBundle");
+        return Collections.singletonList("https://openminds.om-i.org/types/FileBundle");
     }
 
     public FileBundle translate(FileBundleV3 fileBundle, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

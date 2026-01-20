@@ -65,7 +65,7 @@ public class SubjectTranslator extends EBRAINSTranslator<SubjectV3, Subject, Sub
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Subject");
+        return Collections.singletonList("https://openminds.om-i.org/types/Subject");
     }
 
     public Subject translate(SubjectV3 subject, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

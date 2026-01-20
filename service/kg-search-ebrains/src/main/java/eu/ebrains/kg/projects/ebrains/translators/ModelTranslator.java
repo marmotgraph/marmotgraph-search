@@ -72,7 +72,7 @@ public class ModelTranslator extends EBRAINSTranslator<ModelV3, Model, ModelTran
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Model");
+        return Collections.singletonList("https://openminds.om-i.org/types/Model");
     }
 
     public Model translate(ModelV3 model, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

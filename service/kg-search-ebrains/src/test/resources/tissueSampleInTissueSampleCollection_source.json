@@ -59,7 +59,7 @@
         "lookupLabel": "PV_sub02_PV+1_den1",
         "serviceLinks": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSample"
+          "https://openminds.om-i.org/types/TissueSample"
         ],
         "studiedState": [
           {
@@ -68,7 +68,7 @@
             "serviceLinks": [],
             "pathology": [],
             "type": [
-              "https://openminds.ebrains.eu/core/TissueSampleState"
+              "https://openminds.om-i.org/types/TissueSampleState"
             ],
             "ageCategory": [],
             "attribute": [
@@ -111,7 +111,7 @@
     "numberOfSubjects": null,
     "serviceLinks": [],
     "type": [
-      "https://openminds.ebrains.eu/core/TissueSampleCollection"
+      "https://openminds.om-i.org/types/TissueSampleCollection"
     ],
     "studiedState": [
       {
@@ -120,7 +120,7 @@
         "serviceLinks": [],
         "pathology": [],
         "type": [
-          "https://openminds.ebrains.eu/core/TissueSampleCollectionState"
+          "https://openminds.om-i.org/types/TissueSampleCollectionState"
         ],
         "ageCategory": [],
         "attribute": [

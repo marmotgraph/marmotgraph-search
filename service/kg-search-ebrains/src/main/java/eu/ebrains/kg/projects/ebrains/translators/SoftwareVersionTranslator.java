@@ -81,7 +81,7 @@ public class SoftwareVersionTranslator extends EBRAINSTranslator<SoftwareVersion
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/SoftwareVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/SoftwareVersion");
     }
 
     public SoftwareVersion translate(SoftwareVersionV3 softwareVersion, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

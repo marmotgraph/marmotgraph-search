@@ -66,7 +66,7 @@ public class BehavioralProtocolTranslator extends EBRAINSTranslator<BehavioralPr
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/BehavioralProtocol");
+        return Collections.singletonList("https://openminds.om-i.org/types/BehavioralProtocol");
     }
 
     public static class Result extends ResultsOfKG<BehavioralProtocolV3> {

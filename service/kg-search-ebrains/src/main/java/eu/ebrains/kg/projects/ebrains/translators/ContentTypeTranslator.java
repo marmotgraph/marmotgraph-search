@@ -66,7 +66,7 @@ public class ContentTypeTranslator extends EBRAINSTranslator<ContentTypeV3, Cont
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/ContentType");
+        return Collections.singletonList("https://openminds.om-i.org/types/ContentType");
     }
 
     public static class Result extends ResultsOfKG<ContentTypeV3> {
@@ -97,11 +97,11 @@ public class ContentTypeTranslator extends EBRAINSTranslator<ContentTypeV3, Cont
            Collections.sort(c.getOutputFormatForSoftware());
        }
        if(!CollectionUtils.isEmpty(contentTypeV3.getResearchProducts())){
-           final List<TargetInternalReference> datasets = contentTypeV3.getResearchProducts().stream().filter(r -> r.getType().contains("https://openminds.ebrains.eu/core/DatasetVersion")).map(this::ref).sorted(Comparator.comparing(TargetInternalReference::getValue)).collect(Collectors.toList());
+           final List<TargetInternalReference> datasets = contentTypeV3.getResearchProducts().stream().filter(r -> r.getType().contains("https://openminds.om-i.org/types/DatasetVersion")).map(this::ref).sorted(Comparator.comparing(TargetInternalReference::getValue)).collect(Collectors.toList());
            if(!datasets.isEmpty()){
                c.setDatasets(datasets);
            }
-           final List<TargetInternalReference> models = contentTypeV3.getResearchProducts().stream().filter(r -> r.getType().contains("https://openminds.ebrains.eu/core/ModelVersion")).map(this::ref).sorted(Comparator.comparing(TargetInternalReference::getValue)).collect(Collectors.toList());
+           final List<TargetInternalReference> models = contentTypeV3.getResearchProducts().stream().filter(r -> r.getType().contains("https://openminds.om-i.org/types/ModelVersion")).map(this::ref).sorted(Comparator.comparing(TargetInternalReference::getValue)).collect(Collectors.toList());
            if(!models.isEmpty()){
                c.setModels(models);
            }

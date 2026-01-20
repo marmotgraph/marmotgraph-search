@@ -69,7 +69,7 @@ public class MetaDataModelTranslator extends EBRAINSTranslator<MetaDataModelV3, 
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/MetaDataModel");
+        return Collections.singletonList("https://openminds.om-i.org/types/MetaDataModel");
     }
 
     public MetaDataModel translate(MetaDataModelV3 model, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

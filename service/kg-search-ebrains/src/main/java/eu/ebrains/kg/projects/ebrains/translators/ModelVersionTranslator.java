@@ -75,7 +75,7 @@ public class ModelVersionTranslator extends EBRAINSTranslator<ModelVersionV3, Mo
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/ModelVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/ModelVersion");
     }
 
 
