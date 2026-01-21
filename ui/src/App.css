@@ -158,8 +158,8 @@
 }
 
 :root body[profile="ebrains"] {
-    --font-stack: "IBM Plex Mono", sans-serif;
-    --font-stack-bold: "IBM Plex Mono", sans-serif;
+    --font-stack: "Roboto", sans-serif;
+    --font-stack-bold: "Roboto", sans-serif;
     --color-eb-black: #07140d;
     --color-black: #000;
     --color-white: #fff;
@@ -175,8 +175,8 @@
 :root body[profile="ebrains"] {
     --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --font-stack: "IBM Plex Mono", sans-serif;
-    --font-stack-bold: "IBM Plex Mono", sans-serif;
+    --font-stack: "Roboto", sans-serif;
+    --font-stack-bold: "Roboto", sans-serif;
     --color-white: #fff;
     --color-black: #000;
     --color-eb-black: #07140d;
