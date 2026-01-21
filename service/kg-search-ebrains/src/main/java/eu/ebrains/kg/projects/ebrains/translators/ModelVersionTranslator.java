@@ -204,7 +204,7 @@ public class ModelVersionTranslator extends EBRAINSTranslator<ModelVersionV3, Mo
         m.setModelFormat(ref(createList(modelVersion.getModelFormat())));
         if (modelVersion.getModel() != null) {
             m.setAbstractionLevel(ref(createList(modelVersion.getModel().getAbstractionLevel())));
-            List<String> brainStructureStudyTargets = List.of(Constants.OPENMINDS_ROOT + "controlledTerms/UBERONParcellation");
+            List<String> brainStructureStudyTargets = List.of(Constants.OPENMINDS_ROOT + "types/UBERONParcellation");
             final Map<Boolean, List<StudyTarget>> brainStructureOrNot = modelVersion.getModel().getStudyTarget().stream().collect(Collectors.groupingBy(s -> s.getStudyTargetType() != null && s.getStudyTargetType().stream().anyMatch(brainStructureStudyTargets::contains)));
             m.setStudyTargets(refVersion(brainStructureOrNot.get(Boolean.FALSE), false));
             if(!CollectionUtils.isEmpty(brainStructureOrNot.get(Boolean.TRUE))){

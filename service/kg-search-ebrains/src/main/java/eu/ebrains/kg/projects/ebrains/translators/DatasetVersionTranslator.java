@@ -110,7 +110,7 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList(Constants.OPENMINDS_ROOT + "core/DatasetVersion");
+        return Collections.singletonList(Constants.OPENMINDS_ROOT + "types/DatasetVersion");
     }
 
     private boolean isExternalLink(FileRepository repository) {
@@ -322,7 +322,7 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
             String ethicsAssessment = null;
             if (datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/notRequired")) {
                 ethicsAssessment = "not-required";
-            } else if (datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliantNonSensitive") || datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliantSensitive")) {
+            } else if (datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliant") || datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliant+")) {
                 ethicsAssessment = "EU-compliant";
             }
             d.setEthicsAssessment(value(ethicsAssessment));
@@ -445,7 +445,7 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
         //TODO Sorting
         d.setPreviewObjects(previews);
 
-        List<String> brainRegionStudyTargets = Arrays.asList(Constants.OPENMINDS_ROOT + "controlledTerms/UBERONParcellation", Constants.OPENMINDS_ROOT + "sands/ParcellationEntityVersion", Constants.OPENMINDS_ROOT + "sands/ParcellationEntity", Constants.OPENMINDS_ROOT + "sands/CustomAnatomicalEntity");
+        List<String> brainRegionStudyTargets = Arrays.asList(Constants.OPENMINDS_ROOT + "types/UBERONParcellation", Constants.OPENMINDS_ROOT + "types/ParcellationEntityVersion", Constants.OPENMINDS_ROOT + "types/ParcellationEntity", Constants.OPENMINDS_ROOT + "types/CustomAnatomicalEntity");
 
         final Map<Boolean, List<StudyTarget>> brainRegionOrNot = datasetVersion.getStudyTarget().stream().collect(Collectors.groupingBy(s -> s.getStudyTargetType() != null && s.getStudyTargetType().stream().anyMatch(brainRegionStudyTargets::contains)));
         d.setStudyTargets(refVersion(brainRegionOrNot.get(Boolean.FALSE), false));

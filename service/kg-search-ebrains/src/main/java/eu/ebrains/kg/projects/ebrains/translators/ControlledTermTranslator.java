@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 public class ControlledTermTranslator extends EBRAINSTranslator<ControlledTermV3, ControlledTerm, ControlledTermTranslator.Result> {
     private static final String CONTROLLED_TERM_QUERY_ID = "42405db5-6f86-4dea-baba-95a94105e74e";
-    private static final String CONTROLLED_TERM_NAMESPACE = "https://openminds.ebrains.eu/controlledTerms";
+    private static final String CONTROLLED_TERM_NAMESPACE = "https://openminds.om-i.org/types";
 
     private static final List<String> CONTROLLED_TERM_TYPES = Stream.of(
             "ActionStatusType",
