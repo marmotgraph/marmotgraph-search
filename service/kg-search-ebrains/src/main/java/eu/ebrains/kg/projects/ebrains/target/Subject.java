@@ -52,6 +52,10 @@ public class Subject implements TargetInstance {
 
     @FieldInfo(ignoreForSearch = true, visible = false)
     private SchemaOrgInstance meta;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
     @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 

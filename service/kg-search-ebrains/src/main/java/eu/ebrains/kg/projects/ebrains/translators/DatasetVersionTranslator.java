@@ -212,6 +212,8 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
         String containerUrl = datasetVersion.getFileRepository() != null ? datasetVersion.getFileRepository().getIri() : null;
         if (accessibility != null) {
             switch (accessibility) {
+                case RETRACTED:
+                    d.setWatermark(value("Retracted"));
                 case CONTROLLED_ACCESS:
                     d.setEmbargo(value(DatasetVersion.createHDGMessage(uuid, containerUrl)));
                     break;
@@ -241,7 +243,10 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
                         }
                     }
             }
-            d.setDataAccessibility(value(datasetVersion.getAccessibility().getName()));
+            if(accessibility!=Accessibility.RETRACTED) {
+                //We don't want the accessibility to be available in the faceted filter.
+                d.setDataAccessibility(value(datasetVersion.getAccessibility().getName()));
+            }
         }
 
         d.setExperimentalApproach(ref(datasetVersion.getExperimentalApproach()));

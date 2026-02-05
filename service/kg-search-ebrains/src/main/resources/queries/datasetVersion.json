@@ -229,6 +229,10 @@
           "path": "https://openminds.ebrains.eu/vocab/name"
         },
         {
+          "propertyName": "query:displayLabel",
+          "path": "https://openminds.ebrains.eu/vocab/displayLabel"
+        },
+        {
           "propertyName": "query:file",
           "path": [
             {
@@ -277,6 +281,10 @@
         {
           "propertyName": "query:label",
           "path": "https://openminds.ebrains.eu/vocab/name"
+        },
+        {
+          "propertyName": "query:displayLabel",
+          "path": "https://openminds.ebrains.eu/vocab/displayLabel"
         }
       ]
     },
@@ -1006,6 +1014,10 @@
                 {
                   "propertyName": "query:name",
                   "path": "https://openminds.ebrains.eu/vocab/name"
+                },
+                {
+                  "propertyName": "query:displayLabel",
+                  "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                 }
               ]
             },
@@ -1047,6 +1059,10 @@
                 {
                   "propertyName": "query:name",
                   "path": "https://openminds.ebrains.eu/vocab/name"
+                },
+                {
+                  "propertyName": "query:displayLabel",
+                  "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                 }
               ]
             }
@@ -1351,6 +1367,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.ebrains.eu/vocab/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                     }
                   ]
                 },
@@ -1392,6 +1412,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.ebrains.eu/vocab/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                     }
                   ]
                 }
@@ -1650,6 +1674,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.ebrains.eu/vocab/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                     }
                   ]
                 },
@@ -1691,6 +1719,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.ebrains.eu/vocab/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                     }
                   ]
                 }
@@ -1995,6 +2027,10 @@
                         {
                           "propertyName": "query:name",
                           "path": "https://openminds.ebrains.eu/vocab/name"
+                        },
+                        {
+                          "propertyName": "query:displayLabel",
+                          "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                         }
                       ]
                     },
@@ -2036,6 +2072,10 @@
                         {
                           "propertyName": "query:name",
                           "path": "https://openminds.ebrains.eu/vocab/name"
+                        },
+                        {
+                          "propertyName": "query:displayLabel",
+                          "path": "https://openminds.ebrains.eu/vocab/displayLabel"
                         }
                       ]
                     }

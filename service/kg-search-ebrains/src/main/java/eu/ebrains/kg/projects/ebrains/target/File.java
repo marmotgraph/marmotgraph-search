@@ -48,6 +48,8 @@ public class File implements TargetInstance {
     @FieldInfo(ignoreForSearch = true, visible = false)
     private List<String> identifier;
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
     @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;

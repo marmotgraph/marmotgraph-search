@@ -50,6 +50,9 @@ public class Protocol implements TargetInstance {
     private Value<String> type = new Value<>("Protocol");
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

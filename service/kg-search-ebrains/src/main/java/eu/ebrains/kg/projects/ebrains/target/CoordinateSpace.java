@@ -53,6 +53,9 @@ public class CoordinateSpace implements TargetInstance {
     private List<String> identifier;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

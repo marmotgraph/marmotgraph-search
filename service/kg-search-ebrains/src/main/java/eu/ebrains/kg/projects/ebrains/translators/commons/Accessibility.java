@@ -32,6 +32,7 @@ import java.util.Arrays;
 public enum Accessibility {
     FREE_ACCESS(Constants.OPENMINDS_INSTANCES + "/productAccessibility/freeAccess"),
     CONTROLLED_ACCESS(Constants.OPENMINDS_INSTANCES + "/productAccessibility/controlledAccess"),
+    RETRACTED(Constants.OPENMINDS_INSTANCES + "/productAccessibility/retracted"),
     RESTRICTED_ACCESS(Constants.OPENMINDS_INSTANCES + "/productAccessibility/restrictedAccess"),
     UNDER_EMBARGO(Constants.OPENMINDS_INSTANCES + "/productAccessibility/underEmbargo");
 

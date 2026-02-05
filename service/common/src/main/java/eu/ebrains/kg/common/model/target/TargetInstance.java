@@ -42,6 +42,7 @@ public interface TargetInstance {
     Value<String> getCategory();
     Value<String> getTitle();
     Value<String> getDisclaimer();
+    Value<String> getWatermark();
 
     SchemaOrgInstance getMeta();
     void setMeta(SchemaOrgInstance meta);

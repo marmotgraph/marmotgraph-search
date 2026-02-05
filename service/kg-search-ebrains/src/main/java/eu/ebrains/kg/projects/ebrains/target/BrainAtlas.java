@@ -53,6 +53,9 @@ public class BrainAtlas implements TargetInstance, HasCitation {
     private SchemaOrgInstance meta;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

@@ -26,14 +26,20 @@ package eu.ebrains.kg.common.model.source;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
 public class ServiceLink extends ExternalRef{
     private String service;
     private String file;
+    private String displayLabel;
 
     public String displayLabel(){
-        return this.getLabel()!=null && this.getService() != null ? String.format("Open %s in %s", this.getLabel(), this.getService()) : null;
+        String label = this.getDisplayLabel();
+        if(!StringUtils.hasText(label)){
+            label = this.getLabel();
+        }
+        return StringUtils.hasText(label) && StringUtils.hasText(this.getService()) ? String.format("Open %s in %s", label, this.getService()) : null;
     }
 }

@@ -67,6 +67,9 @@ public class Service implements TargetInstance, HasBadges{
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
     @FieldInfo(ignoreForSearch = true, visible = false)
@@ -105,6 +108,9 @@ public class Service implements TargetInstance, HasBadges{
 
     @FieldInfo(label = "Service standards")
     private List<Value<String>> serviceStandards;
+
+    @FieldInfo(fieldType = FieldInfo.FieldType.MARKDOWN)
+    private Value<String> requestService;
 
     @FieldInfo(layout = "Pricing", fieldType = FieldInfo.FieldType.MARKDOWN)
     private Value<String> pricing;

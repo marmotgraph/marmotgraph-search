@@ -58,6 +58,9 @@ public class BehavioralProtocol implements TargetInstance {
     @FieldInfo(label = "Name", layout = "header", labelHidden = true)
     private Value<String> title;
 
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
     @FieldInfo(label = "Official abbreviation")
     private Value<String> officialAbbreviation;
 

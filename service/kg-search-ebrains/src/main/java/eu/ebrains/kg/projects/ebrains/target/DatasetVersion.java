@@ -57,6 +57,9 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
     private Value<String> type = new Value<>("Dataset");
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

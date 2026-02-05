@@ -57,6 +57,9 @@ public class WorkflowRecipeVersion implements TargetInstance, VersionedInstance,
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
     @ElasticSearchInfo(type = "keyword")

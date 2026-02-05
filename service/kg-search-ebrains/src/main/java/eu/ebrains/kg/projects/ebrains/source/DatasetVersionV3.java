@@ -34,6 +34,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -118,9 +119,14 @@ public class DatasetVersionV3 extends SourceInstance implements IsCiteable, HasM
         private String openDataIn;
         private String service;
         private String name;
+        private String displayLabel;
 
         public String displayLabel() {
-            return this.getName() != null && this.getService() != null ? String.format("Open %s in %s", this.getName(), this.getService()) : null;
+            String label = this.getDisplayLabel();
+            if(!StringUtils.hasText(label)){
+                label = this.getName();
+            }
+            return StringUtils.hasText(label) && StringUtils.hasText(this.getService()) ? String.format("Open %s in %s", label, this.getService()) : null;
         }
     }
 

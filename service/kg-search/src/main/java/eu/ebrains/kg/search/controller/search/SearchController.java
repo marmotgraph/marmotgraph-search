@@ -428,11 +428,12 @@ public class SearchController extends FacetAggregationUtils {
         if (v.getTitle() != null && StringUtils.isNotBlank(v.getTitle().getValue())) {
             res.put("title", v.getTitle().getValue());
         }
-
+        if (v.getWatermark() != null && StringUtils.isNotBlank(v.getWatermark().getValue())) {
+            res.put("watermark", v.getWatermark().getValue());
+        }
         if (v.getDisclaimer() != null && StringUtils.isNotBlank(v.getDisclaimer().getValue())) {
             res.put("disclaimer", v.getDisclaimer().getValue());
         }
-
         if (v.getMeta() != null) {
             res.put("meta", v.getMeta());
             v.setMeta(null);
