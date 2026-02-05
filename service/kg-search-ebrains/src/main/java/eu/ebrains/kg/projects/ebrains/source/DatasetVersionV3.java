@@ -52,8 +52,6 @@ public class DatasetVersionV3 extends SourceInstance implements IsCiteable, HasM
     private List<String> supportChannels;
     @JsonDeserialize(using = ListOrSingleStringAsListDeserializer.class)
     private List<String> keyword;
-    @JsonDeserialize(using = ListOrSingleStringAsListDeserializer.class)
-    private List<String> ethicsAssessment;
     private String version;
     private String versionInnovation;
     private Date releaseDate;

@@ -281,13 +281,6 @@
       ]
     },
     {
-      "propertyName": "query:ethicsAssessment",
-      "path": [
-        "https://openminds.ebrains.eu/vocab/ethicsAssessment",
-        "http://schema.org/identifier"
-      ]
-    },
-    {
       "propertyName": "query:dataset",
       "path": {
         "@id": "https://openminds.ebrains.eu/vocab/hasVersion",

@@ -318,17 +318,6 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
             d.setKeywords(value(datasetVersion.getKeyword()));
         }
 
-        if (datasetVersion.getEthicsAssessment() != null) {
-            String ethicsAssessment = null;
-            if (datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/notRequired")) {
-                ethicsAssessment = "not-required";
-            } else if (datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliantNonSensitive") || datasetVersion.getEthicsAssessment().contains(Constants.OPENMINDS_INSTANCES + "/ethicsAssessment/EUCompliantSensitive")) {
-                ethicsAssessment = "EU-compliant";
-            }
-            d.setEthicsAssessment(value(ethicsAssessment));
-        }
-
-
         final List<File> specialFiles = datasetVersion.getSpecialFiles();
 
         final List<File> dataDescriptors = specialFiles.stream().filter(s -> s.getRoles().contains(Constants.OPENMINDS_INSTANCES + "/fileUsageRole/dataDescriptor")).collect(Collectors.toList());

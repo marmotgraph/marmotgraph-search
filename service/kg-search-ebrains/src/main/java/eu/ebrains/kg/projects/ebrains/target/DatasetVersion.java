@@ -136,9 +136,6 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
     @FieldInfo(label = "License", type = FieldInfo.Type.TEXT, facetOrder = FieldInfo.FacetOrder.BYVALUE)
     private TargetExternalReference licenseInfo;
 
-    @FieldInfo(label = "Ethics assessment")
-    private Value<String> ethicsAssessment;
-
     @FieldInfo(label = "Project", boost = 10, order = 3, useForSuggestion = true)
     private List<TargetInternalReference> projects;
 
