@@ -35,7 +35,6 @@
 
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import profiles from '../../data/profiles';
 import useAuth from '../../hooks/useAuth';
 import DefaultMockAuthProvider from './DefaultMockAuthProvider';
 import type AuthAdapter from '../../services/AuthAdapter';
@@ -77,10 +76,8 @@ interface AuthProviderProps extends AuthProviderPropsType {
 // loginRequired allow to overrule the onLoad option of the keycloak adapter when the authentidation should differ depenging on the route
 const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthProviderProps) => {
   // @ts-expect-error n/a
-  const profile: string = useSelector(state => state.application.profile);
-
-  // @ts-expect-error n/a
-  if(!profiles[profile]['login']){
+  const configuration = useSelector(state => state.application.config);
+  if(!configuration.login){
     loginRequired = false;
   }
   const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';

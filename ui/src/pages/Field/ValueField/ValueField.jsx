@@ -26,10 +26,10 @@ import { Details } from '../../../components/Details/Details';
 import { Link } from '../../../components/Link/Link';
 import { Tag } from '../../../components/Tag/Tag';
 import { Text } from '../../../components/Text/Text';
-import { termsOfUse } from '../../../data/termsOfUse.jsx';
 import Thumbnail from '../../../features/image/Thumbnail';
 import InstanceLink from '../../../features/instance/InstanceLink';
 import './ValueField.css';
+import {useSelector} from 'react-redux';
 
 const getUrlLocation = url => {
   let path = url.split('/');
@@ -44,6 +44,7 @@ const ValueFieldBase = (renderUserInteractions = true) => {
     if (!data || !mapping) {
       return null;
     }
+    const configuration = useSelector(state => state.application.config);
     const instanceIdLink = (!!renderUserInteractions && !!data.reference)?data.reference:null;
     const hasInstanceLink = !!instanceIdLink;
     const hasLink = !!renderUserInteractions && !!data.url;
@@ -51,7 +52,7 @@ const ValueFieldBase = (renderUserInteractions = true) => {
     const isAFileLink = typeof data.url === 'string' && data.url.startsWith('https://object.cscs.ch');
     const hasExternalLink = data.url && !isAFileLink && getUrlLocation(data.url) !== window.location.origin;
     const hasAnyLink = hasInstanceLink || hasMailToLink || hasLink;
-    const isLinkWithIcon = mapping.linkIcon && data.url ? true : false;
+    const isLinkWithIcon = mapping.linkIcon && data.url;
     const isTag = !hasAnyLink && !!mapping.tagIcon;
     const isMarkdown = !!renderUserInteractions && !hasAnyLink && !isTag && !!mapping.isMarkdown;
     const showPreview = !!renderUserInteractions && data.previewUrl && (typeof data.previewUrl === 'string' || typeof data.previewUrl.url === 'string');
@@ -114,7 +115,7 @@ const ValueFieldBase = (renderUserInteractions = true) => {
           <span className="field-filesize">({data.fileSize})</span>
           : null}
         {!!mapping.showTermsOfUse && (
-          <Details toggleLabel="Terms of use" content={termsOfUse} />
+          <Details toggleLabel="Terms of use" content={configuration.termsOfUse} />
         )}
       </div>
     );

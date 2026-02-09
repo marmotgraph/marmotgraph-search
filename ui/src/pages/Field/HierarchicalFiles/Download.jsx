@@ -27,13 +27,14 @@ import React, { useState } from 'react';
 
 import { InfoPanel } from '../../../components/InfoPanel/InfoPanel';
 
-import { termsOfUse } from '../../../data/termsOfUse.jsx';
 import Matomo from '../../../services/Matomo';
 
 import './Download.css';
+import {useSelector} from 'react-redux';
 
 const Download = ({name, type, url}) => {
 
+  const configuration = useSelector(state => state.application.config);
   const [showTermsOfUse, toggleTermsOfUse] = useState(false);
 
   const trackDownload = e => {
@@ -58,7 +59,7 @@ const Download = ({name, type, url}) => {
       </a>
       <div className="kgs-hierarchical-files__info_agreement"><span>By downloading the {type} you agree to the <button onClick={openTermsOfUse}><strong>Terms of use</strong></button></span></div>
       {showTermsOfUse && (
-        <InfoPanel text={termsOfUse} onClose={closeTermsOfUse} />
+        <InfoPanel text={configuration.termsOfUse} onClose={closeTermsOfUse} />
       )}
     </>
   );

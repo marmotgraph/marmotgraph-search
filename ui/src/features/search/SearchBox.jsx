@@ -25,21 +25,21 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import {connect, useSelector} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 
-import { help } from '../../data/help.jsx';
 import { searchToObj } from '../../helpers/BrowserHelpers';
 import { withFloatingScrollEventsSubscription } from '../../helpers/withFloatingScrollEventsSubscription';
 import { setInfo } from '../application/applicationSlice';
 import { setQueryString } from './searchSlice';
 
 import './SearchBox.css';
-import profiles from "../../data/profiles";
 
-const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating, onHelp }) => {
-  const profile = useSelector(state => state.application.profile);
+const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }) => {
+  const configuration = useSelector(state => state.application.config);
   const textInput = useRef();
   const [value, setValue] = useState(queryString);
+  const dispatch = useDispatch();
+  const help = useSelector(state => state.application.custom.help);
 
   const getQueryFromUrl = () => {
     const q = searchToObj()['q'];
@@ -78,6 +78,10 @@ const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating, o
     setValue(queryString);
   }, [queryString]);
 
+  const onHelp = () => {
+    dispatch(setInfo(help));
+  }
+
   const handleChange = e => {
     textInput && textInput.current && textInput.current.focus();
     setValue(e.target.value);
@@ -103,7 +107,7 @@ const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating, o
           <FontAwesomeIcon icon={faSearch} size="2x" className="kg-search-bar__icon" />
           <input className="kg-search-bar"
             type="text"
-            placeholder={'Search '+profiles[profile]["searchExample"]}
+            placeholder={'Search '+configuration.searchExample}
             aria-label="Search"
             value={value}
             onChange={handleChange}
@@ -125,8 +129,8 @@ const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating, o
 
 };
 
-const SeachBoxComponent = ({ queryString, isFloating, relatedElements, onHelp, onQueryStringChange }) => (
-  <SeachBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onHelp={onHelp} onQueryStringChange={onQueryStringChange} />
+const SeachBoxComponent = ({ queryString, isFloating, relatedElements, onQueryStringChange }) => (
+  <SeachBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onQueryStringChange={onQueryStringChange} />
 );
 
 const SearchBoxContainer = connect(
@@ -136,9 +140,6 @@ const SearchBoxContainer = connect(
     queryString: state.search.queryString
   }),
   dispatch => ({
-    onHelp: () => {
-      dispatch(setInfo(help));
-    },
     onQueryStringChange: value => {
       dispatch(setQueryString(value));
     }

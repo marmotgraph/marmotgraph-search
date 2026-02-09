@@ -34,7 +34,6 @@ import { setGroup } from '../groups/groupsSlice';
 import { reset } from '../instance/instanceSlice';
 import { setPage } from '../search/searchSlice';
 
-import profiles from "../../data/profiles";
 import './SignIn.css';
 
 const Group = ({ group }) => {
@@ -67,10 +66,10 @@ const Group = ({ group }) => {
 const SignIn = ({ className, Tag }) => {
 
   const { isUninitialized, isAuthenticating, isAuthenticated, isLoggingOut, login, logout } = useAuth();
-  const profile = useSelector(state => state.application.profile);
+  const configuration = useSelector(state => state.application.config);
   const groups = useSelector(state => state.groups.groups);
 
-  if(!profiles[profile]["login"]){
+  if(!configuration.login){
     return null;
   }
 

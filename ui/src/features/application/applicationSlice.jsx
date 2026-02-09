@@ -37,7 +37,44 @@ const initialState = {
     localStorage.getItem(TermsShortNoticeLocalStorageKey) !==
       termsCurrentVersion,
   theme: localStorage.getItem('currentTheme'),
-  profile: ""
+  configuration: {
+    commit: null,
+    sentry: {
+      dsn: null,
+      release:null,
+      environment: null
+    },
+    keycloak: {
+      realm: null,
+      url: null,
+      clientId: null,
+      authEndpointAvailable: false
+    },
+    matomo: {
+      url: null,
+      typeMappings: null
+    },
+    config: {
+      home: null,
+      name: null,
+      copyright: null,
+      copyrightSince: null,
+      copyrightAddition: null,
+      searchExample: null,
+      logo: null,
+      logoDark: null,
+      login: false
+    },
+    types: [],
+    typeMappings: {},
+    custom: {
+      termsOfUse: null,
+      help: null,
+      navbarItems: null,
+      footerContent: null,
+      footerSocial: null
+    }
+  }
 };
 
 const applicationSlice = createSlice({
@@ -47,9 +84,11 @@ const applicationSlice = createSlice({
     setTheme(state, action) {
       state.theme = action.payload;
     },
-    setProfile(state, action) {
-      state.profile = action.payload;
-      document.body.setAttribute('profile', state.profile);
+    setConfig(state, action) {
+      state.config = action.payload;
+    },
+    setCustom(state, action) {
+      state.custom = action.payload;
     },
     setCommit(state, action) {
       state.commit = action.payload;
@@ -68,5 +107,5 @@ const applicationSlice = createSlice({
   }
 });
 
-export const { setTheme, setProfile, setCommit, agreeTermsShortNotice, setInfo } = applicationSlice.actions;
+export const { setTheme, setConfig, setCustom, setCommit, agreeTermsShortNotice, setInfo } = applicationSlice.actions;
 export default applicationSlice.reducer;

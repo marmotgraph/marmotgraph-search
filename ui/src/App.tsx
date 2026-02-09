@@ -21,9 +21,9 @@
  *
  */
 
-import React, { useEffect, useState, useRef, Suspense } from 'react';
-import { Provider, useDispatch } from 'react-redux';
-import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate, matchPath } from 'react-router-dom';
+import React, {Suspense, useEffect, useRef, useState} from 'react';
+import {Provider, useDispatch} from 'react-redux';
+import {BrowserRouter, matchPath, Navigate, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import 'normalize.css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
@@ -31,26 +31,24 @@ import FetchingPanel from './components/FetchingPanel/FetchingPanel';
 import Notification from './components/Notification/Notification';
 import notification from './data/notification';
 import ErrorBoundary from './features/ErrorBoundary';
-import { InfoPanel } from './features/InfoPanel';
+import {InfoPanel} from './features/InfoPanel';
 import AuthProvider from './features/auth/AuthProvider';
 import Authenticate from './features/auth/Authenticate';
 import Groups from './features/groups/Groups';
-import { setInitialGroup, setUseGroups } from './features/groups/groupsSlice';
+import {setInitialGroup, setUseGroups} from './features/groups/groupsSlice';
 import Settings from './features/settings/Settings';
 import Theme from './features/theme/Theme';
-import { searchToObj, getHashKey } from './helpers/BrowserHelpers';
+import {getHashKey, searchToObj} from './helpers/BrowserHelpers';
 import Footer from './pages/Footer/Footer';
 import Header from './pages/Header/Header';
 import type AuthAdapter from './services/AuthAdapter';
-import type { Store } from 'redux';
+import type {Store} from 'redux';
 
 const SearchComp = React.lazy(() => import('./pages/Search.jsx'));
 const InstanceComp = React.lazy(() => import('./pages/Instance.jsx'));
 const PreviewComp = React.lazy(() => import('./pages/Preview.jsx'));
 
-import './App.css';
-
-const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
+const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => {
   const initializedRef = useRef(false);
 
   const [isReady, setReady] = useState(false);
@@ -66,23 +64,23 @@ const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
     if (!initializedRef.current) {
       initializedRef.current = true;
 
-      const isLive = !!matchPath({path:'/live/*'}, location.pathname);
-      const group = (searchToObj() as {[key:string]: string})['group'];
+      const isLive = !!matchPath({path: '/live/*'}, location.pathname);
+      const group = (searchToObj() as { [key: string]: string })['group'];
       const hasGroup = !isLive && (group === 'public' || group === 'curated');
       const hasAuthSession = !!getHashKey('session_state');
-      const noSilentSSO = (searchToObj() as {[key:string]: string})['noSilentSSO'];
-      setIsNoSilentSSO(window.location.host.startsWith('localhost') || (noSilentSSO === 'true' && !isLive && !group)  );
+      const noSilentSSO = (searchToObj() as { [key: string]: string })['noSilentSSO'];
+      setIsNoSilentSSO(window.location.host.startsWith('localhost') || (noSilentSSO === 'true' && !isLive && !group));
 
       // search with instance + refresh
       const instance = !hasAuthSession && location.pathname === '/' && !location.hash.startsWith('#error') && location.hash.substring(1);
       if (instance) {
-        const url = `/instances/${instance}${hasGroup?('?group=' + group):''}`;
+        const url = `/instances/${instance}${hasGroup ? ('?group=' + group) : ''}`;
         navigate(url, {replace: true});
       }
 
       const authMode = hasAuthSession || isLive || hasGroup;
       const useGroups = hasAuthSession && !isLive;
-      if(hasGroup) {
+      if (hasGroup) {
         dispatch(setInitialGroup(group));
       }
 
@@ -103,37 +101,38 @@ const App = ({ authAdapter}: { authAdapter: AuthAdapter; }) => {
   }
 
   return (
-    <AuthProvider adapter={authAdapter} loginRequired={loginRequired} noSilentSSO={isNoSilentSSO} >
-      <Theme />
-      <Header />
-      <main>
-        <Notification className={undefined} text={notification} />
-        <ErrorBoundary>
-          <Settings authAdapter={authAdapter} >
+    <Settings authAdapter={authAdapter}>
+      <AuthProvider adapter={authAdapter} loginRequired={loginRequired} noSilentSSO={isNoSilentSSO}>
+        <Theme/>
+        <Header/>
+        <main>
+          <Notification className={undefined} text={notification}/>
+          <ErrorBoundary>
+
             <Authenticate>
               <Groups>
-                <Suspense fallback={<FetchingPanel message="Loading resource..." />}>
+                <Suspense fallback={<FetchingPanel message="Loading resource..."/>}>
                   <Routes>
-                    <Route path="/" element={<SearchComp />} />
-                    <Route path="/instances/:id" element={<InstanceComp />} />
-                    <Route path="/instances/:type/:id" element={<InstanceComp />} />
-                    <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp />} />
-                    <Route path="/live/:id" element={<PreviewComp />} />
-                    <Route path="*" element={<Navigate to="/" replace={true} />} />
+                    <Route path="/" element={<SearchComp/>}/>
+                    <Route path="/instances/:id" element={<InstanceComp/>}/>
+                    <Route path="/instances/:type/:id" element={<InstanceComp/>}/>
+                    <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp/>}/>
+                    <Route path="/live/:id" element={<PreviewComp/>}/>
+                    <Route path="*" element={<Navigate to="/" replace={true}/>}/>
                   </Routes>
                 </Suspense>
               </Groups>
             </Authenticate>
-          </Settings>
-        </ErrorBoundary>
-        <InfoPanel />
-      </main>
-      <Footer />
-    </AuthProvider>
+          </ErrorBoundary>
+          <InfoPanel/>
+        </main>
+        <Footer/>
+      </AuthProvider>
+    </Settings>
   );
 };
 
-const Component = ({ store, authAdapter}: { store: Store, authAdapter: AuthAdapter; }) => (
+const Component = ({store, authAdapter}: { store: Store, authAdapter: AuthAdapter; }) => (
   <Provider store={store}>
     <BrowserRouter>
       <App authAdapter={authAdapter}/>

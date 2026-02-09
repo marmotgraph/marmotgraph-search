@@ -1,0 +1,58 @@
+/*
+ * Copyright 2018 - 2021 Swiss Federal Institute of Technology Lausanne (EPFL)
+ * Copyright 2021 - 2024 EBRAINS AISBL
+ * Copyright 2024 - 2026 ETH Zurich
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ *  This open source software code was developed in part or in whole in the
+ *  Human Brain Project, funded from the European Union's Horizon 2020
+ *  Framework Programme for Research and Innovation under
+ *  Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+ *  (Human Brain Project SGA1, SGA2 and SGA3).
+ */
+
+package org.marmotgraph.search.api;
+
+import lombok.AllArgsConstructor;
+import org.marmotgraph.search.common.security.UserRoles;
+import org.marmotgraph.search.common.services.DOICitationFormatter;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
+
+@RequestMapping(value = "/internal", produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
+@AllArgsConstructor
+@SuppressWarnings("java:S1452") // we keep the generics intentionally
+public class Internal {
+    private final DOICitationFormatter doiCitationFormatter;
+
+    @PostMapping("/doiCitations")
+    @UserRoles.MustBeAdmin
+    public ResponseEntity<String> refreshDOICitation(@RequestParam("doi") String doi, @RequestParam(value = "style", defaultValue = "apa") String style, @RequestParam(value = "contentType", defaultValue = "text/x-bibliography") String contentType, Principal principal) {
+        return ResponseEntity.ok(this.doiCitationFormatter.refreshDOICitation(doi, style, contentType));
+    }
+
+    @PostMapping("/evictDoiCitations")
+    @UserRoles.MustBeAdmin
+    public ResponseEntity<Void> evictDoiCitations() {
+        this.doiCitationFormatter.evictAll();
+        return ResponseEntity.ok().build();
+    }
+}

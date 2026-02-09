@@ -182,7 +182,7 @@ body[profile="tefhealth"] .footer__menu{
         grid-template-columns: 1fr;
         grid-template-areas:
         "menu2"
-        "menu3"  
+        "menu3"
         "menu1"
         "hbpEu";
     }
