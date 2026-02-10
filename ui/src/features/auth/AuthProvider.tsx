@@ -85,8 +85,8 @@ const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthPro
   if (canBypassAuth) {
     console.info('%cAuth: Authentication is disabled for local development', 'color: #f88900;');
   }
-  // @ts-expect-error n/a
-  const Provider = canBypassAuth || !profiles[profile]['login'] ? DefaultMockAuthProvider : adapter.authProvider;
+
+  const Provider = canBypassAuth || !configuration.login ? DefaultMockAuthProvider : adapter.authProvider;
 
   return (
     <Provider adapter={adapter} loginRequired={loginRequired}>
