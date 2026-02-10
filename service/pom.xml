@@ -156,75 +156,76 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>org.sonatype.central</groupId>-->
-            <!--                <artifactId>central-publishing-maven-plugin</artifactId>-->
-            <!--                <version>0.6.0</version>-->
-            <!--                <extensions>true</extensions>-->
-            <!--                <configuration>-->
-            <!--                    <publishingServerId>central</publishingServerId>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.4.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.12.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>sign-artifacts</id>-->
-            <!--                        <phase>verify</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>sign</goal>-->
-            <!--                        </goals>-->
-            <!--                        <configuration>-->
-            <!--                            <keyname>${gpg.keyname}</keyname>-->
-            <!--                            <passphraseServerId>${gpg.keyname}</passphraseServerId>-->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
-        </plugins>
-    </build>
+<!--    <build>-->
+<!--        <finalName>${project.artifactId}</finalName>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            &lt;!&ndash;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.15.0</version>-->
+<!--                <configuration>-->
+<!--                    <compilerArgs>-->
+<!--                        <arg>-parameters</arg>-->
+<!--                    </compilerArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <plugin>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <groupId>org.sonatype.central</groupId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <artifactId>central-publishing-maven-plugin</artifactId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <version>0.6.0</version>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <extensions>true</extensions>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <configuration>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <publishingServerId>central</publishingServerId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </configuration>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </plugin>&ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-source-plugin</artifactId>-->
+<!--                <version>3.4.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-sources</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar-no-fork</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>3.12.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            &lt;!&ndash;            <plugin>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <artifactId>maven-gpg-plugin</artifactId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <executions>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <execution>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <id>sign-artifacts</id>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <phase>verify</phase>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <goals>&ndash;&gt;-->
+<!--            &lt;!&ndash;                            <goal>sign</goal>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        </goals>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <configuration>&ndash;&gt;-->
+<!--            &lt;!&ndash;                            <keyname>${gpg.keyname}</keyname>&ndash;&gt;-->
+<!--            &lt;!&ndash;                            <passphraseServerId>${gpg.keyname}</passphraseServerId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        </configuration>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    </execution>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </executions>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </plugin>&ndash;&gt;-->
+<!--        </plugins>-->
+<!--    </build>-->
 </project>
