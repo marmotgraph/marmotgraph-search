@@ -63,7 +63,7 @@ public class JwtUserInfoConverter implements Converter<Jwt, AbstractAuthenticati
 
         private final ClientRegistrationRepository clients;
         private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService = new DefaultOAuth2UserService();
-        private final UserRoles roleMapper;
+        //private final UserRoles roleMapper;
         private final UserAuthorization userRoleMapper;
 
 
