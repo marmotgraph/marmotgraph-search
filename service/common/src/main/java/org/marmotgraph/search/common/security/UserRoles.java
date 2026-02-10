@@ -26,7 +26,6 @@ package org.marmotgraph.search.common.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +35,8 @@ import java.lang.annotation.RetentionPolicy;
 
 @Component
 public class UserRoles{
+
+    private static final String ROLE_IN_PROGRESS = "ROLE_IN_PROGRESS";
 
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
@@ -50,21 +51,22 @@ public class UserRoles{
     }
 
     public static boolean hasInProgressRole(JwtAuthenticationToken user){
-        return user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_IN_PROGRESS"));
+
+        return user.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_IN_PROGRESS));
     }
 
 
-    public String convert(String source) {
-        String role = switch (source) {
-            case "collab-kg-search-in-progress-administrator":
-            case "collab-kg-search-in-progress-editor":
-            case "collab-kg-search-in-progress-viewer":
-                yield "IN_PROGRESS";
-            case "group-kg-devs":
-                yield "ADMIN";
-            default:
-                yield null;
-        };
-        return role == null ? null : "ROLE_" + role;
-    }
+//    public String convert(String source) {
+//        String role = switch (source) {
+//            case "collab-kg-search-in-progress-administrator":
+//            case "collab-kg-search-in-progress-editor":
+//            case "collab-kg-search-in-progress-viewer":
+//                yield "IN_PROGRESS";
+//            case "group-kg-devs":
+//                yield "ADMIN";
+//            default:
+//                yield null;
+//        };
+//        return role == null ? null : "ROLE_" + role;
+//    }
 }

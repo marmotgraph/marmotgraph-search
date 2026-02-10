@@ -36,6 +36,8 @@
     <artifactId>search</artifactId>
     <version>4.0.0</version>
     <name>MarmotGraph Search</name>
+    <description>This is the parent of the "Search" component - which is the API layer for the MarmotGraph Search</description>
+    <url>https://marmotgraph.org</url>
     <dependencies>
         <dependency>
             <groupId>org.marmotgraph.search</groupId>

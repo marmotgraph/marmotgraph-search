@@ -31,6 +31,7 @@ import org.marmotgraph.search.common.controller.translation.models.TranslatorMod
 import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.target.TargetInstance;
+import org.marmotgraph.search.common.security.UserAuthorization;
 import org.marmotgraph.search.common.security.UserRoles;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
@@ -58,6 +59,7 @@ public class Search {
     private final KG kgV3;
     private final DOICitationFormatter doiCitationFormatter;
     private final TranslatorRegistry translatorRegistry;
+    private final UserAuthorization userAuthorization;
 
 
     @GetMapping("/citation")
@@ -70,16 +72,15 @@ public class Search {
                 .body(citation);
     }
 
+
+
     @GetMapping("/groups")
-    public ResponseEntity<?> getGroups(JwtAuthenticationToken token) {
-        if (UserRoles.hasInProgressRole(token)) {
-            return ResponseEntity.ok(Arrays.asList(
-                    Map.of("value", "curated",
-                            "label", "in progress"),
-                    Map.of("value", "public",
-                            "label", "publicly released")
-            ));
-        } else {
+    public ResponseEntity<List<UserAuthorization.GroupResponse>> getGroups(JwtAuthenticationToken token) {
+        List<UserAuthorization.GroupResponse> groups = userAuthorization.getGroups(token);
+        if(groups != null){
+            return ResponseEntity.ok(groups);
+        }
+        else {
             return ResponseEntity.ok(Collections.emptyList());
         }
     }
@@ -136,7 +137,7 @@ public class Search {
         if (repositoryUUID == null) {
             return ResponseEntity.badRequest().build();
         }
-        if (canReadLiveFiles(token, repositoryUUID)) {
+        if (userAuthorization.canReadLiveFiles(token, repositoryUUID)) {
             try {
                 return searchController.getFilesFromRepo(DataStage.IN_PROGRESS, repositoryUUID, format, groupingType);
             } catch (WebClientResponseException e) {
@@ -154,7 +155,7 @@ public class Search {
         if (repositoryUUID == null) {
             return ResponseEntity.badRequest().build();
         }
-        if (canReadLiveFiles(token, repositoryUUID)) {
+        if (userAuthorization.canReadLiveFiles(token, repositoryUUID)) {
             return searchController.getFileFormatsFromRepo(DataStage.IN_PROGRESS, repositoryUUID);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -169,7 +170,7 @@ public class Search {
         if (repositoryUUID == null) {
             return ResponseEntity.badRequest().build();
         }
-        if (canReadLiveFiles(token, repositoryUUID)) {
+        if (userAuthorization.canReadLiveFiles(token, repositoryUUID)) {
             //kgV3.executeQueryForInstance("clazz", DataStage.IN_PROGRESS, "queryId", repositoryId, false)
             return searchController.getGroupingTypesFromRepo(DataStage.IN_PROGRESS, repositoryUUID);
         } else {

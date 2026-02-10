@@ -36,6 +36,8 @@
     <artifactId>common</artifactId>
     <version>4.0.0</version>
     <name>MarmotGraph Search Common</name>
+    <description>This is the common library for the generic MarmotGraph Search component</description>
+    <url>https://marmotgraph.org</url>
     <dependencies>
 
         <dependency>

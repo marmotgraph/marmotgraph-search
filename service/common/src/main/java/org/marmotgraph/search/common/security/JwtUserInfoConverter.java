@@ -23,11 +23,11 @@
  */
 
 package org.marmotgraph.search.common.security;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -40,8 +40,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Component
@@ -59,37 +57,36 @@ public class JwtUserInfoConverter implements Converter<Jwt, AbstractAuthenticati
     }
 
 
+    @AllArgsConstructor
     @Component
     public static class UserInfo {
 
         private final ClientRegistrationRepository clients;
         private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService = new DefaultOAuth2UserService();
         private final UserRoles roleMapper;
+        private final UserAuthorization userRoleMapper;
 
-        public UserInfo(ClientRegistrationRepository clients, UserRoles roleMapper) {
-            this.clients = clients;
-            this.roleMapper = roleMapper;
-        }
 
-        @Cacheable(value="userInfoCache", key="#token")
+        @Cacheable(value="uselocalhostrInfoCache", key="#token")
         public Set<? extends GrantedAuthority> getAuthorities(OAuth2AccessToken token) {
             ClientRegistration clientRegistration = this.clients.findByRegistrationId("kg");
             OAuth2UserRequest oauth2UserRequest = new OAuth2UserRequest(clientRegistration, token);
             final OAuth2User oAuth2User = oauth2UserService.loadUser(oauth2UserRequest);
-            final Object roles = oAuth2User.getAttribute("roles");
-            if (roles instanceof Map<?, ?> roleMap) {
-                return Stream.concat(getStream(roleMap, "team"),  getStream(roleMap, "group")).collect(Collectors.toSet());
-            }
-            return Collections.emptySet();
+            return userRoleMapper.extractAuthorities(oAuth2User);
+//            final Object roles = oAuth2User.getAttribute("roles");
+//            if (roles instanceof Map<?, ?> roleMap) {
+//                return Stream.concat(getStream(roleMap, "team"),  getStream(roleMap, "group")).collect(Collectors.toSet());
+//            }
+//            return Collections.emptySet();
         }
-
-        private Stream<GrantedAuthority> getStream(Map<?,?> roleMap, String key){
-            final Object claim = roleMap.get(key);
-            if(claim instanceof List<?>){
-               return ((List<?>) claim).stream().filter(t -> t instanceof String).map(t -> (String) t).map(roleMapper::convert).filter(Objects::nonNull).map(SimpleGrantedAuthority::new);
-            }
-            return Stream.empty();
-        }
+//
+//        private Stream<GrantedAuthority> getStream(Map<?,?> roleMap, String key){
+//            final Object claim = roleMap.get(key);
+//            if(claim instanceof List<?>){
+//               return ((List<?>) claim).stream().filter(t -> t instanceof String).map(t -> (String) t).map(roleMapper::convert).filter(Objects::nonNull).map(SimpleGrantedAuthority::new);
+//            }
+//            return Stream.empty();
+//        }
 
     }
 

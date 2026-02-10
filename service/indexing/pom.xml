@@ -36,7 +36,8 @@
     <artifactId>indexing</artifactId>
     <version>4.0.0</version>
     <name>MarmotGraph Search Indexing</name>
-
+    <description>This is the parent of the "Indexing" component - which is used forMarmotGraph Search</description>
+    <url>https://marmotgraph.org</url>
     <dependencies>
         <dependency>
             <groupId>org.marmotgraph.search</groupId>
