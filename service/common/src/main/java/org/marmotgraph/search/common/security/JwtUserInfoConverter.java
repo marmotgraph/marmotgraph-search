@@ -67,7 +67,7 @@ public class JwtUserInfoConverter implements Converter<Jwt, AbstractAuthenticati
         private final UserAuthorization userRoleMapper;
 
 
-        @Cacheable(value="uselocalhostrInfoCache", key="#token")
+        @Cacheable(value="userInfoCache", key="#token")
         public Set<? extends GrantedAuthority> getAuthorities(OAuth2AccessToken token) {
             ClientRegistration clientRegistration = this.clients.findByRegistrationId("kg");
             OAuth2UserRequest oauth2UserRequest = new OAuth2UserRequest(clientRegistration, token);
