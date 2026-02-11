@@ -51,7 +51,6 @@ public class UserRoles{
     }
 
     public static boolean hasInProgressRole(JwtAuthenticationToken user){
-
         return user.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_IN_PROGRESS));
     }
 
