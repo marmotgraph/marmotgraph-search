@@ -76,7 +76,6 @@ const Authenticate = ({ children }: AuthenticateProps) => {
         location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, '')
       );
     };
-
     if (isTokenExpired) {
       return (
         <BgError
@@ -88,6 +87,10 @@ const Authenticate = ({ children }: AuthenticateProps) => {
           retryVariant="primary"
         />
       );
+    }
+
+    if(loginRequired && !isAuthenticated){
+      login();
     }
 
     if (isError) {

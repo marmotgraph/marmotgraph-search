@@ -151,7 +151,6 @@ const useKeycloak = (adapter: KeycloakAuthAdapter, loginRequired?: boolean) : Au
     setTokenExpired(true);
     setAuthenticated(false);
   };
-
   return {
     tokenProvider: adapter.tokenProvider,
     isTokenExpired: isTokenExpired,

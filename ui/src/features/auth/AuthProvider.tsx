@@ -33,7 +33,7 @@
  *
  */
 
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 import DefaultMockAuthProvider from './DefaultMockAuthProvider';
@@ -59,7 +59,7 @@ const AuthSetup = ({ adapter, children }: AuthSetupProps) => {
     if (adapter.unauthorizedRequestResponseHandlerProvider) {
       adapter.unauthorizedRequestResponseHandlerProvider.unauthorizedRequestResponseHandler = () => {
         if (isAuthenticated) {
-          logout();
+          logout().then(() => {});
         }
       };
     }
@@ -73,23 +73,22 @@ interface AuthProviderProps extends AuthProviderPropsType {
   noSilentSSO?: boolean;
 }
 
-// loginRequired allow to overrule the onLoad option of the keycloak adapter when the authentidation should differ depenging on the route
-const AuthProvider = ({ adapter, loginRequired, noSilentSSO, children }: AuthProviderProps) => {
+const AuthProvider = ({ adapter, children }: AuthProviderProps) => {
   // @ts-expect-error n/a
   const configuration = useSelector(state => state.application.config);
-  if(!configuration.login){
-    loginRequired = false;
-  }
-  const isLoginRequired = loginRequired ?? adapter.initOptions?.onLoad === 'login-required';
-  const canBypassAuth = noSilentSSO || (import.meta.env.VITE_APP_BYPASS_AUTH === 'true' && window.location.host.startsWith('localhost') && !isLoginRequired);
+
+  const [loginRequired] = useState(false);
+  const [isNoSilentSSO] = useState(false);
+
+  const isLoginRequired = ((configuration.inProgressOnly && configuration.login) || loginRequired) ?? adapter.initOptions?.onLoad === 'login-required';
+  const canBypassAuth = isNoSilentSSO || (import.meta.env.VITE_APP_BYPASS_AUTH === 'true' && window.location.host.startsWith('localhost') && !isLoginRequired);
   if (canBypassAuth) {
     console.info('%cAuth: Authentication is disabled for local development', 'color: #f88900;');
   }
 
   const Provider = canBypassAuth || !configuration.login ? DefaultMockAuthProvider : adapter.authProvider;
-
   return (
-    <Provider adapter={adapter} loginRequired={loginRequired}>
+    <Provider adapter={adapter} loginRequired={isLoginRequired}>
       <AuthSetup adapter={adapter}>{children}</AuthSetup>
     </Provider>
   );

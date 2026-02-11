@@ -21,9 +21,9 @@
  *
  */
 
-import React, {Suspense, useEffect, useRef, useState} from 'react';
+import React, {Suspense} from 'react';
 import {Provider, useDispatch} from 'react-redux';
-import {BrowserRouter, matchPath, Navigate, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import 'normalize.css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
@@ -35,10 +35,8 @@ import {InfoPanel} from './features/InfoPanel';
 import AuthProvider from './features/auth/AuthProvider';
 import Authenticate from './features/auth/Authenticate';
 import Groups from './features/groups/Groups';
-import {setInitialGroup, setUseGroups} from './features/groups/groupsSlice';
 import Settings from './features/settings/Settings';
 import Theme from './features/theme/Theme';
-import {getHashKey, searchToObj} from './helpers/BrowserHelpers';
 import Footer from './pages/Footer/Footer';
 import Header from './pages/Header/Header';
 import type AuthAdapter from './services/AuthAdapter';
@@ -49,66 +47,15 @@ const InstanceComp = React.lazy(() => import('./pages/Instance.jsx'));
 const PreviewComp = React.lazy(() => import('./pages/Preview.jsx'));
 
 const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => {
-  const initializedRef = useRef(false);
-
-  const [isReady, setReady] = useState(false);
-  const [loginRequired, setLoginRequired] = useState(false);
-  const [isNoSilentSSO, setIsNoSilentSSO] = useState(false);
-
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true;
-
-      const isLive = !!matchPath({path: '/live/*'}, location.pathname);
-      const group = (searchToObj() as { [key: string]: string })['group'];
-      const hasGroup = !isLive && (group === 'public' || group === 'curated');
-      const hasAuthSession = !!getHashKey('session_state');
-      const noSilentSSO = (searchToObj() as { [key: string]: string })['noSilentSSO'];
-      setIsNoSilentSSO(window.location.host.startsWith('localhost') || (noSilentSSO === 'true' && !isLive && !group));
-
-      // search with instance + refresh
-      const instance = !hasAuthSession && location.pathname === '/' && !location.hash.startsWith('#error') && location.hash.substring(1);
-      if (instance) {
-        const url = `/instances/${instance}${hasGroup ? ('?group=' + group) : ''}`;
-        navigate(url, {replace: true});
-      }
-
-      const authMode = hasAuthSession || isLive || hasGroup;
-      const useGroups = hasAuthSession && !isLive;
-      if (hasGroup) {
-        dispatch(setInitialGroup(group));
-      }
-
-      if (authMode) {
-        if (useGroups) {
-          dispatch(setUseGroups());
-        }
-        setLoginRequired(true);
-        setReady(true);
-      } else {
-        setReady(true);
-      }
-    }
-  }, [dispatch, location.hash, location.pathname, navigate]);
-
-  if (!isReady) {
-    return null;
-  }
 
   return (
     <Settings authAdapter={authAdapter}>
-      <AuthProvider adapter={authAdapter} loginRequired={loginRequired} noSilentSSO={isNoSilentSSO}>
+      <AuthProvider adapter={authAdapter}>
         <Theme/>
         <Header/>
         <main>
           <Notification className={undefined} text={notification}/>
           <ErrorBoundary>
-
             <Authenticate>
               <Groups>
                 <Suspense fallback={<FetchingPanel message="Loading resource..."/>}>

@@ -63,7 +63,8 @@ const initialState = {
       searchExample: null,
       logo: null,
       logoDark: null,
-      login: false
+      login: false,
+      inProgressOnly: false
     },
     types: [],
     typeMappings: {},

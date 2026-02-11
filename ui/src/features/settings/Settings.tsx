@@ -21,7 +21,7 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useDispatch } from 'react-redux';
 
 import BgError from '../../components/BgError/BgError';
@@ -32,7 +32,9 @@ import { useGetSettingsQuery, getError } from '../../services/api';
 import {setCommit, setConfig, setCustom} from '../application/applicationSlice';
 import type AuthAdapter from '../../services/AuthAdapter';
 import type { ReactNode } from 'react';
-
+import {matchPath, useLocation, useNavigate} from 'react-router-dom';
+import {getHashKey, searchToObj} from '../../helpers/BrowserHelpers';
+import {setInitialGroup, setUseGroups} from '../groups/groupsSlice';
 interface SettingsProps {
   authAdapter: AuthAdapter;
   children?: ReactNode;
@@ -41,8 +43,12 @@ interface SettingsProps {
 const Settings = ({ authAdapter, children}: SettingsProps) => {
 
   const [isReady, setReady] = useState(false);
-
+  const initializedRef = useRef(false);
   const dispatch = useDispatch();
+  const [loginRequired, setLoginRequired] = useState(false);
+  const [isNoSilentSSO, setIsNoSilentSSO] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const {
     data: settings,
@@ -62,10 +68,37 @@ const Settings = ({ authAdapter, children}: SettingsProps) => {
       dispatch(setConfig(settings?.config));
       dispatch(setCustom(settings?.custom));
       authAdapter.setConfig(settings.keycloak);
-      setReady(true);
+      const isLive = !!matchPath({path: '/live/*'}, location.pathname);
+      const group = settings?.config.inProgressOnly ? "curated" : (searchToObj() as { [key: string]: string })['group'];
+      const hasGroup = !isLive && (group === 'public' || group === 'curated');
+      const hasAuthSession = !!getHashKey('session_state');
+      const noSilentSSO = (searchToObj() as { [key: string]: string })['noSilentSSO'];
+
+      setIsNoSilentSSO(window.location.host.startsWith('localhost') || (noSilentSSO === 'true' && !isLive && !group));
+      const instance = !hasAuthSession && location.pathname === '/' && !location.hash.startsWith('#error') && location.hash.substring(1);
+      if (instance) {
+        const url = `/instances/${instance}${hasGroup ? ('?group=' + group) : ''}`;
+        navigate(url, {replace: true});
+      }
+
+      const authMode = hasAuthSession || isLive || hasGroup || settings?.config.inProgressOnly;
+      const useGroups = hasAuthSession && !isLive;
+      if (hasGroup) {
+        dispatch(setInitialGroup(group));
+      }
+
+      if (authMode) {
+        if (useGroups) {
+          dispatch(setUseGroups());
+        }
+        setLoginRequired(true);
+        setReady(true);
+      } else {
+        setReady(true);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings, isReady]);
+  }, [settings, isReady, dispatch, location.hash, location.pathname, navigate]);
 
   if (isError) {
     return (

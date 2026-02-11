@@ -156,24 +156,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-<!--    <build>-->
+    <build>
 <!--        <finalName>${project.artifactId}</finalName>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--            &lt;!&ndash;-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.15.0</version>-->
-<!--                <configuration>-->
-<!--                    <compilerArgs>-->
-<!--                        <arg>-parameters</arg>-->
-<!--                    </compilerArgs>-->
-<!--                </configuration>-->
-<!--            </plugin>&ndash;&gt;-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
 <!--            &lt;!&ndash;            <plugin>&ndash;&gt;-->
 <!--            &lt;!&ndash;                <groupId>org.sonatype.central</groupId>&ndash;&gt;-->
 <!--            &lt;!&ndash;                <artifactId>central-publishing-maven-plugin</artifactId>&ndash;&gt;-->
@@ -226,6 +220,6 @@
 <!--            &lt;!&ndash;                    </execution>&ndash;&gt;-->
 <!--            &lt;!&ndash;                </executions>&ndash;&gt;-->
 <!--            &lt;!&ndash;            </plugin>&ndash;&gt;-->
-<!--        </plugins>-->
-<!--    </build>-->
+        </plugins>
+    </build>
 </project>
