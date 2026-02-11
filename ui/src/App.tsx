@@ -22,7 +22,7 @@
  */
 
 import React, {Suspense} from 'react';
-import {Provider, useDispatch} from 'react-redux';
+import {Provider} from 'react-redux';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import 'normalize.css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -46,38 +46,35 @@ const SearchComp = React.lazy(() => import('./pages/Search.jsx'));
 const InstanceComp = React.lazy(() => import('./pages/Instance.jsx'));
 const PreviewComp = React.lazy(() => import('./pages/Preview.jsx'));
 
-const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => {
-
-  return (
-    <Settings authAdapter={authAdapter}>
-      <AuthProvider adapter={authAdapter}>
-        <Theme/>
-        <Header/>
-        <main>
-          <Notification className={undefined} text={notification}/>
-          <ErrorBoundary>
-            <Authenticate>
-              <Groups>
-                <Suspense fallback={<FetchingPanel message="Loading resource..."/>}>
-                  <Routes>
-                    <Route path="/" element={<SearchComp/>}/>
-                    <Route path="/instances/:id" element={<InstanceComp/>}/>
-                    <Route path="/instances/:type/:id" element={<InstanceComp/>}/>
-                    <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp/>}/>
-                    <Route path="/live/:id" element={<PreviewComp/>}/>
-                    <Route path="*" element={<Navigate to="/" replace={true}/>}/>
-                  </Routes>
-                </Suspense>
-              </Groups>
-            </Authenticate>
-          </ErrorBoundary>
-          <InfoPanel/>
-        </main>
-        <Footer/>
-      </AuthProvider>
-    </Settings>
-  );
-};
+const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => (
+  <Settings authAdapter={authAdapter}>
+    <AuthProvider adapter={authAdapter}>
+      <Theme/>
+      <Header/>
+      <main>
+        <Notification className={undefined} text={notification}/>
+        <ErrorBoundary>
+          <Authenticate>
+            <Groups>
+              <Suspense fallback={<FetchingPanel message="Loading resource..."/>}>
+                <Routes>
+                  <Route path="/" element={<SearchComp/>}/>
+                  <Route path="/instances/:id" element={<InstanceComp/>}/>
+                  <Route path="/instances/:type/:id" element={<InstanceComp/>}/>
+                  <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp/>}/>
+                  <Route path="/live/:id" element={<PreviewComp/>}/>
+                  <Route path="*" element={<Navigate to="/" replace={true}/>}/>
+                </Routes>
+              </Suspense>
+            </Groups>
+          </Authenticate>
+        </ErrorBoundary>
+        <InfoPanel/>
+      </main>
+      <Footer/>
+    </AuthProvider>
+  </Settings>
+);
 
 const Component = ({store, authAdapter}: { store: Store, authAdapter: AuthAdapter; }) => (
   <Provider store={store}>

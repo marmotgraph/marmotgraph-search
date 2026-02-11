@@ -21,20 +21,20 @@
  *
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect,  useState} from 'react';
 import { useDispatch } from 'react-redux';
 
+import {matchPath, useLocation, useNavigate} from 'react-router-dom';
 import BgError from '../../components/BgError/BgError';
 import FetchingPanel from '../../components/FetchingPanel/FetchingPanel';
+import {getHashKey, searchToObj} from '../../helpers/BrowserHelpers';
 import Matomo from '../../services/Matomo';
 import Sentry from '../../services/Sentry';
 import { useGetSettingsQuery, getError } from '../../services/api';
 import {setCommit, setConfig, setCustom} from '../application/applicationSlice';
+import {setInitialGroup, setUseGroups} from '../groups/groupsSlice';
 import type AuthAdapter from '../../services/AuthAdapter';
 import type { ReactNode } from 'react';
-import {matchPath, useLocation, useNavigate} from 'react-router-dom';
-import {getHashKey, searchToObj} from '../../helpers/BrowserHelpers';
-import {setInitialGroup, setUseGroups} from '../groups/groupsSlice';
 interface SettingsProps {
   authAdapter: AuthAdapter;
   children?: ReactNode;
@@ -43,10 +43,9 @@ interface SettingsProps {
 const Settings = ({ authAdapter, children}: SettingsProps) => {
 
   const [isReady, setReady] = useState(false);
-  const initializedRef = useRef(false);
   const dispatch = useDispatch();
-  const [loginRequired, setLoginRequired] = useState(false);
-  const [isNoSilentSSO, setIsNoSilentSSO] = useState(false);
+  const [, setLoginRequired] = useState(false);
+  const [, setIsNoSilentSSO] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -69,7 +68,7 @@ const Settings = ({ authAdapter, children}: SettingsProps) => {
       dispatch(setCustom(settings?.custom));
       authAdapter.setConfig(settings.keycloak);
       const isLive = !!matchPath({path: '/live/*'}, location.pathname);
-      const group = settings?.config.inProgressOnly ? "curated" : (searchToObj() as { [key: string]: string })['group'];
+      const group = settings?.config.inProgressOnly ? 'curated' : (searchToObj() as { [key: string]: string })['group'];
       const hasGroup = !isLive && (group === 'public' || group === 'curated');
       const hasAuthSession = !!getHashKey('session_state');
       const noSilentSSO = (searchToObj() as { [key: string]: string })['noSilentSSO'];
