@@ -96,7 +96,7 @@ public class SettingsController {
     }
     
     private void handleField(MetaModelUtils.FieldWithGenericTypeInfo f, Map<String, Object> fields) throws ClassNotFoundException {
-        Field field = f.getField();
+        Field field = f.field();
         FieldInfo info = field.getAnnotation(FieldInfo.class);
 
         if (info != null && info.visible()) {
@@ -173,7 +173,7 @@ public class SettingsController {
             if (info.type() != FieldInfo.Type.UNDEFINED) {
                 propertyDefinition.put("type", info.type().name().toLowerCase());
             }
-            Type topTypeToHandle = f.getGenericType() != null ? f.getGenericType() : MetaModelUtils.getTopTypeToHandle(field.getGenericType());
+            Type topTypeToHandle = f.genericType() != null ? f.genericType() : MetaModelUtils.getTopTypeToHandle(field.getGenericType());
             Map<String, Object> children = handleChildren(topTypeToHandle);
             propertyDefinition.putAll(children);
         }

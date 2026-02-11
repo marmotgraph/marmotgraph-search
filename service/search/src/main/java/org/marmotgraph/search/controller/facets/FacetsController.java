@@ -79,10 +79,10 @@ public class FacetsController {
     }
 
     private void handleField(MetaModelUtils.FieldWithGenericTypeInfo f, String rootType, List<Facet> facets, String parentPath, String path) throws ClassNotFoundException {
-        FieldInfo info = f.getField().getAnnotation(FieldInfo.class);
+        FieldInfo info = f.field().getAnnotation(FieldInfo.class);
         if (info != null) {
             FieldInfo defaultFieldInfo = utils.defaultFieldInfo();
-            String propertyName = utils.getPropertyName(f.getField());
+            String propertyName = utils.getPropertyName(f.field());
             if (info.facet() != defaultFieldInfo.facet()) {
                 Facet facet = new Facet(parentPath, path, propertyName);
                 facets.add(facet);
@@ -105,7 +105,7 @@ public class FacetsController {
                 //facetMissingTerm
 
             }
-            Type topTypeToHandle = f.getGenericType() != null ? f.getGenericType() : MetaModelUtils.getTopTypeToHandle(f.getField().getGenericType());
+            Type topTypeToHandle = f.genericType() != null ? f.genericType() : MetaModelUtils.getTopTypeToHandle(f.field().getGenericType());
             handleChildren(topTypeToHandle, rootType, facets, path, propertyName);
         }
     }

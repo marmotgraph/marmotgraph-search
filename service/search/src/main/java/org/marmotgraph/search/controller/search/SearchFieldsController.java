@@ -83,12 +83,12 @@ public class SearchFieldsController {
     }
 
     private void addFieldHighlight(List<String> highlights, MetaModelUtils.FieldWithGenericTypeInfo f, String parentPath) throws ClassNotFoundException {
-        FieldInfo info = f.getField().getAnnotation(FieldInfo.class);
+        FieldInfo info = f.field().getAnnotation(FieldInfo.class);
         if (info != null && !info.ignoreForSearch()) {
-            String propertyName = utils.getPropertyName(f.getField());
+            String propertyName = utils.getPropertyName(f.field());
             String path = String.format("%s%s", parentPath, propertyName);
             if (!propertyName.equals("children")) { // if (f.getField().getType() != Children.class) { if (f.getField().getDeclaringClass() != Children.class) {
-                if (StringUtils.isBlank(parentPath) || f.getField().getType() == Value.class) {
+                if (StringUtils.isBlank(parentPath) || f.field().getType() == Value.class) {
                     String valuePath = String.format("%s.value", path);
                     if (FIELDS_TO_HIGHLIGHT.contains(valuePath)) {
                         highlights.add(valuePath);
@@ -150,19 +150,19 @@ public class SearchFieldsController {
     }
 
     private void reflectFields(Map<String, Double> fieldsWithBoost, MetaModelUtils.FieldWithGenericTypeInfo f, String parentPath, Predicate<FieldInfo> filter) throws ClassNotFoundException {
-        FieldInfo info = f.getField().getAnnotation(FieldInfo.class);
+        FieldInfo info = f.field().getAnnotation(FieldInfo.class);
         if (info != null && !info.ignoreForSearch()) {
-            String propertyName = utils.getPropertyName(f.getField());
+            String propertyName = utils.getPropertyName(f.field());
             String path = String.format("%s%s", parentPath, propertyName);
             if ((filter == null || filter.test(info)) && !propertyName.equals("children")) { // if (f.getField().getType() != Children.class) { if (f.getField().getDeclaringClass() != Children.class) {
-                if (StringUtils.isBlank(parentPath) || f.getField().getType() == Value.class) {
+                if (StringUtils.isBlank(parentPath) || f.field().getType() == Value.class) {
                     String valuePath = String.format("%s.value", path);
                     fieldsWithBoost.put(valuePath, info.boost());
                 } else {
                     fieldsWithBoost.put(path, info.boost());
                 }
             }
-            Type topTypeToHandle = f.getGenericType() != null ? f.getGenericType() : MetaModelUtils.getTopTypeToHandle(f.getField().getGenericType());
+            Type topTypeToHandle = f.genericType() != null ? f.genericType() : MetaModelUtils.getTopTypeToHandle(f.field().getGenericType());
             reflectChildFields(fieldsWithBoost, topTypeToHandle, String.format("%s.", path), filter);
         }
     }

@@ -28,21 +28,24 @@ import java.util.List;
 
 public interface TargetInstance {
     String getId();
-
+    void setId(String id);
     /**
      *
      * @return all identifiers to identify duplicates across the multiple KG versions.
      */
     List<String> getAllIdentifiers();
-
+    void setAllIdentifiers(List<String> identifiers);
 
     List<String> getIdentifier();
+    void setIdentifier(List<String> identifier);
 
     Value<String> getType();
     Value<String> getCategory();
+    void setCategory(Value<String> category);
     Value<String> getTitle();
+    void setTitle(Value<String> title);
     Value<String> getDisclaimer();
-
+    void setDisclaimer(Value<String> disclaimer);
     SchemaOrgInstance getMeta();
     void setMeta(SchemaOrgInstance meta);
 

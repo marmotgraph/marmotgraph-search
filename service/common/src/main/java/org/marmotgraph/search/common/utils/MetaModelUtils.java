@@ -25,6 +25,7 @@
 package org.marmotgraph.search.common.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
@@ -36,7 +37,6 @@ import org.springframework.util.CollectionUtils;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @Component
 public class MetaModelUtils {
@@ -58,24 +58,7 @@ public class MetaModelUtils {
         return this.translatorRegistry.getTranslators();
     }
 
-    public static class FieldWithGenericTypeInfo {
-        private final Field field;
-        private final Type genericType;
-
-        public FieldWithGenericTypeInfo(Field field, Type genericType) {
-            this.field = field;
-            this.genericType = genericType;
-        }
-
-        public Field getField() {
-            return field;
-        }
-
-        public Type getGenericType() {
-            return genericType;
-        }
-
-    }
+    public record FieldWithGenericTypeInfo(Field field, Type genericType) {}
 
     public FieldInfo defaultFieldInfo() {
         try {
@@ -87,11 +70,11 @@ public class MetaModelUtils {
     }
 
     public Type getTypeTargetClass(String type) {
-        List<TranslatorModel<?, ?>> match = translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.getTargetClass()).equals(type)).collect(Collectors.toList());
+        List<TranslatorModel<?, ?>> match = translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.getTargetClass()).equals(type)).toList();
         if (match.isEmpty()) {
             return null;
         }
-        return match.get(0).getTargetClass();
+        return match.getFirst().getTargetClass();
     }
 
     public void visitTypeFields(String type, Consumer<Field> consumer) {
@@ -103,7 +86,7 @@ public class MetaModelUtils {
 
     public void visitTypeFields(Type type, Consumer<Field> consumer) {
         getAllFields(type).forEach(f -> {
-            Field field = f.getField();
+            Field field = f.field();
             consumer.accept(field);
         });
     }
@@ -127,7 +110,7 @@ public class MetaModelUtils {
                         String typeName = field.getGenericType().getTypeName();
                         return new FieldWithGenericTypeInfo(field, genericTypes.get(typeName));
                     }
-            ).collect(Collectors.toList()));
+            ).toList());
             return result;
         } else {
             return Collections.emptyList();
@@ -169,9 +152,8 @@ public class MetaModelUtils {
 
 
     public static Type getTopTypeToHandle(Type type) throws ClassNotFoundException {
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = ((ParameterizedType) type);
-            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+        if (type instanceof ParameterizedType parameterizedType) {
+            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
             if (actualTypeArguments.length > 0) {
                 Type typeArgument = actualTypeArguments[0];
                 if (Collection.class.isAssignableFrom(Class.forName(parameterizedType.getRawType().getTypeName()))) {

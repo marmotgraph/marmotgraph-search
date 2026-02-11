@@ -83,11 +83,11 @@ public class MappingController {
     private Map<String, Object> handleType(Type type, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer) {
         Map<String, Object> properties = new LinkedHashMap<>();
         List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(type);
-        allFields.sort(Comparator.comparing(f -> utils.getPropertyName(f.getField())));
+        allFields.sort(Comparator.comparing(f -> utils.getPropertyName(f.field())));
         allFields.forEach(field -> {
             Map<String, Object> fieldDefinition = handleField(field, parentInfo, useCustomAnalyzer);
             if (!fieldDefinition.isEmpty()) {
-                properties.put(utils.getPropertyName(field.getField()), fieldDefinition);
+                properties.put(utils.getPropertyName(field.field()), fieldDefinition);
             }
         });
         return properties;
@@ -95,8 +95,8 @@ public class MappingController {
 
     private Map<String, Object> handleField(MetaModelUtils.FieldWithGenericTypeInfo field, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer) {
         try {
-            ElasticSearchInfo esInfo = field.getField().getAnnotation(ElasticSearchInfo.class);
-            FieldInfo fieldInfo = field.getField().getAnnotation(FieldInfo.class);
+            ElasticSearchInfo esInfo = field.field().getAnnotation(ElasticSearchInfo.class);
+            FieldInfo fieldInfo = field.field().getAnnotation(FieldInfo.class);
             boolean isSingleWord = fieldInfo != null && fieldInfo.isSingleWord();
             String analyzer = KEYWORD;
             if(useCustomAnalyzer && !isSingleWord) {
@@ -106,7 +106,7 @@ public class MappingController {
                 esInfo = parentInfo;
             }
             if (esInfo == null || esInfo.mapping()) {
-                Type topTypeToHandle = field.getGenericType() != null ? field.getGenericType() : MetaModelUtils.getTopTypeToHandle(field.getField().getGenericType());
+                Type topTypeToHandle = field.genericType() != null ? field.genericType() : MetaModelUtils.getTopTypeToHandle(field.field().getGenericType());
                 Map<String, Object> fieldDefinition = new HashMap<>();
 
 
@@ -158,7 +158,7 @@ public class MappingController {
             }
         } catch (
                 ClassNotFoundException e) {
-            throw new RuntimeException(String.format("Was not able to map field %s in type %s", field.getField().getName(), field.getField().getDeclaringClass().getSimpleName()), e);
+            throw new RuntimeException(String.format("Was not able to map field %s in type %s", field.field().getName(), field.field().getDeclaringClass().getSimpleName()), e);
         }
 
     }
