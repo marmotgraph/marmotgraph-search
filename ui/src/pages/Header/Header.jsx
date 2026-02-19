@@ -35,7 +35,7 @@ const Header = () => {
 
       <div className="container-fluid">
         <a href={configuration.home} aria-label={configuration.name+` homepage`} className="logo nuxt-link-active navbar-brand">
-          <img src={`./api/assets/img/${theme === 'dark'? configuration.logoDark : configuration.logo}`} alt={configuration.name} height="80" />
+          <img src={`/api/assets/img/${theme === 'dark'? configuration.logoDark : configuration.logo}`} alt={configuration.name} height="80" />
         </a>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <FontAwesomeIcon icon={faBars} />

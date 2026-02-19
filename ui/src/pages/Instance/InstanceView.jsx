@@ -128,9 +128,9 @@ const getVersions = versions => (Array.isArray(versions)?versions:[])
 
 const getTags = (groupLabel, isDefaultGroup, category) => {
   const tags = [];
-  if (!isDefaultGroup && groupLabel) {
-    tags.push(groupLabel);
-  }
+  // if (!isDefaultGroup && groupLabel) {
+  //   tags.push(groupLabel);
+  // }
   if (category) {
     tags.push(category);
   }

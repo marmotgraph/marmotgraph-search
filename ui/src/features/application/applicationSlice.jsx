@@ -38,7 +38,7 @@ const initialState = {
       termsCurrentVersion,
   theme: localStorage.getItem('currentTheme'),
   configuration: {
-    commit: null,
+    commit: "unknown",
     sentry: {
       dsn: null,
       release:null,

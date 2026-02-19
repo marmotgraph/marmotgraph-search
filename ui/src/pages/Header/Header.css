@@ -120,5 +120,5 @@ body[theme="dark"] .kgs-navbar.navbar-light .navbar-toggler {
 
 .kgs-navbar li.nav-item a:hover,
 .kgs-navbar li.nav-item button:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }

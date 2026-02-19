@@ -41,11 +41,10 @@ const Footer = ({ commit, configuration, custom, theme }) => (
         <div className="footer__copyright">
           &copy;{configuration.copyrightSince !== new Date().getFullYear().toString() && configuration.copyrightSince + '-'}{new Date().getFullYear()}&nbsp;{configuration.copyright}
         </div>
+        <div className="powered-by">Powered by <a href="https://marmotgraph.org"><img src="assets/img/marmotgraph_bright.png"  alt="MarmotGraph"/></a></div>
         <div className="commit">
           {commit && <span>build: <i>{commit}</i></span>}
         </div>
-        <ul className="footer__social" dangerouslySetInnerHTML={{__html: custom.footerSocial}}>
-        </ul>
       </div>
       {configuration.copyrightAddition && <p className="footer__copyright_addition">{configuration.copyrightAddition}</p>}
     </footer>

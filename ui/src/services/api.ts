@@ -60,7 +60,7 @@ export const api = createApi({
         method: 'POST',
         body: payload
       }),
-      keepUnusedDataFor: 600, // 10 minutes cache
+      keepUnusedDataFor: 1,
       providesTags: ['Search']
     }),
     getInstance: builder.query({
@@ -72,13 +72,13 @@ export const api = createApi({
       query: ({ id, group }) => `/groups/${group}/documents/${id}`,
       //transformResponse: (data, meta, arg) => data,
       transformResponse: transformInstanceResponse,
-      keepUnusedDataFor: 1800, // 30 minutes cache
+      keepUnusedDataFor: 1,
       providesTags: ['Instance'],
     }),
     getPreview: builder.query({
       //query: () => '../static/data/instance.json',
       query: id => `${id}/live?skipReferenceCheck=true`,
-      keepUnusedDataFor: 0.0001, // no cache for live
+      keepUnusedDataFor: 1,
       providesTags: ['Preview']
     }),
     getCitation: builder.query({

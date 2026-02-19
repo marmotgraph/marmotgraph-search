@@ -63,7 +63,9 @@ const Settings = ({ authAdapter, children}: SettingsProps) => {
     if (settings && !isReady) {
       Matomo.initialize(settings?.matomo);
       Sentry.initialize(settings?.sentry);
-      dispatch(setCommit(settings?.commit));
+      if(settings?.commit !== null) {
+        dispatch(setCommit(settings?.commit))
+      }
       dispatch(setConfig(settings?.config));
       dispatch(setCustom(settings?.custom));
       authAdapter.setConfig(settings.keycloak);

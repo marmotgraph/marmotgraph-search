@@ -138,21 +138,12 @@ body[profile="tefhealth"] .footer__menu{
 
 .powered-by {
     display: inline-block;
-    font-size: 0.4em;
-    font-weight: bold;
-    margin-right: 1.5em;
     word-wrap: none;
 }
 
 .powered-by img {
-    height: 35px;
+    height: 3em;
     width: auto;
-}
-
-.powered-by a, .powered-by a:hover {
-    margin-right: 60px;
-    color: var(--color-1);
-    text-decoration: none;
 }
 
 .sprite-icons {
