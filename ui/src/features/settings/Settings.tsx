@@ -64,7 +64,7 @@ const Settings = ({ authAdapter, children}: SettingsProps) => {
       Matomo.initialize(settings?.matomo);
       Sentry.initialize(settings?.sentry);
       if(settings?.commit !== null) {
-        dispatch(setCommit(settings?.commit))
+        dispatch(setCommit(settings?.commit));
       }
       dispatch(setConfig(settings?.config));
       dispatch(setCustom(settings?.custom));
