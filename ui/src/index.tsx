@@ -44,6 +44,13 @@ const container = document.getElementById('root');
 if (!container) {
   throw new Error('Failed to find the root element');
 }
+
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'api/settings/custom.css';
+link.type = 'text/css';
+document.head.appendChild(link);
+
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
