@@ -22,7 +22,7 @@
  */
 
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 
 import App from './App';
 import KeycloakAuthAdapter from './services/KeycloakAuthAdapter';
@@ -45,11 +45,23 @@ if (!container) {
   throw new Error('Failed to find the root element');
 }
 
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = 'api/settings/custom.css';
-link.type = 'text/css';
-document.head.appendChild(link);
+const customCSS = document.createElement('link');
+customCSS.rel = 'stylesheet';
+customCSS.href = 'api/settings/custom.css';
+customCSS.type = 'text/css';
+
+window.addEventListener('load', () => {
+  //Make sure, the custom.css is always at the end - even if there's dynamic additions during execution
+  document.head.appendChild(customCSS);
+  const observer = new MutationObserver(() => {
+    if (customCSS.parentElement != null && customCSS.parentElement.lastElementChild != customCSS) {
+      document.head.appendChild(customCSS);
+    }
+  });
+  observer.observe(document.head, {childList: true});
+}
+);
+
 
 const root = createRoot(container);
 root.render(
