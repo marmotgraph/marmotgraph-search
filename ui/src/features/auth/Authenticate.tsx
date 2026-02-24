@@ -21,15 +21,15 @@
  *
  */
 
-import React, { useEffect, useRef, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useMemo, useRef} from 'react';
+import {useDispatch} from 'react-redux';
 import {useLocation} from 'react-router-dom';
 
 import BgError from '../../components/BgError/BgError';
 import FetchingPanel from '../../components/FetchingPanel/FetchingPanel';
 import useAuth from '../../hooks/useAuth';
-import { api, getError, tagsToInvalidateOnLogout } from '../../services/api';
-import type { ReactNode } from 'react';
+import {api, getError, tagsToInvalidateOnLogout} from '../../services/api';
+import type {ReactNode} from 'react';
 
 interface AuthenticateProps {
   children?: ReactNode;
@@ -69,8 +69,7 @@ const Authenticate = ({ children }: AuthenticateProps) => {
     }
   }, [isTokenExpired, dispatch]);
 
-
-  const renderContent = useMemo(() => {
+  return useMemo(() => {
     const cancelLogin = () => {
       window.location.replace(
         location.pathname.replace('/live/', '/instances/').replace(/&?group=[^&]+/gi, '')
@@ -89,7 +88,7 @@ const Authenticate = ({ children }: AuthenticateProps) => {
       );
     }
 
-    if(loginRequired && !isAuthenticated){
+    if (loginRequired && !isAuthenticated && !isUninitialized && !isInitializing) {
       login();
     }
 
@@ -128,11 +127,11 @@ const Authenticate = ({ children }: AuthenticateProps) => {
     }
 
     if (isAuthenticating) {
-      return <FetchingPanel message="Authenticating..." />;
+      return <FetchingPanel message="Authenticating..."/>;
     }
 
     if (isLoggingOut) {
-      return <FetchingPanel message="Logging out..." />;
+      return <FetchingPanel message="Logging out..."/>;
     }
 
     if (isAuthenticated || !loginRequired) {
@@ -158,8 +157,6 @@ const Authenticate = ({ children }: AuthenticateProps) => {
     location.pathname,
     //     children
   ]);
-
-  return renderContent;
 };
 
 export default Authenticate;
