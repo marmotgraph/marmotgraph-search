@@ -36,32 +36,32 @@
     },
     {
       "propertyName": "query:name",
-      "path": " https://openminds.om-i.org/props/name",
+      "path": "https://openminds.om-i.org/props/name",
       "required": true
     },
     {
       "propertyName": "query:description",
-      "path": " https://openminds.om-i.org/props/description"
+      "path": "https://openminds.om-i.org/props/description"
     },
     {
       "propertyName": "query:fileExtension",
-      "path": " https://openminds.om-i.org/props/fileExtension"
+      "path": "https://openminds.om-i.org/props/fileExtension"
     },
     {
       "propertyName": "query:relatedMediaType",
-      "path": " https://openminds.om-i.org/props/relatedMediaType"
+      "path": "https://openminds.om-i.org/props/relatedMediaType"
     },
     {
       "propertyName": "query:specification",
-      "path": " https://openminds.om-i.org/props/specification"
+      "path": "https://openminds.om-i.org/props/specification"
     },
     {
       "propertyName": "query:synonym",
-      "path": " https://openminds.om-i.org/props/synonym"
+      "path": "https://openminds.om-i.org/props/synonym"
     },
     {
       "propertyName": "query:dataType",
-      "path": " https://openminds.om-i.org/props/dataType",
+      "path": "https://openminds.om-i.org/props/dataType",
       "singleValue": "FIRST",
       "structure": [
         {
@@ -70,14 +70,14 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": " https://openminds.om-i.org/props/name"
+          "path": "https://openminds.om-i.org/props/name"
         }
       ]
     },
     {
       "propertyName": "query:inputFormat",
       "path": {
-        "@id": " https://openminds.om-i.org/props/inputFormat",
+        "@id": "https://openminds.om-i.org/props/inputFormat",
         "reverse": true
       },
       "structure": [
@@ -87,20 +87,20 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": " https://openminds.om-i.org/props/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         },
         {
           "propertyName": "query:versionIdentifier",
-          "path": " https://openminds.om-i.org/props/versionIdentifier"
+          "path": "https://openminds.om-i.org/props/versionIdentifier"
         },
         {
           "propertyName": "query:fallbackName",
           "path": [
             {
-              "@id": " https://openminds.om-i.org/props/hasVersion",
+              "@id": "https://openminds.om-i.org/props/hasVersion",
               "reverse": true
             },
-            " https://openminds.om-i.org/props/fullName"
+            "https://openminds.om-i.org/props/fullName"
           ],
           "singleValue": "FIRST"
         }
@@ -109,7 +109,7 @@
     {
       "propertyName": "query:outputFormat",
       "path": {
-        "@id": " https://openminds.om-i.org/props/outputFormat",
+        "@id": "https://openminds.om-i.org/props/outputFormat",
         "reverse": true
       },
       "structure": [
@@ -119,20 +119,20 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": " https://openminds.om-i.org/props/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         },
         {
           "propertyName": "query:versionIdentifier",
-          "path": " https://openminds.om-i.org/props/versionIdentifier"
+          "path": "https://openminds.om-i.org/props/versionIdentifier"
         },
         {
           "propertyName": "query:fallbackName",
           "path": [
             {
-              "@id": " https://openminds.om-i.org/props/hasVersion",
+              "@id": "https://openminds.om-i.org/props/hasVersion",
               "reverse": true
             },
-            " https://openminds.om-i.org/props/fullName"
+            "https://openminds.om-i.org/props/fullName"
           ],
           "singleValue": "FIRST"
         }
@@ -142,12 +142,12 @@
       "propertyName": "query:researchProducts",
       "path": [
         {
-          "@id": " https://openminds.om-i.org/props/format",
+          "@id": "https://openminds.om-i.org/props/format",
           "reverse": true
         },
-        " https://openminds.om-i.org/props/fileRepository",
+        "https://openminds.om-i.org/props/fileRepository",
         {
-          "@id": " https://openminds.om-i.org/props/repository",
+          "@id": "https://openminds.om-i.org/props/repository",
           "reverse": true
         }
       ],
@@ -158,7 +158,7 @@
         },
         {
           "propertyName": "query:fullName",
-          "path": " https://openminds.om-i.org/props/fullName"
+          "path": "https://openminds.om-i.org/props/fullName"
         },
         {
           "propertyName": "query:type",
@@ -166,16 +166,16 @@
         },
         {
           "propertyName": "query:versionIdentifier",
-          "path": " https://openminds.om-i.org/props/versionIdentifier"
+          "path": "https://openminds.om-i.org/props/versionIdentifier"
         },
         {
           "propertyName": "query:fallbackName",
           "path": [
             {
-              "@id": " https://openminds.om-i.org/props/hasVersion",
+              "@id": "https://openminds.om-i.org/props/hasVersion",
               "reverse": true
             },
-            " https://openminds.om-i.org/props/fullName"
+            "https://openminds.om-i.org/props/fullName"
           ],
           "singleValue": "FIRST"
         }

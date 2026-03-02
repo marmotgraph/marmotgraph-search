@@ -36,35 +36,35 @@
     },
     {
       "propertyName": "query:name",
-      "path": " https://openminds.om-i.org/props/name",
+      "path": "https://openminds.om-i.org/props/name",
       "required": true
     },
     {
       "propertyName": "query:serviceLinks",
       "path": {
-        "@id": " https://openminds.om-i.org/props/dataLocation",
+        "@id": "https://openminds.om-i.org/props/dataLocation",
         "reverse": true
       },
       "structure": [
         {
           "propertyName": "query:url",
-          "path": " https://openminds.om-i.org/props/openDataIn"
+          "path": "https://openminds.om-i.org/props/openDataIn"
         },
         {
           "propertyName": "query:service",
           "path": [
-            " https://openminds.om-i.org/props/service",
-            " https://openminds.om-i.org/props/name"
+            "https://openminds.om-i.org/props/service",
+            "https://openminds.om-i.org/props/name"
           ],
           "singleValue": "FIRST"
         },
         {
           "propertyName": "query:label",
-          "path": " https://openminds.om-i.org/props/name"
+          "path": "https://openminds.om-i.org/props/name"
         },
         {
           "propertyName": "query:displayLabel",
-          "path": " https://openminds.om-i.org/props/displayLabel"
+          "path": "https://openminds.om-i.org/props/displayLabel"
         }
       ]
     }
