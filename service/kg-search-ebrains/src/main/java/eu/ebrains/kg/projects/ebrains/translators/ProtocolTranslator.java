@@ -68,7 +68,7 @@ public class ProtocolTranslator extends EBRAINSTranslator<ProtocolV3, Protocol, 
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Protocol");
+        return Collections.singletonList("https://openminds.om-i.org/types/Protocol");
     }
 
     public static class Result extends ResultsOfKG<ProtocolV3> {

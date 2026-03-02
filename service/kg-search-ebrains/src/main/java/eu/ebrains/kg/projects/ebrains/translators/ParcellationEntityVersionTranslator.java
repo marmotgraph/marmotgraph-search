@@ -71,7 +71,7 @@ public class ParcellationEntityVersionTranslator extends EBRAINSTranslator<Parce
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/sands/ParcellationEntityVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/ParcellationEntityVersion");
     }
 
     public ParcellationEntityVersion translate(ParcellationEntityVersionV3 parcellationEntityVersion, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

@@ -71,7 +71,7 @@ public class BrainAtlasTranslator extends EBRAINSTranslator<BrainAtlasV3, BrainA
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/sands/BrainAtlas");
+        return Collections.singletonList("https://openminds.om-i.org/types/BrainAtlas");
     }
 
     public static class Result extends ResultsOfKG<BrainAtlasV3> {

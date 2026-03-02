@@ -75,7 +75,7 @@ public class WorkflowRecipeVersionTranslator extends EBRAINSTranslator<WorkflowR
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/computation/WorkflowRecipeVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/WorkflowRecipeVersion");
     }
 
 

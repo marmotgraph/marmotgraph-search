@@ -68,7 +68,7 @@ public class LearningResourceTranslator extends EBRAINSTranslator<LearningResour
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/publications/LearningResource");
+        return Collections.singletonList("https://openminds.om-i.org/types/LearningResource");
     }
 
     public LearningResource translate(LearningResourceV3 source, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

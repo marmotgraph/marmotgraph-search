@@ -162,7 +162,7 @@ public class TranslatorUtils {
                         The <a href="https://github.com/HumanBrainProject/kg-core-sdks" target="_blank">KG Core SDKs</a> provide convenient ways to authenticate and make use of the functionality of the KG REST-API with your favorite programming language (currently available for Python and JavaScript/TypeScript).
                        
                         <b>fairgraph</b>
-                        <a href="https://fairgraph.readthedocs.io" _target="blank">fairgraph</a> is a python library which enriches the KG Core Python SDK with knowledge about the metadata structure of choice at EBRAINS called <a href="https://openminds.ebrains.eu" _target="blank">openMINDS</a> and provides additional mechanisms to further simplify the interaction and manipulation of metadata instances on the EBRAINS KG.
+                        <a href="https://fairgraph.readthedocs.io" _target="blank">fairgraph</a> is a python library which enriches the KG Core Python SDK with knowledge about the metadata structure of choice at EBRAINS called <a href="https://openminds.om-i.org" _target="blank">openMINDS</a> and provides additional mechanisms to further simplify the interaction and manipulation of metadata instances on the EBRAINS KG.
                         """, URLEncoder.encode(type, StandardCharsets.UTF_8.toString()), id);
 
         } catch (UnsupportedEncodingException e) {

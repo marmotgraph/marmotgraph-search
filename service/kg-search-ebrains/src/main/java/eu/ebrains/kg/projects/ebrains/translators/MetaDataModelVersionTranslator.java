@@ -79,7 +79,7 @@ public class MetaDataModelVersionTranslator extends EBRAINSTranslator<MetadataMo
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/MetaDataModelVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/MetaDataModelVersion");
     }
 
 

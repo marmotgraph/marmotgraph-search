@@ -71,7 +71,7 @@ public class DatasetTranslator extends EBRAINSTranslator<DatasetV3, Dataset, Dat
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Dataset");
+        return Collections.singletonList("https://openminds.om-i.org/types/Dataset");
     }
 
     public Dataset translate(DatasetV3 dataset, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

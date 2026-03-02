@@ -48,9 +48,9 @@ public class ContributorTranslator extends EBRAINSTranslator<PersonOrOrganizatio
 
     private static final String CONTRIBUTOR_ORGANIZATION_QUERY_ID = "00ef38c9-2532-4403-a292-5f6b3ccb85a9";
 
-    private static final String OPENMINDS_PERSON = "https://openminds.ebrains.eu/core/Person";
+    private static final String OPENMINDS_PERSON = "https://openminds.om-i.org/types/Person";
 
-    private static final String OPENMINDS_ORGANIZATION = "https://openminds.ebrains.eu/core/Organization";
+    private static final String OPENMINDS_ORGANIZATION = "https://openminds.om-i.org/types/Organization";
 
     public static class Result extends ResultsOfKG<PersonOrOrganizationV3> {
     }

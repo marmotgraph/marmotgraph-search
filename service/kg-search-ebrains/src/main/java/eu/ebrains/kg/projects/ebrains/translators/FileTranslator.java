@@ -82,7 +82,7 @@ public class FileTranslator extends EBRAINSTranslator<FileV3, File, FileTranslat
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/File");
+        return Collections.singletonList("https://openminds.om-i.org/types/File");
     }
 
     public File translate(FileV3 file, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

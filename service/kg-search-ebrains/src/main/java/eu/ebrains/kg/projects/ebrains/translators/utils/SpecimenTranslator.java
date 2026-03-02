@@ -345,7 +345,7 @@ public class SpecimenTranslator extends TranslatorBase {
     private static class SubjectTranslator extends AbstractSpecimenTranslator<DatasetVersion.DSVSubject> {
 
         public SubjectTranslator(String datasetVersionId, Map<String, Set<DOIReference>> specimenLookupMap) {
-            super("Subject", "https://openminds.ebrains.eu/core/Subject", "#ffbe00", "https://openminds.ebrains.eu/core/SubjectState", "#e68d0d", datasetVersionId, specimenLookupMap);
+            super("Subject", "https://openminds.om-i.org/types/Subject", "#ffbe00", "https://openminds.om-i.org/types/SubjectState", "#e68d0d", datasetVersionId, specimenLookupMap);
         }
 
         @Override
@@ -420,7 +420,7 @@ public class SpecimenTranslator extends TranslatorBase {
     private static class SubjectGroupTranslator extends AbstractSpecimenTranslator<DatasetVersion.DSVSubjectGroup> {
 
         public SubjectGroupTranslator(String datasetVersionId, Map<String, Set<DOIReference>> specimenLookupMap) {
-            super("Subject group", "https://openminds.ebrains.eu/core/SubjectGroup", "#8a1f0d", "https://openminds.ebrains.eu/core/SubjectGroupState", "#8a1f0d", datasetVersionId, specimenLookupMap);
+            super("Subject group", "https://openminds.om-i.org/types/SubjectGroup", "#8a1f0d", "https://openminds.om-i.org/types/SubjectGroupState", "#8a1f0d", datasetVersionId, specimenLookupMap);
         }
 
         @Override
@@ -506,7 +506,7 @@ public class SpecimenTranslator extends TranslatorBase {
     private static class TissueSampleTranslator extends AbstractSpecimenTranslator<DatasetVersion.DSVTissueSample> {
 
         public TissueSampleTranslator(String datasetVersionId, Map<String, Set<DOIReference>> specimenLookupMap) {
-            super("Tissue sample", "https://openminds.ebrains.eu/core/TissueSample", "#3176e1", "https://openminds.ebrains.eu/core/TissueSampleState", "#393ac6", datasetVersionId, specimenLookupMap);
+            super("Tissue sample", "https://openminds.om-i.org/types/TissueSample", "#3176e1", "https://openminds.om-i.org/types/TissueSampleState", "#393ac6", datasetVersionId, specimenLookupMap);
         }
 
         @Override
@@ -584,7 +584,7 @@ public class SpecimenTranslator extends TranslatorBase {
     private static class TissueSampleCollectionTranslator extends AbstractSpecimenTranslator<DatasetVersion.DSVTissueSampleCollection> {
 
         public TissueSampleCollectionTranslator(String datasetVersionId, Map<String, Set<DOIReference>> specimenLookupMap) {
-            super("Tissue sample collection", "https://openminds.ebrains.eu/core/TissueSampleCollection", "#78b5b5", "https://openminds.ebrains.eu/core/TissueSampleCollectionState", "#497d7d", datasetVersionId, specimenLookupMap);
+            super("Tissue sample collection", "https://openminds.om-i.org/types/TissueSampleCollection", "#78b5b5", "https://openminds.om-i.org/types/TissueSampleCollectionState", "#497d7d", datasetVersionId, specimenLookupMap);
         }
 
         @Override

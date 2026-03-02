@@ -63,7 +63,7 @@ public class CoordinateSpaceTranslator extends EBRAINSTranslator<CoordinateSpace
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/sands/CommonCoordinateSpace");
+        return Collections.singletonList("https://openminds.om-i.org/types/CommonCoordinateSpace");
     }
 
     public static class Result extends ResultsOfKG<CoordinateSpaceV3> {

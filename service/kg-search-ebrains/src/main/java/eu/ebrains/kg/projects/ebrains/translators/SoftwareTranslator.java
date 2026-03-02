@@ -69,7 +69,7 @@ public class SoftwareTranslator extends EBRAINSTranslator<SoftwareV3, Software, 
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Software");
+        return Collections.singletonList("https://openminds.om-i.org/types/Software");
     }
 
     public Software translate(SoftwareV3 software, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

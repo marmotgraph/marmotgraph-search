@@ -81,7 +81,7 @@ public class WebServiceVersionTranslator extends EBRAINSTranslator<WebServiceVer
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/WebServiceVersion");
+        return Collections.singletonList("https://openminds.om-i.org/types/WebServiceVersion");
     }
 
     public WebServiceVersion translate(WebServiceVersionV3 source, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

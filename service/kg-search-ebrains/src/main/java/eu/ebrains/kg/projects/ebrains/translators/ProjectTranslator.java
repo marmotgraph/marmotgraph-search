@@ -68,7 +68,7 @@ public class ProjectTranslator extends EBRAINSTranslator<ProjectV3, Project, Pro
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/core/Project");
+        return Collections.singletonList("https://openminds.om-i.org/types/Project");
     }
 
     public Project translate(ProjectV3 project, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException {

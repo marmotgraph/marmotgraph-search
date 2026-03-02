@@ -72,7 +72,7 @@ public class ParcellationEntityTranslator extends EBRAINSTranslator<Parcellation
 
     @Override
     public List<String> semanticTypes() {
-        return Collections.singletonList("https://openminds.ebrains.eu/sands/ParcellationEntity");
+        return Collections.singletonList("https://openminds.om-i.org/types/ParcellationEntity");
     }
 
 
