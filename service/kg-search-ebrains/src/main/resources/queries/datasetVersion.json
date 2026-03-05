@@ -2771,6 +2771,90 @@
           ]
         }
       ]
+    },
+    {
+      "propertyName": "query:similarDatasets",
+      "path": [
+        {
+          "reverse": true,
+          "@id": "https://core.kg.ebrains.eu/vocab/similarities/similiarityOf"
+        },
+        "https://core.kg.ebrains.eu/vocab/similarities/ebrainsDatasets"
+      ],
+      "structure": [
+        {
+          "propertyName": "query:fallbackName",
+          "path": [
+            {
+              "@id": "https://openminds.om-i.org/props/hasVersion",
+              "reverse": true
+            },
+            {
+              "@id": "https://openminds.om-i.org/props/name"
+            }
+          ],
+          "singleValue": "FIRST"
+        },
+        {
+          "propertyName": "query:id",
+          "path": "@id"
+        },
+        {
+          "propertyName": "query:fullName",
+          "path": "https://openminds.om-i.org/props/fullName"
+        }
+      ]
+    },
+    {
+      "propertyName": "query:similarity",
+      "singleValue": "FIRST",
+      "path": {
+        "reverse": true,
+        "@id": "https://core.kg.ebrains.eu/vocab/similarities/similiarityOf"
+      },
+      "structure": [
+        {
+          "propertyName": "query:datasets",
+          "path": "https://core.kg.ebrains.eu/vocab/similarities/ebrainsDatasets",
+          "structure": [
+            {
+              "propertyName": "query:fallbackName",
+              "path": [
+                {
+                  "@id": "https://openminds.om-i.org/props/hasVersion",
+                  "reverse": true
+                },
+                {
+                  "@id": "https://openminds.om-i.org/props/name"
+                }
+              ],
+              "singleValue": "FIRST"
+            },
+            {
+              "propertyName": "query:id",
+              "path": "@id"
+            },
+            {
+              "propertyName": "query:fullName",
+              "path": "https://openminds.om-i.org/props/fullName"
+            },
+            {
+              "propertyName": "query:versionIdentifier",
+              "path": "https://openminds.om-i.org/props/versionIdentifier"
+            }
+          ]
+        },
+        {
+          "propertyName": "query:otherResources",
+          "path": "https://core.kg.ebrains.eu/vocab/similarities/otherResources",
+          "structure": [
+            {
+              "propertyName": "query:fullName",
+              "path": "https://openminds.om-i.org/props/fullName"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

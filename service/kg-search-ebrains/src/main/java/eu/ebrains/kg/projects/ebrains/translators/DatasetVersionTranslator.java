@@ -520,6 +520,11 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
         d.setLearningResources(ref(datasetVersion.getLearningResource()));
         d.setLivePapers(link(datasetVersion.getLivePapers()));
         d.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(datasetVersion.getPrimaryType(), d.getId())));
+
+        if(datasetVersion.getSimilarity()!=null) {
+            d.setSimilarDatasets(ref(datasetVersion.getSimilarity().getDatasets()));
+            d.setSimilarResources(ref(datasetVersion.getSimilarity().getOtherResources()));
+        }
         return d;
     }
 

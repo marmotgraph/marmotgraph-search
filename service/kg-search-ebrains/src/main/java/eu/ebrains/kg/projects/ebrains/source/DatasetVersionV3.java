@@ -105,7 +105,7 @@ public class DatasetVersionV3 extends SourceInstance implements IsCiteable, HasM
     private List<ProtocolExecution> protocolExecutionByFileBundle;
     private List<ProtocolExecution> protocolExecutionsBySpecimenState;
 
-
+    private Similarity similarity;
 
     @Override
     @JsonIgnore
@@ -372,6 +372,14 @@ public class DatasetVersionV3 extends SourceInstance implements IsCiteable, HasM
     public static class Protocol {
         private List<OntologicalTerm> behavioralTask;
         private List<String> studyOption;
+    }
+
+
+    @Getter
+    @Setter
+    public static class Similarity {
+        private List<FullNameRefForResearchProductVersion> datasets;
+        private List<FullNameRef> otherResources;
     }
 
 
