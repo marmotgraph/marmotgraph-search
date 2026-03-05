@@ -261,7 +261,7 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
     private List<TargetInternalReference> similarDatasets;
 
     @FieldInfo(layout = "Related resources", label ="Suggested similar resources")
-    private List<TargetInternalReference> similarResources;
+    private List<TargetExternalReference> similarResources;
 
     @FieldInfo(layout = "How to use", label ="Learning resources", useForSuggestion = true)
     private List<TargetInternalReference> learningResources;

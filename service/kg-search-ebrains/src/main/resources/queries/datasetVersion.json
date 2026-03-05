@@ -2773,39 +2773,6 @@
       ]
     },
     {
-      "propertyName": "query:similarDatasets",
-      "path": [
-        {
-          "reverse": true,
-          "@id": "https://core.kg.ebrains.eu/vocab/similarities/similiarityOf"
-        },
-        "https://core.kg.ebrains.eu/vocab/similarities/ebrainsDatasets"
-      ],
-      "structure": [
-        {
-          "propertyName": "query:fallbackName",
-          "path": [
-            {
-              "@id": "https://openminds.om-i.org/props/hasVersion",
-              "reverse": true
-            },
-            {
-              "@id": "https://openminds.om-i.org/props/name"
-            }
-          ],
-          "singleValue": "FIRST"
-        },
-        {
-          "propertyName": "query:id",
-          "path": "@id"
-        },
-        {
-          "propertyName": "query:fullName",
-          "path": "https://openminds.om-i.org/props/fullName"
-        }
-      ]
-    },
-    {
       "propertyName": "query:similarity",
       "singleValue": "FIRST",
       "path": {
@@ -2816,6 +2783,7 @@
         {
           "propertyName": "query:datasets",
           "path": "https://core.kg.ebrains.eu/vocab/similarities/ebrainsDatasets",
+          "ensureOrder": true,
           "structure": [
             {
               "propertyName": "query:fallbackName",
@@ -2825,7 +2793,7 @@
                   "reverse": true
                 },
                 {
-                  "@id": "https://openminds.om-i.org/props/name"
+                  "@id": "https://openminds.om-i.org/props/fullName"
                 }
               ],
               "singleValue": "FIRST"
@@ -2847,7 +2815,12 @@
         {
           "propertyName": "query:otherResources",
           "path": "https://core.kg.ebrains.eu/vocab/similarities/otherResources",
+          "ensureOrder": true,
           "structure": [
+            {
+              "propertyName": "query:id",
+              "path": "https://openminds.om-i.org/props/IRI"
+            },
             {
               "propertyName": "query:fullName",
               "path": "https://openminds.om-i.org/props/fullName"

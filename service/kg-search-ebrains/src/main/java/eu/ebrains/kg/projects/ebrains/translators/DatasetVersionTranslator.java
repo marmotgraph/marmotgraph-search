@@ -522,8 +522,8 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
         d.setQueryBuilderText(value(TranslatorUtils.createQueryBuilderText(datasetVersion.getPrimaryType(), d.getId())));
 
         if(datasetVersion.getSimilarity()!=null) {
-            d.setSimilarDatasets(ref(datasetVersion.getSimilarity().getDatasets()));
-            d.setSimilarResources(ref(datasetVersion.getSimilarity().getOtherResources()));
+            d.setSimilarDatasets(refVersion(datasetVersion.getSimilarity().getDatasets(), true));
+            d.setSimilarResources(datasetVersion.getSimilarity().getOtherResources().stream().map(s -> new TargetExternalReference(s.getId(), s.getFullName())).toList());
         }
         return d;
     }
