@@ -73,8 +73,9 @@ public class TranslationController {
 
 
     public <Source extends SourceInstance, Target extends TargetInstance> TargetInstancesResult<Target> translateToTargetInstances(KG kg, Translator<Source, Target, ? extends ResultsOfKG<Source>> translator, String queryId, DataStage dataStage, int from, int size, Integer trendingThreshold, Map<String, Object> translationContext) {
+        String semanticType = translator.semanticTypes().get(translator.getQueryIds().indexOf(queryId));
         logger.info(String.format("Starting to query %d %s from %d", size, translator.getSourceType().getSimpleName(), from));
-        final ResultsOfKG<Source> instanceResults = kg.executeQuery(translator.getResultType(), dataStage, queryId, from, size);
+        final ResultsOfKG<Source> instanceResults = kg.executeQuery(translator.getResultType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), from, size);
         TargetInstancesResult<Target> result = new TargetInstancesResult<>();
         if (instanceResults == null) {
             logger.info("Was not able to read results for {} from index {} of size {}", translator.getSourceType().getSimpleName(), from, size);
@@ -126,12 +127,13 @@ public class TranslationController {
 
 
     public <Source, Target extends TargetInstance> Target translateToTargetInstanceForLiveMode(KG kg, Translator<Source, Target, ? extends ResultsOfKG<Source>> translator, String queryId, DataStage dataStage, String id, boolean useSourceType, boolean checkReferences) throws TranslationException {
+        String semanticType = translator.semanticTypes().get(translator.getQueryIds().indexOf(queryId));
         logger.info(String.format("Starting to query id %s from %s for live mode", id, translator.getSourceType().getSimpleName()));
         Source source;
         if (useSourceType) {
-            source = kg.executeQueryForInstance(translator.getSourceType(), dataStage, queryId, id, false);
+            source = kg.executeQueryForInstance(translator.getSourceType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), id, false);
         } else {
-            final ResultsOfKG<Source> resultsOfKG = kg.executeQueryForInstance(translator.getResultType(), dataStage, queryId, id, false);
+            final ResultsOfKG<Source> resultsOfKG = kg.executeQueryForInstance(translator.getResultType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), id, false);
             if (resultsOfKG.getData() != null) {
                 if (resultsOfKG.getData().isEmpty()) {
                     return null;

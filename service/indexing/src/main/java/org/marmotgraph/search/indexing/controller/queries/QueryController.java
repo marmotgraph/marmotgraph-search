@@ -24,20 +24,17 @@
 
 package org.marmotgraph.search.indexing.controller.queries;
 
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
+import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
+import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.services.KGServiceClient;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.text.StringSubstitutor;
+import org.marmotgraph.search.common.utils.QueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -47,35 +44,36 @@ public class QueryController {
     private final KGServiceClient kgv3ServiceClient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TranslatorRegistry translatorRegistry;
+    private final AppConfig appConfig;
 
-    public QueryController(KGServiceClient kgv3ServiceClient, TranslatorRegistry translatorRegistry) {
+    public QueryController(KGServiceClient kgv3ServiceClient, TranslatorRegistry translatorRegistry, AppConfig appConfig) {
         this.kgv3ServiceClient = kgv3ServiceClient;
         this.translatorRegistry = translatorRegistry;
+        this.appConfig = appConfig;
     }
 
     @Async
     public void uploadQueries() {
-        logger.info("Now uploading queries for search...");
-        translatorRegistry.getTranslators().parallelStream().map(TranslatorModel::getTranslator).filter(Objects::nonNull).forEach(t -> {
-            try {
-                for (String semanticType : t.semanticTypes()) {
-                    String filename = t.getQueryFileName(semanticType);
-                    String payload = loadQuery(filename);
-                    final String queryId = t.getQueryIdByType(semanticType);
-                    logger.info(String.format("Uploading query %s from file %s for type %s", queryId, filename, semanticType));
-                    Map<String, Object> properties = new HashMap<>();
-                    properties.put("type", semanticType);
-                    kgv3ServiceClient.uploadQuery(queryId, StringSubstitutor.replace(payload, properties));
+        if(appConfig.localQueries()){
+            logger.info("Local query usage enabled - this is not recommended for production mode!");
+        }
+        else {
+            logger.info("Now uploading queries for search...");
+            translatorRegistry.getTranslators().parallelStream().map(TranslatorModel::getTranslator).filter(Objects::nonNull).forEach(t -> {
+                try {
+                    for (String semanticType : t.semanticTypes()) {
+                        String filename = t.getQueryFileName(semanticType);
+                        String payload = QueryUtils.loadQuery(filename, semanticType);
+                        final String queryId = t.getQueryIdByType(semanticType);
+                        logger.info(String.format("Uploading query %s from file %s for type %s", queryId, filename, semanticType));
+                        kgv3ServiceClient.uploadQuery(queryId, payload);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        logger.info("Queries successfully uploaded!");
-    }
-
-    private String loadQuery(String fileName) throws IOException {
-        return IOUtils.toString(Objects.requireNonNull(this.getClass().getResourceAsStream(String.format("/queries/%s.json", fileName))), StandardCharsets.UTF_8);
+            });
+            logger.info("Queries successfully uploaded!");
+        }
     }
 
 }

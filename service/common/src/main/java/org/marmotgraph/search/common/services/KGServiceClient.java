@@ -24,9 +24,11 @@
 
 package org.marmotgraph.search.common.services;
 
+import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.configuration.GracefulDeserializationProblemHandler;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
+import org.marmotgraph.search.common.utils.QueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,6 +41,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -100,13 +103,14 @@ public class KGServiceClient {
     private final WebClient serviceAccountWebClient;
     private final WebClient userWebClient;
     private final String serviceClientId;
+    private final AppConfig appConfig;
 
-
-    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId) {
+    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig) {
         this.kgCoreEndpoint = kgCoreEndpoint;
         this.serviceAccountWebClient = serviceAccountWebClient;
         this.userWebClient = userWebClient;
         this.serviceClientId = serviceClientId;
+        this.appConfig = appConfig;
     }
 
     @Cacheable(value = "authEndpoint", unless = "#result == null")
@@ -277,16 +281,28 @@ public class KGServiceClient {
     }
 
 
-    public <T> T executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, int from, int size) {
-        String url = String.format("%s/queries/%s/instances?stage=%s&from=%d&size=%d", kgCoreEndpoint, queryId, dataStage, from, size);
-        return executeCallForIndexing(clazz, url);
+    public <T> T executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName, int from, int size) {
+        String url;
+        if(appConfig.localQueries()){
+            url = String.format("%s/queries?stage=%s&from=%d&size=%d", kgCoreEndpoint, dataStage, from, size);
+        }
+        else{
+            url = String.format("%s/queries/%s/instances?stage=%s&from=%d&size=%d", kgCoreEndpoint, queryId, dataStage, from, size);
+        }
+        return executeCallForIndexing(clazz, url, semanticType, queryFileName);
     }
 
 
-    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, boolean asServiceAccount) {
-        String url = String.format("%s/queries/%s/instances?stage=%s&instanceId=%s", kgCoreEndpoint, queryId, dataStage, id);
+    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, String semanticType, String queryFileName, boolean asServiceAccount) {
+        String url;
+        if(appConfig.localQueries()){
+            url = String.format("%s/queries?stage=%s&instanceId=%s", kgCoreEndpoint, dataStage, id);
+        }
+        else{
+            url = String.format("%s/queries/%s/instances?stage=%s&instanceId=%s", kgCoreEndpoint, queryId, dataStage, id);
+        }
         try {
-            return executeCallForInstance(clazz, url, asServiceAccount);
+            return executeCallForInstance(clazz, url, queryFileName, semanticType, asServiceAccount);
         } catch (WebClientResponseException.NotFound e) {
             return null;
         }
@@ -295,7 +311,7 @@ public class KGServiceClient {
     @SuppressWarnings("java:S3740")
     public Map getInstance(String id, DataStage dataStage, boolean asServiceAccount) {
         String url = String.format("%s/instances/%s?stage=%s", kgCoreEndpoint, id, dataStage);
-        return executeCallForInstance(Map.class, url, asServiceAccount);
+        return executeCallForInstance(Map.class, url, null, null, asServiceAccount);
     }
 
     private final static String ID_FOR_BADGE_REGISTRATION = "8909ab6c-45c9-4b57-9f8a-6111eef752f6";
@@ -380,11 +396,22 @@ public class KGServiceClient {
         }
     }
 
-    private <T> T executeCallForInstance(Class<T> clazz, String url, boolean asServiceAccount) {
+    private <T> T executeCallForInstance(Class<T> clazz, String url, String queryFileName, String semanticType, boolean asServiceAccount) {
         WebClient webClient = asServiceAccount ? this.serviceAccountWebClient : this.userWebClient;
-        return webClient.get()
-                .uri(url)
-                .headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+        WebClient.RequestHeadersSpec<?> request;
+        if(appConfig.localQueries() && queryFileName != null && semanticType != null){
+            try {
+                String query = QueryUtils.loadQuery(queryFileName, semanticType);
+                request = webClient.post().uri(url).bodyValue(query);
+            }
+            catch (IOException e){
+                throw new RuntimeException(String.format("Was not able to read query %s", queryFileName), e);
+            }
+        }
+        else{
+            request = webClient.get().uri(url);
+        }
+        return request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                 .retrieve()
                 .bodyToMono(clazz)
                 .doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
@@ -392,15 +419,26 @@ public class KGServiceClient {
                 .block();
     }
 
-    private <T> T executeCallForIndexing(Class<T> clazz, String url) {
-        return doExecuteCallForIndexing(clazz, url, 0);
+    private <T> T executeCallForIndexing(Class<T> clazz, String url, String semanticType, String queryFileName) {
+        return doExecuteCallForIndexing(clazz, url, semanticType, queryFileName, 0);
     }
 
-    private <T> T doExecuteCallForIndexing(Class<T> clazz, String url, int currentTry) {
+    private <T> T doExecuteCallForIndexing(Class<T> clazz, String url, String semanticType, String queryFileName, int currentTry) {
         try {
-            return serviceAccountWebClient.get()
-                    .uri(url)
-                    .headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+            WebClient.RequestHeadersSpec<?> request;
+            if(appConfig.localQueries()) {
+                try {
+                    String query = QueryUtils.loadQuery(queryFileName, semanticType);
+                    request = serviceAccountWebClient.post().uri(url).bodyValue(query);
+                }
+                catch (IOException e){
+                    throw new RuntimeException(String.format("Was not able to read query %s", queryFileName), e);
+                }
+            }
+            else {
+                request = serviceAccountWebClient.get().uri(url);
+            }
+            return request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                     .retrieve()
                     .bodyToMono(clazz).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
                     .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
@@ -412,7 +450,7 @@ public class KGServiceClient {
                 logger.warn("Retrying to execute call for indexing for max {} more times - next time in {} seconds", MAX_RETRIES - currentTry, waitingTime / 1000);
                 try {
                     Thread.sleep(waitingTime);
-                    return doExecuteCallForIndexing(clazz, url, currentTry + 1);
+                    return doExecuteCallForIndexing(clazz, url, semanticType, queryFileName, currentTry + 1);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return null;

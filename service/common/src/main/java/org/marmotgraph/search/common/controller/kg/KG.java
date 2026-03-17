@@ -39,12 +39,12 @@ public class KG  {
         this.kgServiceClient = kgServiceClient;
     }
 
-    public <T> T executeQuery(Class<T> clazz, DataStage dataStage, String queryId, int from, int size) {
-        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, from, size);
+    public <T> T executeQuery(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName, int from, int size) {
+        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, semanticType, queryFileName, from, size);
     }
 
-    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, boolean asServiceAccount) {
-        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, id, asServiceAccount);
+    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName,  String id, boolean asServiceAccount) {
+        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, semanticType, queryFileName, id, asServiceAccount);
     }
 
     public Set<UUID> getInvitationsFromKG(){
