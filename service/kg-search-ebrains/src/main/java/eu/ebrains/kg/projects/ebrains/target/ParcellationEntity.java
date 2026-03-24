@@ -49,6 +49,9 @@ public class ParcellationEntity implements TargetInstance {
     private List<String> identifier;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @FieldInfo(ignoreForSearch = true, visible = false)

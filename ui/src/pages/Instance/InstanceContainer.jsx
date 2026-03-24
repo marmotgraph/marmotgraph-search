@@ -50,10 +50,14 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
 
   const data = useSelector(state => state.instance.data);
   const meta = useSelector(state => state.instance.meta);
+  const watermarkFromInstance = useSelector(state => state.instance.watermark);
+  debugger;
   const title = useSelector(state => state.instance.title);
   const previousInstance = useSelector(state => selectPreviousInstance(state));
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
+  const finalWatermark = watermarkFromInstance ? watermark ? watermark + "/" + watermarkFromInstance : watermarkFromInstance : watermark;
+
 
   useScript('application/ld+json', meta);
 
@@ -113,7 +117,7 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
             <InstanceView data={data} path={path} isSearch={false} />
           </>
         )}
-        <Watermark text={watermark} />
+        <Watermark text={finalWatermark} />
       </div>
       <Instance isPreview={isPreview} isSearch={false} path={path} />
     </>

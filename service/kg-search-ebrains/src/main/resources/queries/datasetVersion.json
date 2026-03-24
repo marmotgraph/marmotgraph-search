@@ -229,6 +229,10 @@
           "path": "https://openminds.om-i.org/props/name"
         },
         {
+          "propertyName": "query:displayLabel",
+          "path": "https://openminds.om-i.org/props/displayLabel"
+        },
+        {
           "propertyName": "query:file",
           "path": [
             {
@@ -277,14 +281,11 @@
         {
           "propertyName": "query:label",
           "path": "https://openminds.om-i.org/props/name"
+        },
+        {
+          "propertyName": "query:displayLabel",
+          "path": "https://openminds.om-i.org/props/displayLabel"
         }
-      ]
-    },
-    {
-      "propertyName": "query:ethicsAssessment",
-      "path": [
-        "https://openminds.om-i.org/props/ethicsAssessment",
-        "http://schema.org/identifier"
       ]
     },
     {
@@ -1013,6 +1014,10 @@
                 {
                   "propertyName": "query:name",
                   "path": "https://openminds.om-i.org/props/name"
+                },
+                {
+                  "propertyName": "query:displayLabel",
+                  "path": "https://openminds.om-i.org/props/displayLabel"
                 }
               ]
             },
@@ -1054,6 +1059,10 @@
                 {
                   "propertyName": "query:name",
                   "path": "https://openminds.om-i.org/props/name"
+                },
+                {
+                  "propertyName": "query:displayLabel",
+                  "path": "https://openminds.om-i.org/props/displayLabel"
                 }
               ]
             }
@@ -1358,6 +1367,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.om-i.org/props/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.om-i.org/props/displayLabel"
                     }
                   ]
                 },
@@ -1399,6 +1412,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.om-i.org/props/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.om-i.org/props/displayLabel"
                     }
                   ]
                 }
@@ -1657,6 +1674,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.om-i.org/props/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.om-i.org/props/displayLabel"
                     }
                   ]
                 },
@@ -1698,6 +1719,10 @@
                     {
                       "propertyName": "query:name",
                       "path": "https://openminds.om-i.org/props/name"
+                    },
+                    {
+                      "propertyName": "query:displayLabel",
+                      "path": "https://openminds.om-i.org/props/displayLabel"
                     }
                   ]
                 }
@@ -2002,6 +2027,10 @@
                         {
                           "propertyName": "query:name",
                           "path": "https://openminds.om-i.org/props/name"
+                        },
+                        {
+                          "propertyName": "query:displayLabel",
+                          "path": "https://openminds.om-i.org/props/displayLabel"
                         }
                       ]
                     },
@@ -2043,6 +2072,10 @@
                         {
                           "propertyName": "query:name",
                           "path": "https://openminds.om-i.org/props/name"
+                        },
+                        {
+                          "propertyName": "query:displayLabel",
+                          "path": "https://openminds.om-i.org/props/displayLabel"
                         }
                       ]
                     }

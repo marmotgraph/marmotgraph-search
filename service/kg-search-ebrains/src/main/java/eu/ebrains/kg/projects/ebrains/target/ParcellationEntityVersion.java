@@ -54,6 +54,9 @@ public class ParcellationEntityVersion implements TargetInstance, VersionedInsta
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
     @FieldInfo(label = "Name", layout = "header", boost = 20)

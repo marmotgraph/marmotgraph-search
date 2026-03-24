@@ -53,6 +53,9 @@ public class Contributor implements TargetInstance {
     private SchemaOrgInstance meta;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

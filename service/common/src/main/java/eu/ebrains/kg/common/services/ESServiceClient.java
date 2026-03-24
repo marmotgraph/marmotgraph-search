@@ -135,7 +135,7 @@ public class ESServiceClient {
                         }
                      },
                      "_source": false
-                }""", ES_QUERY_SIZE, id, relevantTypes);
+                }""", ES_QUERY_SIZE, id, types);
     }
 
     private String getAgg(String field) {
@@ -401,8 +401,8 @@ public class ESServiceClient {
         String paginatedQuery = getPaginatedQueryForSitemap(searchAfter, relevantTypes);
         return webClient.post()
                 .uri(String.format("%s/%s/_search", elasticSearchEndpoint, index))
-                .body(BodyInserters.fromValue(paginatedQuery))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_NDJSON_VALUE)
+                .bodyValue(paginatedQuery)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(Result.class)
                 .block();
@@ -414,7 +414,7 @@ public class ESServiceClient {
             return webClient.post()
                     .uri(String.format("%s/%s/_search", elasticSearchEndpoint, index))
                     .body(BodyInserters.fromValue(query))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_NDJSON_VALUE)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .retrieve()
                     .bodyToMono(Result.class)
                     .block();
@@ -433,7 +433,7 @@ public class ESServiceClient {
             return webClient.post()
                     .uri(String.format("%s/%s/_search", elasticSearchEndpoint, index))
                     .body(BodyInserters.fromValue(paginatedQuery))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_NDJSON_VALUE)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .retrieve()
                     .bodyToMono(Result.class)
                     .block();
@@ -451,7 +451,7 @@ public class ESServiceClient {
         return webClient.post()
                 .uri(String.format("%s/%s/_search", elasticSearchEndpoint, index))
                 .body(BodyInserters.fromValue(paginatedQuery))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_NDJSON_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(Result.class)
                 .block();
@@ -509,7 +509,7 @@ public class ESServiceClient {
     public void updateIndex(String index, String operations) {
         Map result = webClient.post()
                 .uri(String.format("%s/%s/_bulk", elasticSearchEndpoint, index))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_NDJSON_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromValue(operations))
                 .retrieve()
                 .bodyToMono(Map.class)

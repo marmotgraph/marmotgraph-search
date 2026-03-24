@@ -96,6 +96,7 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         else{
             t.setCategory(value("Service"));
         }
+        t.setRequestService(value(requestService(tefHealthServiceV3.getUUID())));
         if (tefHealthServiceV3.getPricing() != null) {
 //            t.setHasPriceExample(true);
             t.setPricing(value(pricing(tefHealthServiceV3.getPricing(), tefHealthServiceV3.getUUID())));
@@ -129,17 +130,25 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         return t;
     }
 
+    private String requestService(String uuid){
+        return String.format("""
+                
+                <div style="display: flex">
+                <a href=\"https://tef.charite.de/portal/application/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff; margin-right: 2em;\" target=\"_blank\">Apply for Discounted Service</a>
+                <a href=\"https://tef.charite.de/portal/service/request/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff;\" target=\"_blank\">Request Service for Full Price</a>
+                </div>
+                
+                """, uuid, uuid);
+    }
+
+
     private String pricing(ServiceFromKG.PricingInformation pricingInformation, String uuid) {
         String template = """
                 Pricing can vary.
                           
                 **Non-binding example:**
                 %s
-                
-                <div style="display: flex">
-                <a href=\"https://tef.charite.de/portal/application/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff; margin-right: 2em;\" target=\"_blank\">Apply for Discounted Service</a>
-                <a href=\"https://tef.charite.de/portal/service/request/new?service_uuid=%s\" class=\"btn btn-secondary\" style=\"color:#fff;\" target=\"_blank\">Request Service for Full Price</a>
-                </div>
+                %s
                 """;
         String pricing = "";
         if (pricingInformation.getFullPriceInEuro() != null) {
@@ -149,7 +158,7 @@ public class ServiceTranslator extends Translator<ServiceFromKG, Service, Servic
         if (pricingInformation.getReducedPriceInEuro() != null) {
             pricing += String.format("*Reduced price:* %s %s", pricingInformation.getReducedPriceInEuro(), Objects.toString(pricingInformation.getBilling(), "")).trim();
         }
-        return String.format(template, pricing, uuid, uuid);
+        return String.format(template, pricing, requestService(uuid));
 
 
     }

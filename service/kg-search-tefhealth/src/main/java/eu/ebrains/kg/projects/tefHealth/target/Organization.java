@@ -56,6 +56,9 @@ public class Organization implements TargetInstance {
     private Value<String> abbreviation;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

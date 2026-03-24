@@ -57,6 +57,9 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
     private Value<String> type = new Value<>("Dataset");
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")
@@ -135,9 +138,6 @@ public class DatasetVersion implements TargetInstance, VersionedInstance, HasCit
     @JsonProperty("license_info")
     @FieldInfo(label = "License", type = FieldInfo.Type.TEXT, facetOrder = FieldInfo.FacetOrder.BYVALUE)
     private TargetExternalReference licenseInfo;
-
-    @FieldInfo(label = "Ethics assessment")
-    private Value<String> ethicsAssessment;
 
     @FieldInfo(label = "Project", boost = 10, order = 3, useForSuggestion = true)
     private List<TargetInternalReference> projects;

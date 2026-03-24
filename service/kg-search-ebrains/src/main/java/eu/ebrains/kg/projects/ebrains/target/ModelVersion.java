@@ -54,6 +54,9 @@ public class ModelVersion implements TargetInstance, VersionedInstance, HasCitat
     private SchemaOrgInstance meta;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")

@@ -37,7 +37,8 @@
 
 @media (min-width:768px) {
   .kgs-watermark p { 
-    font-size: 200px; 
+    font-size: 200px;
+    line-height: 200px;
   }
 }
 
@@ -47,6 +48,7 @@
   }
 
   .kgs-watermark p { 
-    font-size: 300px; 
+    font-size: 300px;
+    line-height: 300px;
   }
 }

@@ -47,6 +47,9 @@ public class ContentType implements TargetInstance {
     private Value<String> category;
 
     @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
     @JsonProperty("first_release")

@@ -126,8 +126,7 @@
     },
     {
       "propertyName": "query:lastReleasedAt",
-      "path": "https://core.kg.ebrains.eu/vocab/meta/lastReleasedAt",
-
+      "path": "https://core.kg.ebrains.eu/vocab/meta/lastReleasedAt"
     },
     {
       "propertyName": "query:relatedPublications",
