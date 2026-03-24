@@ -467,10 +467,11 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
             }).filter(Objects::nonNull).collect(Collectors.toList()));
         }
         final BasicHierarchyElement<DatasetVersion.DSVSpecimenOverview> specimenBySubject = new SpecimenTranslator(datasetVersion.getId(), translatorUtils.getErrors(), getSpecimenLookupMapFromContext(translatorUtils)).translateToHierarchy(datasetVersion.getStudiedSpecimen());
+        List<Value<String>> speciesFilter = new ArrayList<>();
         if (specimenBySubject != null) {
             d.setSpecimenIds(specimenBySubject.getData().getAllSpecimenIds());
             if (specimenBySubject.getData().getSpecies() != null) {
-                d.setSpeciesFilter(specimenBySubject.getData().getSpecies().stream().map(TargetInternalReference::getValue).filter(Objects::nonNull).distinct().map(Value::new).collect(Collectors.toList()));
+                speciesFilter.addAll(specimenBySubject.getData().getSpecies().stream().map(TargetInternalReference::getValue).filter(Objects::nonNull).distinct().map(Value::new).toList());
             }
             final Set<TargetInternalReference> anatomicalLocationsOfTissueSamples = specimenBySubject.getData().getAnatomicalLocationsOfTissueSamples();
             if (!CollectionUtils.isEmpty(anatomicalLocationsOfTissueSamples)) {
@@ -478,7 +479,12 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
             }
             d.setSpecimenBySubject(specimenBySubject);
         }
-
+        if(datasetVersion.getStudyTarget()!=null) {
+            speciesFilter.addAll(datasetVersion.getStudyTarget().stream().filter(s -> s.getStudyTargetType().contains(Constants.OPENMINDS_ROOT + "types/Species")).map(s -> value(s.getFullName())).toList());
+        }
+        if(!speciesFilter.isEmpty()){
+            d.setSpeciesFilter(speciesFilter);
+        }
         Map<String, FullNameRefForResearchProduct> inputResearchProducts = new HashMap<>();
         EBRAINSTranslatorUtils.addResearchProductsFromDOIs(inputResearchProducts, datasetVersion.getInputDOIs());
         EBRAINSTranslatorUtils.addResearchProducts(inputResearchProducts, datasetVersion.getInputResearchProductsFromInputFiles());

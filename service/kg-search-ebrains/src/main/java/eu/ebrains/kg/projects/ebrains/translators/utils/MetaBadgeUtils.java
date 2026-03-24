@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MetaBadgeUtils {
     private static List<String> COMMUNITY_STANDARDS = Arrays.asList("application/vnd.bids", "application/vnd.bids.electrodesformat", "application/vnd.g-node.nix.neo", "application/vnd.g-node.nix+hdf5", "application/vnd.nwb.nwbn+hdf", "application/vnd.g-node.odml");
-    private static List<String> IMAGE_VIEWER_SERVICES = Arrays.asList("LocaliZoom", "Multi-Image-OSd");
+    private static List<String> IMAGE_VIEWER_SERVICES = Arrays.asList("LocaliZoom", "Multi-Image-OSd", "SeriesZoom", "MeshView");
     private static List<String> ATLAS_SERVICES = Arrays.asList("Neuroglancer", "siibra-explorer");
     public static List<String> evaluateMetaBadgeUtils(HasMetaBadges instance, boolean hasOutputResources, boolean hasInputResources) {
         List<String> metaBadges = new ArrayList<>();
