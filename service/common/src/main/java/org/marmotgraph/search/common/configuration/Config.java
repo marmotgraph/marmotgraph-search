@@ -24,7 +24,6 @@
 
 package org.marmotgraph.search.common.configuration;
 
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -33,7 +32,9 @@ import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.marmotgraph.search.common.customization.Customization;
 import org.marmotgraph.search.common.security.JwtUserInfoConverter;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +54,7 @@ import java.util.Collections;
 public class Config {
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}") String issuerUri, @Value("${eu.ebrains.kg.commit}") String commit, TranslatorRegistry translatorRegistry) {
+    public OpenAPI customOpenAPI(@Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}") String issuerUri, @Value("${eu.ebrains.kg.commit}") String commit, Customization customization) {
         OAuthFlow oAuthFlow = new OAuthFlow();
         oAuthFlow.authorizationUrl(String.format("%s/protocol/openid-connect/auth", issuerUri));
         oAuthFlow.tokenUrl(String.format("%s/protocol/openid-connect/token", issuerUri));
@@ -63,7 +64,7 @@ public class Config {
         OpenAPI openapi = new OpenAPI().openapi("3.0.3");
         String description = String.format("This is the API of the EBRAINS Knowledge Graph (commit %s)", commit);
 
-        return openapi.info(new Info().version("v3.0.0").title(String.format("This is the KG Search API for %s", translatorRegistry.getName())).description(description).license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")).termsOfService("https://kg.ebrains.eu/search-terms-of-use.html"))
+        return openapi.info(new Info().version("v3.0.0").title(String.format("This is the KG Search API for %s", customization.getConfiguration().name())).description(description).license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")).termsOfService("https://kg.ebrains.eu/search-terms-of-use.html"))
                 .components(new Components()).schemaRequirement(Constants.AUTHORIZATION, userToken)
                 .security(Collections.singletonList(userWithoutClientReq));
     }

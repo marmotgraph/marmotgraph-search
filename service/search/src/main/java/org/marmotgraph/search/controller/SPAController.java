@@ -24,7 +24,7 @@
 
 package org.marmotgraph.search.controller;
 
-import org.marmotgraph.search.customization.Customization;
+import org.marmotgraph.search.common.customization.Customization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;

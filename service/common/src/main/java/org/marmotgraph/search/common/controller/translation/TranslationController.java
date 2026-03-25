@@ -24,19 +24,17 @@
 
 package org.marmotgraph.search.common.controller.translation;
 
+import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.controller.translation.models.Stats;
 import org.marmotgraph.search.common.controller.translation.models.TargetInstancesResult;
 import org.marmotgraph.search.common.controller.translation.models.Translator;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
-import org.marmotgraph.search.common.controller.translation.utils.TranslationUtils;
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.ErrorReport;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.model.source.SourceInstance;
 import org.marmotgraph.search.common.model.target.TargetInstance;
-import org.marmotgraph.search.common.model.target.TargetInternalReference;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
@@ -47,52 +45,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.marmotgraph.search.common.controller.translation.utils.TranslationUtils.getStats;
 
+@AllArgsConstructor
 @Component
 public class TranslationController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final KG kg;
     private final DOICitationFormatter doiCitationFormatter;
     private final ESServiceClient esServiceClient;
     private final ESHelper esHelper;
-    private final TranslatorRegistry translatorRegistry;
 
-    public TranslationController(KG kg, DOICitationFormatter doiCitationFormatter, ESServiceClient esServiceClient, ESHelper esHelper, TranslatorRegistry translatorRegistry) {
-        this.doiCitationFormatter = doiCitationFormatter;
-        this.kg = kg;
-        this.esServiceClient = esServiceClient;
-        this.esHelper = esHelper;
-        this.translatorRegistry = translatorRegistry;
-    }
-
-
-    public <Source extends SourceInstance, Target extends TargetInstance> TargetInstancesResult<Target> translateToTargetInstances(KG kg, Translator<Source, Target, ? extends ResultsOfKG<Source>> translator, String queryId, DataStage dataStage, int from, int size, Integer trendingThreshold, Map<String, Object> translationContext) {
-        String semanticType = translator.semanticTypes().get(translator.getQueryIds().indexOf(queryId));
-        logger.info(String.format("Starting to query %d %s from %d", size, translator.getSourceType().getSimpleName(), from));
-        final ResultsOfKG<Source> instanceResults = kg.executeQuery(translator.getResultType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), from, size);
-        TargetInstancesResult<Target> result = new TargetInstancesResult<>();
+    public TargetInstancesResult translateToTargetInstances(KG kg, TranslatorModel translatorModel, String queryId, DataStage dataStage, int from, int size, Integer trendingThreshold, Map<String, Object> translationContext) {
+        Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
+        String semanticType = translatorModel.semanticType(queryId);
+        logger.info("Starting to query {} {} from {}", size, semanticType, from);
+        final ResultsOfKG<? extends SourceInstance> instanceResults = kg.executeQuery(translatorModel.sourceClass(), dataStage, queryId, semanticType, from, size);
+        TargetInstancesResult result = new TargetInstancesResult();
         if (instanceResults == null) {
-            logger.info("Was not able to read results for {} from index {} of size {}", translator.getSourceType().getSimpleName(), from, size);
+            logger.info("Was not able to read results for {} from index {} of size {}", semanticType, from, size);
             result.setTargetInstances(Collections.emptyList());
             result.setFrom(from);
             result.setSize(size);
         } else {
             Stats stats = getStats(instanceResults, from);
-            logger.info(String.format("Queried %d %s (%s)", stats.getPageSize(), translator.getSourceType().getSimpleName(), stats.getInfo()));
+            logger.info("Queried {} {} ({})", stats.getPageSize(), translatorModel.sourceClass().getSimpleName(), stats.getInfo());
             if(instanceResults.getErrors() ==null){
                 instanceResults.setErrors(new ErrorReport());
             }
-            List<Target> instances = instanceResults.getData().stream().filter(Objects::nonNull).map(s -> {
+            List<TargetInstance> instances = instanceResults.getData().stream().filter(Objects::nonNull).map(s -> {
                 try {
                     List<String> errors = new ArrayList<>();
-                    final Target r = translator.translate(s, dataStage, false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper));
-                    if(!CollectionUtils.isEmpty(errors)) {
+                    final TargetInstance r = translator.translate(s, dataStage, translatorModel.category(), translatorModel.targetClass(), false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper));
+                    if(!CollectionUtils.isEmpty(errors) && r != null) {
                         String id = IdUtils.getUUID(r.getId());
                         if (instanceResults.getErrors().get(id) != null) {
                             instanceResults.getErrors().get(id).addAll(errors);
@@ -126,84 +114,17 @@ public class TranslationController {
     }
 
 
-    public <Source, Target extends TargetInstance> Target translateToTargetInstanceForLiveMode(KG kg, Translator<Source, Target, ? extends ResultsOfKG<Source>> translator, String queryId, DataStage dataStage, String id, boolean useSourceType, boolean checkReferences) throws TranslationException {
-        String semanticType = translator.semanticTypes().get(translator.getQueryIds().indexOf(queryId));
-        logger.info(String.format("Starting to query id %s from %s for live mode", id, translator.getSourceType().getSimpleName()));
-        Source source;
-        if (useSourceType) {
-            source = kg.executeQueryForInstance(translator.getSourceType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), id, false);
-        } else {
-            final ResultsOfKG<Source> resultsOfKG = kg.executeQueryForInstance(translator.getResultType(), dataStage, queryId, semanticType, translator.getQueryFileName(semanticType), id, false);
-            if (resultsOfKG.getData() != null) {
-                if (resultsOfKG.getData().isEmpty()) {
-                    return null;
-                } else if (resultsOfKG.getData().size() == 1) {
-                    source = resultsOfKG.getData().getFirst();
-                } else {
-                    throw new RuntimeException(String.format("Too many (%d) results when querying query id %s for id %s of type %s", resultsOfKG.getData().size(), queryId, id, translator.getSourceType().getSimpleName()));
-                }
-            } else {
-                throw new RuntimeException(String.format("Unexpected response when querying query id %s for id %s of type %s", queryId, id, translator.getSourceType().getSimpleName()));
-            }
-        }
-        logger.info(String.format("Done querying id %s from %s for live mode", id, translator.getSourceType().getSimpleName()));
+    public TargetInstance translateToTargetInstanceForLiveMode(KG kg, TranslatorModel translatorModel, String queryId, DataStage dataStage, String id) throws TranslationException {
+        String semanticType = translatorModel.semanticType(queryId);
+        logger.info("Starting to query id {} from {} for live mode", id, translatorModel.sourceClass().getSimpleName());
+        SourceInstance source = kg.executeQueryForInstance(translatorModel.sourceClass(), dataStage, queryId, semanticType, id, false);
+        logger.info("Done querying id {} from {} for live mode", id, translatorModel.sourceClass().getSimpleName());
         if (source == null) {
             return null;
         }
-        final Target translateResult = translator.translate(source, dataStage, true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper));
-        if (checkReferences) {
-            checkReferences(dataStage, useSourceType, translateResult);
-        }
-        return translateResult;
+        Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
+        return translator.translate(source, dataStage, translatorModel.category(), translatorModel.targetClass(), true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper));
     }
-
-    private void checkReferences(DataStage dataStage, boolean useSourceType, Object result) {
-        //To allow the live preview to hide references to non-existent instances, we need to query them too.
-        final List<TargetInternalReference> references = new ArrayList<>();
-        TranslationUtils.collectAllTargetInternalReferences(result, references);
-        Map<String, Boolean> cachedReferences = new HashMap<>();
-        references.forEach(t -> {
-            boolean reset = false;
-            if (t.getReference() != null) {
-                final Boolean fromCache = cachedReferences.get(t.getReference());
-                if(fromCache !=null){
-                    if(fromCache){
-                        reset = true;
-                    }
-                }
-                else {
-                    TargetInstance reference = null;
-                    try {
-                        final List<String> typesOfReference = kg.getTypesOfInstance(t.getReference(), DataStage.IN_PROGRESS, false);
-                        if (typesOfReference != null) {
-                            final TranslatorModel<?, ?> referenceTranslatorModel = translatorRegistry.getTranslators().stream().filter(m -> m.getTranslator() != null && m.getTranslator().semanticTypes().stream().anyMatch(typesOfReference::contains)).findFirst().orElse(null);
-                            if (referenceTranslatorModel != null) {
-                                final String referenceQueryId = typesOfReference.stream().map(type -> referenceTranslatorModel.getTranslator().getQueryIdByType(type)).findFirst().orElse(null);
-                                reference = translateTargetInstance(dataStage, useSourceType, t, reference, referenceTranslatorModel, referenceQueryId);
-                            }
-                        }
-                        reset = reference == null;
-                        cachedReferences.put(t.getReference(), reset);
-                    } catch (WebClientResponseException ignored) {
-                        logger.error("A web client exception occurred - ignoring");
-                    }
-                }
-            }
-            if (reset) {
-                t.setReference(null);
-            }
-        });
-    }
-
-    private TargetInstance translateTargetInstance(DataStage dataStage, boolean useSourceType, TargetInternalReference t, TargetInstance reference, TranslatorModel<?, ?> referenceTranslatorModel, String referenceQueryId) {
-        try {
-            reference = translateToTargetInstanceForLiveMode(kg, referenceTranslatorModel.getTranslator(), referenceQueryId, dataStage, t.getReference(), useSourceType, false);
-        } catch (TranslationException ignored) {
-            logger.error("A translation exception occurred - ignoring");
-        }
-        return reference;
-    }
-
 
 
 }

@@ -24,12 +24,12 @@
 
 package org.marmotgraph.search.indexing.api;
 
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.ErrorReportResult;
 import org.marmotgraph.search.common.security.UserRoles;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.indexing.controller.indexing.IndexingController;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
@@ -40,9 +40,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping("/indexing")
@@ -77,13 +75,13 @@ public class Indexing {
     public ResponseEntity<ErrorReportResult> fullReplacement(@RequestParam("databaseScope") DataStage dataStage) {
         try {
             indexingController.recreateIdentifiersIndex(dataStage);
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.isAutoRelease()).map(m -> {
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease()).map(m -> {
                 //In full replacement mode, we first create a temporary index
-                indexingController.recreateIndex(dataStage, m.getTargetClass(), m.isAutoRelease(), true);
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 //Which we're then going to populate.
                 final ErrorReportResult.ErrorReportResultByTargetType errorsByTargetType = indexingController.populateIndex(m, dataStage, true);
                 //Eventually, we're reindexing the temporary index to the real one
-                indexingController.reindexTemporaryToReal(dataStage, m.getTargetClass(), m.isAutoRelease());
+                indexingController.reindexTemporaryToReal(dataStage, m.targetClass(), m.autoRelease());
                 return errorsByTargetType;
             }).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
@@ -98,13 +96,13 @@ public class Indexing {
     @Operation(summary="Full replacement by type")
     public ResponseEntity<ErrorReportResult> fullReplacementByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> m.getTargetClass().getSimpleName().equals(category)).map(m -> {
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> m.category().toLowerCase().equals(category.toLowerCase())).map(m -> {
                 //In full replacement mode, we first create a temporary index
-                indexingController.recreateIndex(dataStage, m.getTargetClass(), m.isAutoRelease(), true);
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 //Which we're then going to populate.
                 final ErrorReportResult.ErrorReportResultByTargetType errorsByTargetType =  indexingController.populateIndex(m, dataStage, true);
                 //Eventually, we're reindexing the temporary index to the real one
-                indexingController.reindexTemporaryToReal(dataStage, m.getTargetClass(), m.isAutoRelease());
+                indexingController.reindexTemporaryToReal(dataStage, m.targetClass(), m.autoRelease());
                 return errorsByTargetType;
             }).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
@@ -119,10 +117,10 @@ public class Indexing {
     @Operation(summary="full replacement auto release")
     public ResponseEntity<ErrorReportResult> fullReplacementAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::isAutoRelease).map(m -> {
-                indexingController.recreateIndex(dataStage, m.getTargetClass(), m.isAutoRelease(), true);
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> {
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 ErrorReportResult.ErrorReportResultByTargetType errorsByTargetType = indexingController.populateIndex(m, dataStage, true);
-                indexingController.reindexTemporaryToReal(dataStage, m.getTargetClass(), m.isAutoRelease());
+                indexingController.reindexTemporaryToReal(dataStage, m.targetClass(), m.autoRelease());
                 return errorsByTargetType;
             }).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
@@ -143,7 +141,7 @@ public class Indexing {
 //            report.setTargetType("DatasetVersion");
 //            report.setErrors(rep);
 //            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget =Collections.singletonList(report);
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.isAutoRelease()).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease()).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental indexing", e);
@@ -156,8 +154,12 @@ public class Indexing {
     @Operation(summary="incremental update by type")
     public ResponseEntity<ErrorReportResult> incrementalUpdateByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.isAutoRelease() && m.getTargetClass().getSimpleName().equals(category)).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
-            return handleErrorReportResult(errorsByTarget);
+            Optional<TranslatorModel> translatorModel = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease() && m.category().toLowerCase().equals(category.toLowerCase())).findFirst();
+            if(translatorModel.isEmpty()){
+                return ResponseEntity.notFound().build();
+            }
+            ErrorReportResult.ErrorReportResultByTargetType errorReport = indexingController.populateIndex(translatorModel.get(), dataStage, false);
+            return handleErrorReportResult(Collections.singletonList(errorReport));
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental indexing", e);
             return ResponseEntity.status(e.getStatusCode()).build();
@@ -169,7 +171,7 @@ public class Indexing {
     @Operation(summary="incremental auto release")
     public ResponseEntity<ErrorReportResult> incrementalUpdateAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::isAutoRelease).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental autorelease indexing", e);

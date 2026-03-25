@@ -31,6 +31,7 @@ import org.marmotgraph.search.common.utils.MetaModelUtils;
 import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
 import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.search.utils.FacetsUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -55,8 +56,8 @@ public class SettingsController {
     @Cacheable(value = "typeMappings", unless = "#result == null")
     public Map<String, Object> generateTypeMappings() {
         Map<String, Object> labels = new LinkedHashMap<>();
-        for (TranslatorModel<?, ?> model : utils.getTranslatorModels()) {
-            Class<?> targetModel = model.getTargetClass();
+        for (TranslatorModel model : utils.getTranslatorModels()) {
+            Class<?> targetModel = model.targetClass();
             labels.put(MetaModelUtils.getNameForClass(targetModel), generateTypeMappings(targetModel));
             //Also add inner models to the labels
             Arrays.stream(targetModel.getDeclaredClasses()).filter(c -> c.getAnnotation(MetaInfo.class) != null)
@@ -182,16 +183,16 @@ public class SettingsController {
     @Cacheable(value = "types", unless = "#result == null")
     public List<Object> generateTypes() {
         Map<Integer, Object> types = new LinkedHashMap<>();
-        for (TranslatorModel<?, ?> model : utils.getTranslatorModels()) {
-            Class<?> targetModel = model.getTargetClass();
-            Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true);
+        for (TranslatorModel model : utils.getTranslatorModels()) {
+            Class<?> targetModel = model.targetClass();
+            Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true, types.isEmpty());
             if (type != null) {
                 types.put(types.size(), type);
             }
             //Also add inner models to the types
             Arrays.stream(targetModel.getDeclaredClasses()).filter(c -> c.getAnnotation(MetaInfo.class) != null)
                     .forEachOrdered(innerClass -> {
-                        Map<String, Object> innerType = generateType(innerClass, String.format("%s.%s", MetaModelUtils.getNameForClass(targetModel), MetaModelUtils.getNameForClass(innerClass)), false);
+                        Map<String, Object> innerType = generateType(innerClass, String.format("%s.%s", MetaModelUtils.getNameForClass(targetModel), MetaModelUtils.getNameForClass(innerClass)), false, false);
                         if (innerType != null) {
                             types.put(types.size()+1, innerType);
                         }
@@ -208,7 +209,8 @@ public class SettingsController {
         }
     }
 
-    public Map<String, Object> generateType(Class<?> clazz, String label, boolean includeBookmarkFacet) {
+
+    public Map<String, Object> generateType(Class<?> clazz, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
         MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
         if (metaInfo == null || !metaInfo.searchable()) {
             return null;
@@ -231,11 +233,12 @@ public class SettingsController {
         result.put("facets", facets);
         List<Map<String, String>> sortFields = new ArrayList<>();
         result.put("sortFields", sortFields);
-        if (metaInfo.defaultSelection()) {
+        if (defaultSelection) {
             result.put("defaultSelection", true);
         }
         return result;
     }
+
 
     private List<Object> listFacets(String type) {
         List<Facet> facets = facetsController.getFacets(type);

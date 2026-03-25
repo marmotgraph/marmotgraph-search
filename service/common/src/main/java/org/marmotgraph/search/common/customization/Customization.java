@@ -22,7 +22,7 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package org.marmotgraph.search.customization;
+package org.marmotgraph.search.common.customization;
 
 public interface Customization {
     String getHeaderAdditions();
@@ -36,6 +36,10 @@ public interface Customization {
 
     record Configuration(String home, String name, String copyright, String copyrightSince, String copyrightAddition,
                          String searchExample, String logo, String logoDark, boolean login, boolean inProgressOnly) {
+
+        public String technicalName(){
+            return name().toLowerCase().replaceAll("[^A-Za-z0-9]", "");
+        }
     }
 
 }

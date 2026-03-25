@@ -22,19 +22,20 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package org.marmotgraph.search.common.customization;
-import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
+package org.marmotgraph.search.common.model.source;
 
-import java.util.List;
-import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-public interface TranslatorRegistry {
-    List<TranslatorModel<?,?>> getTranslators();
+import java.util.Comparator;
 
-    Class<?> getFileClass();
+@Getter
+@Setter
+@EqualsAndHashCode
+public class FullNameRefImpl implements FullNameRef {
 
-    Optional<String> getIndexPrefix();
-
-    String getName();
+    private String id;
+    private String fullName;
 
 }

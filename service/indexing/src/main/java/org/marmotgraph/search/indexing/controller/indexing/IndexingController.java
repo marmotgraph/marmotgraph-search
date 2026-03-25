@@ -82,28 +82,34 @@ public class IndexingController {
         this.kgV3 = kgV3;
     }
 
-    public <Input extends SourceInstance, Target extends TargetInstance> ErrorReportResult.ErrorReportResultByTargetType populateIndex(TranslatorModel<Input, Target> translatorModel, DataStage dataStage, boolean temporary) {
+    public ErrorReportResult.ErrorReportResultByTargetType populateIndex(TranslatorModel translatorModel, DataStage dataStage, boolean temporary) {
         ErrorReportResult.ErrorReportResultByTargetType errorReportByTargetType =  null;
         Set<String> searchableIds = new HashSet<>();
         Set<String> nonSearchableIds = new HashSet<>();
-        if (translatorModel.getTranslator() != null) {
-            final UpdateResult updateResultV3 = update(kgV3, translatorModel.getTargetClass(), translatorModel.getTranslator(), translatorModel.getBulkSize(), dataStage, Collections.emptySet(), instance -> instance, translatorModel.isAutoRelease(), temporary);
-            if (!updateResultV3.errors.isEmpty()) {
+        if (translatorModel.translator() != null) {
+            final UpdateResult updateResult = update(
+                    kgV3,
+                    translatorModel,
+                    dataStage,
+                    Collections.emptySet(),
+                    instance -> instance,
+                    temporary);
+            if (!updateResult.errors.isEmpty()) {
                 errorReportByTargetType = new ErrorReportResult.ErrorReportResultByTargetType();
-                errorReportByTargetType.setTargetType(translatorModel.getTranslator().getTargetType().getSimpleName());
-                errorReportByTargetType.setErrors(updateResultV3.errors);
+                errorReportByTargetType.setTargetType(translatorModel.targetClass().getSimpleName());
+                errorReportByTargetType.setErrors(updateResult.errors);
             }
-            searchableIds.addAll(updateResultV3.searchableIds);
-            nonSearchableIds.addAll(updateResultV3.nonSearchableIds);
-            if(!updateResultV3.badges.isEmpty()) {
-                kgV3.persistBadges(translatorModel.getTranslator().getTargetType().getSimpleName(), updateResultV3.badges);
+            searchableIds.addAll(updateResult.searchableIds);
+            nonSearchableIds.addAll(updateResult.nonSearchableIds);
+            if(!updateResult.badges.isEmpty()) {
+                kgV3.persistBadges(translatorModel.targetClass().getSimpleName(), updateResult.badges);
             }
         }
-        if (translatorModel.isAutoRelease()) {
-            elasticSearchController.removeDeprecatedDocumentsFromAutoReleasedIndex(translatorModel.getTargetClass(), dataStage, nonSearchableIds, temporary);
+        if (translatorModel.autoRelease()) {
+            elasticSearchController.removeDeprecatedDocumentsFromAutoReleasedIndex(translatorModel.targetClass(), dataStage, nonSearchableIds, temporary);
         } else {
-            elasticSearchController.removeDeprecatedDocumentsFromSearchIndex(translatorModel.getTargetClass(), dataStage, searchableIds, temporary);
-            elasticSearchController.removeDeprecatedDocumentsFromIdentifiersIndex(translatorModel.getTargetClass(), dataStage, nonSearchableIds);
+            elasticSearchController.removeDeprecatedDocumentsFromSearchIndex(translatorModel.targetClass(), dataStage, searchableIds, temporary);
+            elasticSearchController.removeDeprecatedDocumentsFromIdentifiersIndex(translatorModel.targetClass(), dataStage, nonSearchableIds);
         }
         return errorReportByTargetType;
     }
@@ -118,25 +124,27 @@ public class IndexingController {
 
 
     private static final List<String> relevantBadges = Arrays.asList(TranslatorUtils.IS_NEW_BADGE, TranslatorUtils.IS_TRENDING_BADGE);
-    private <Target extends TargetInstance> UpdateResult update(KG kg, Class<?> type, Translator<? extends SourceInstance, Target, ?> translator, int bulkSize, DataStage dataStage, Set<String> excludedIds, Function<Target, Target> instanceHandler, boolean autorelease, boolean temporary) {
+
+    private <Target extends TargetInstance> UpdateResult update(KG kg, TranslatorModel translatorModel, DataStage dataStage, Set<String> excludedIds, Function<Target, Target> instanceHandler, boolean temporary) {
         UpdateResult updateResult = new UpdateResult();
+        Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
         final Map<String, Object> translationContext = translator.populateTranslationContext(esServiceClient, esHelper, dataStage);
-        final Integer trendThreshold = metricsController.getTrendThreshold(type, dataStage);
+        final Integer trendThreshold = metricsController.getTrendThreshold(translatorModel.targetClass(), dataStage);
         final Set<String> existingIdentifiers = referenceResolver.loadAllExistingIdentifiers(dataStage);
-        translator.getQueryIds().forEach(queryId -> {
+        translatorModel.queryIds().forEach(queryId -> {
             Integer lastTotal = null;
             boolean hasMore = true;
             int from = 0;
             while (hasMore) {
-                TargetInstancesResult<Target> result = translationController.translateToTargetInstances(kg, translator, queryId, dataStage, from, bulkSize, trendThreshold, translationContext);
+                TargetInstancesResult result = translationController.translateToTargetInstances(kg, translatorModel, queryId, dataStage, from, translatorModel.bulkSize(), trendThreshold, translationContext);
                 if (result.getErrors() != null) {
                     updateResult.errors.putAll(result.getErrors());
                 }
-                List<Target> instances = result.getTargetInstances();
+                List<TargetInstance> instances = result.getTargetInstances();
                 if (instances != null) {
                     List<Target> searchableInstances = new ArrayList<>();
                     List<Target> nonSearchableInstances = new ArrayList<>();
-                    final List<Target> processableInstances = instances.stream().filter(instance -> !excludedIds.contains(instance.getId())).collect(Collectors.toList());
+                    final List<Target> processableInstances = instances.stream().filter(instance -> !excludedIds.contains(instance.getId())).map(instance -> (Target)instance).collect(Collectors.toList());
                     referenceResolver.clearNonResolvableReferences(processableInstances, existingIdentifiers);
                     processableInstances.forEach(instance -> {
                         logger.info("Translating instance {}", instance.getId());
@@ -160,11 +168,11 @@ public class IndexingController {
                         }
                     });
                     if (!CollectionUtils.isEmpty(searchableInstances)) {
-                        elasticSearchController.updateSearchIndex(searchableInstances, type, dataStage, temporary);
+                        elasticSearchController.updateSearchIndex(searchableInstances, translatorModel.targetClass(), dataStage, temporary);
                     }
                     if (!CollectionUtils.isEmpty(nonSearchableInstances)) {
-                        if (autorelease) {
-                            elasticSearchController.updateAutoReleasedIndex(nonSearchableInstances, dataStage, type, temporary);
+                        if (translatorModel.autoRelease()) {
+                            elasticSearchController.updateAutoReleasedIndex(nonSearchableInstances, dataStage, translatorModel.targetClass(), temporary);
                         } else {
                             elasticSearchController.updateIdentifiersIndex(nonSearchableInstances, dataStage);
                         }

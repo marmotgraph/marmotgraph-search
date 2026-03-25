@@ -119,7 +119,7 @@ public class SearchFieldsController {
         Map<String, Double> fieldsWithBoost = new HashMap<>();
         Class<?> targetModelForType = null;
         for (int i = 0; i < utils.getTranslatorModels().size(); i++) {
-            Class<?> targetModel = utils.getTranslatorModels().get(i).getTargetClass();
+            Class<?> targetModel = utils.getTranslatorModels().get(i).targetClass();
             String targetModelName = MetaModelUtils.getNameForClass(targetModel);
             if (StringUtils.isNotBlank(type) && targetModelName.equals(type)) {
                 targetModelForType = targetModel;

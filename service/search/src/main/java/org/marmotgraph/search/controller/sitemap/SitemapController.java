@@ -24,12 +24,12 @@
 
 package org.marmotgraph.search.controller.sitemap;
 
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.elasticsearch.Document;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.model.SitemapXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,9 +77,9 @@ public class SitemapController {
     private SitemapXML fetchSitemap() {
         List<SitemapXML.Url> urls = new ArrayList<>();
         String index = esHelper.getIndexesForDocument(DataStage.RELEASED);
-        final Set<String> relevantTypes = translatorRegistry.getTranslators().stream().filter(TranslatorModel::isAddToSitemap).map(t -> {
+        final Set<String> relevantTypes = translatorRegistry.getTranslators().stream().filter(TranslatorModel::addToSitemap).map(t -> {
             try {
-                return t.getTargetClass().getConstructor().newInstance().getType().getValue();
+                return t.targetClass().getConstructor().newInstance().getType().getValue();
             } catch (InstantiationException | IllegalAccessException| InvocationTargetException | NoSuchMethodException e) {
                 logger.error("Was not able to find type for sitemap generation", e);
                 return null;

@@ -25,49 +25,65 @@
 package org.marmotgraph.search.common.controller.translation.models;
 
 import org.marmotgraph.search.common.model.DataStage;
-import org.marmotgraph.search.common.model.source.ResultsOfKG;
+import org.marmotgraph.search.common.model.source.SourceInstance;
+import org.marmotgraph.search.common.model.target.TargetInstance;
+import org.marmotgraph.search.common.model.target.Value;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
+import org.marmotgraph.search.common.utils.IdUtils;
 import org.marmotgraph.search.common.utils.TranslationException;
 import org.marmotgraph.search.common.utils.TranslatorUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-public abstract class Translator<Source, Target, ListResult extends ResultsOfKG<Source>> extends TranslatorBase {
-
-    public abstract Target translate(Source source, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException;
-
-    public abstract Class<Source> getSourceType();
-
-    public abstract Class<Target> getTargetType();
-
-    public abstract Class<ListResult> getResultType();
-
-    public abstract List<String> getQueryIds();
-
-    public String getQueryFileName(String semanticType) {
-        final String simpleName = getClass().getSimpleName();
-        return StringUtils.uncapitalize(simpleName.substring(0, simpleName.indexOf("Translator")));
+public abstract class Translator<Source extends SourceInstance, Target extends TargetInstance> extends TranslatorBase {
+    @java.lang.annotation.Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Component
+    public @interface Instance {
+        boolean autoRelease() default false;
+        boolean addToSitemap() default false;
+        int orderNumber() default Integer.MAX_VALUE;
     }
+
+
+    public static final class DontIndexException extends Exception{}
+
+    public final Target translate(SourceInstance source, DataStage dataStage, String category, Class<?> targetType, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException{
+        Target t = setup(category, (Source)source, (Class<Target>)targetType);
+        try {
+            translate((Source) source, t, dataStage, liveMode, translatorUtils);
+            return t;
+        }
+        catch (DontIndexException e){
+            return null;
+        }
+    }
+
+    private Target setup(String category, Source sourceEntity, Class<Target> targetType){
+        try {
+            Target target = null;
+            target = targetType.getConstructor().newInstance();
+            target.setType(new Value<>(category));
+            target.setCategory(new Value<>(category));
+            target.setId(IdUtils.getUUID(sourceEntity.getId()));
+            target.setAllIdentifiers(sourceEntity.getIdentifier());
+            target.setIdentifier(Collections.singletonList(target.getId()));
+            return target;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected abstract void translate(Source source, Target target, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws DontIndexException, TranslationException;
 
     public Map<String, Object> populateTranslationContext(ESServiceClient esServiceClient, ESHelper esHelper, DataStage stage){
         return Collections.emptyMap();
-    }
-
-    public abstract List<String> semanticTypes();
-
-    public String getQueryIdByType(String type){
-        if(type!=null && semanticTypes().contains(type)){
-            if(getQueryIds().size() == 1){
-                return getQueryIds().getFirst();
-            }
-            else{
-                throw new RuntimeException("There are ambiguous query ids for this translator -> please override the getQueryIdByType method");
-            }
-        }
-        return type;
     }
 }

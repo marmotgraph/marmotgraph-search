@@ -27,13 +27,14 @@ package org.marmotgraph.search.common.controller.translation.models;
 import org.marmotgraph.search.common.model.ErrorReport;
 import lombok.Getter;
 import lombok.Setter;
+import org.marmotgraph.search.common.model.target.TargetInstance;
 
 import java.util.List;
 
 @Getter
 @Setter
-public class TargetInstancesResult<Target> {
-    private List<Target> targetInstances;
+public class TargetInstancesResult {
+    private List<TargetInstance> targetInstances;
     private ErrorReport errors;
     private Integer from;
     private Integer size;

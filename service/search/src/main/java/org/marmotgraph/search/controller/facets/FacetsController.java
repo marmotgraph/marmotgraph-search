@@ -51,8 +51,8 @@ public class FacetsController {
     public List<Facet> getFacets(String type) {
         List<Facet> facets  = new ArrayList<>();
         if (StringUtils.isNotBlank(type)) {
-            utils.getTranslatorModels().stream().filter(m -> MetaModelUtils.getNameForClass(m.getTargetClass()).equals(type)).forEach(m -> {
-                Class<?> targetModel = m.getTargetClass();
+            utils.getTranslatorModels().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(type)).forEach(m -> {
+                Class<?> targetModel = m.targetClass();
                 handleChildren(targetModel, type, facets, "", "");
             });
         }

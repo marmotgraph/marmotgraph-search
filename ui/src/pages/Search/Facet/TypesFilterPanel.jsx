@@ -46,7 +46,7 @@ const TypeFilter = ({ type }) => {
 const TypesFilterPanel = () => {
 
   const types = useSelector(state => state.search.types
-    .filter(t => t.count > 0 || t.type === state.search.selectedType)
+    //.filter(t => t.count > 0 || t.type === state.search.selectedType)
     .map(t => ({
       ...t,
       active: t.type === state.search.selectedType

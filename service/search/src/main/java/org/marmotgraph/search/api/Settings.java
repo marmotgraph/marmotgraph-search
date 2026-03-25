@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.services.KGServiceClient;
 import org.marmotgraph.search.controller.settings.AuthEndpointCheck;
 import org.marmotgraph.search.controller.settings.SettingsController;
-import org.marmotgraph.search.customization.Customization;
+import org.marmotgraph.search.common.customization.Customization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

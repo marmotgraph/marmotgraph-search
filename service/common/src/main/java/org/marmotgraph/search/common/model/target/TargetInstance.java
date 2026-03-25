@@ -24,38 +24,56 @@
 
 package org.marmotgraph.search.common.model.target;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
-public interface TargetInstance {
-    String getId();
-    void setId(String id);
-    /**
-     *
-     * @return all identifiers to identify duplicates across the multiple KG versions.
-     */
-    List<String> getAllIdentifiers();
-    void setAllIdentifiers(List<String> identifiers);
-
-    List<String> getIdentifier();
-    void setIdentifier(List<String> identifier);
-
-    Value<String> getType();
-    Value<String> getCategory();
-    void setCategory(Value<String> category);
-    Value<String> getTitle();
-    void setTitle(Value<String> title);
-    Value<String> getDisclaimer();
-    void setDisclaimer(Value<String> disclaimer);
-    SchemaOrgInstance getMeta();
-    void setMeta(SchemaOrgInstance meta);
+@Getter
+@Setter
+public abstract class TargetInstance {
 
     /**
      * @return true if this instance shall be available for search.
      * This allows to only flag a subset of a type for search-indexing
      * (e.g. only the latest version of a mutli-version entity)
-     *
+     * <p>
      * Please note, that if any instance of a type is a searchable instance,
      * you also need to specify this in its {@link MetaInfo}
      */
-    boolean isSearchableInstance();
+    @JsonIgnore
+    private boolean searchableInstance = true;
+
+    /**
+     * @return all identifiers to identify duplicates across the multiple KG versions.
+     **/
+    @JsonIgnore
+    private List<String> allIdentifiers;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> type;
+
+    @FieldInfo(ignoreForSearch = true, visible = false)
+    private String id;
+
+    @ElasticSearchInfo(type = "keyword")
+    @FieldInfo(visible = false, ignoreForSearch = true)
+    private List<String> identifier;
+
+    @FieldInfo(ignoreForSearch = true, visible = false)
+    private SchemaOrgInstance meta;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> category;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> disclaimer;
+
+    private boolean trending = false;
+
+    public abstract Value<String> getTitle();
+
+    public abstract void setTitle(Value<String> title);
+
 }

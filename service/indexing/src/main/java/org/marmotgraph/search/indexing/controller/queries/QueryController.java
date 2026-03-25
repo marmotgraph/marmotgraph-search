@@ -24,19 +24,21 @@
 
 package org.marmotgraph.search.indexing.controller.queries;
 
+import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.configuration.AppConfig;
-import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
+import org.marmotgraph.search.common.controller.translation.models.Translator;
 import org.marmotgraph.search.common.services.KGServiceClient;
-import org.marmotgraph.search.common.utils.QueryUtils;
+import org.marmotgraph.search.common.utils.queryGenerator.MarmotGraphQuery;
+import org.marmotgraph.search.common.utils.queryGenerator.QueryGenerator;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Objects;
 
+@AllArgsConstructor
 @Component
 public class QueryController {
 
@@ -45,31 +47,22 @@ public class QueryController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TranslatorRegistry translatorRegistry;
     private final AppConfig appConfig;
+    private final QueryGenerator queryGenerator;
 
-    public QueryController(KGServiceClient kgv3ServiceClient, TranslatorRegistry translatorRegistry, AppConfig appConfig) {
-        this.kgv3ServiceClient = kgv3ServiceClient;
-        this.translatorRegistry = translatorRegistry;
-        this.appConfig = appConfig;
-    }
 
     @Async
     public void uploadQueries() {
-        if(appConfig.localQueries()){
+        if (appConfig.localQueries()) {
             logger.info("Local query usage enabled - this is not recommended for production mode!");
-        }
-        else {
+        } else {
             logger.info("Now uploading queries for search...");
-            translatorRegistry.getTranslators().parallelStream().map(TranslatorModel::getTranslator).filter(Objects::nonNull).forEach(t -> {
-                try {
-                    for (String semanticType : t.semanticTypes()) {
-                        String filename = t.getQueryFileName(semanticType);
-                        String payload = QueryUtils.loadQuery(filename, semanticType);
-                        final String queryId = t.getQueryIdByType(semanticType);
-                        logger.info(String.format("Uploading query %s from file %s for type %s", queryId, filename, semanticType));
-                        kgv3ServiceClient.uploadQuery(queryId, payload);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            translatorRegistry.getTranslators().parallelStream().filter(Objects::nonNull).forEach(t -> {
+                Translator<?, ?> translator = t.translator();
+                for (String semanticType : t.semanticTypes()) {
+                    MarmotGraphQuery query = queryGenerator.generate(t.sourceClass(), semanticType);
+                    String queryId = t.queryId(semanticType);
+                    logger.info(String.format("Uploading query %s (%s) for type %s", queryId, translator.getClass().getSimpleName(), semanticType));
+                    kgv3ServiceClient.uploadQuery(queryId, query);
                 }
             });
             logger.info("Queries successfully uploaded!");

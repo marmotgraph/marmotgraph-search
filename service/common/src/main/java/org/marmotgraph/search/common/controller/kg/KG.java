@@ -25,6 +25,7 @@
 package org.marmotgraph.search.common.controller.kg;
 
 import org.marmotgraph.search.common.model.DataStage;
+import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.services.KGServiceClient;
 import org.springframework.stereotype.Component;
 
@@ -39,12 +40,12 @@ public class KG  {
         this.kgServiceClient = kgServiceClient;
     }
 
-    public <T> T executeQuery(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName, int from, int size) {
-        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, semanticType, queryFileName, from, size);
+    public <T> ResultsOfKG<T> executeQuery(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, int from, int size) {
+        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, semanticType, from, size);
     }
 
-    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName,  String id, boolean asServiceAccount) {
-        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, semanticType, queryFileName, id, asServiceAccount);
+    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String id, boolean asServiceAccount) {
+        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, semanticType, id, asServiceAccount);
     }
 
     public Set<UUID> getInvitationsFromKG(){

@@ -28,7 +28,6 @@ import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.controller.translation.TranslationController;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.target.TargetInstance;
 import org.marmotgraph.search.common.security.UserAuthorization;
@@ -36,6 +35,7 @@ import org.marmotgraph.search.common.security.UserRoles;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
 import org.marmotgraph.search.common.utils.TranslationException;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.controller.search.SearchController;
 import org.marmotgraph.search.model.FacetValue;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
@@ -73,14 +76,12 @@ public class Search {
     }
 
 
-
     @GetMapping("/groups")
     public ResponseEntity<List<UserAuthorization.GroupResponse>> getGroups(JwtAuthenticationToken token) {
         List<UserAuthorization.GroupResponse> groups = userAuthorization.getGroups(token);
-        if(groups != null){
+        if (groups != null) {
             return ResponseEntity.ok(groups);
-        }
-        else {
+        } else {
             return ResponseEntity.ok(Collections.emptyList());
         }
     }
@@ -89,17 +90,15 @@ public class Search {
     @SuppressWarnings("java:S3740") // we keep the generics intentionally
     @GetMapping("/{id}/live")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map> translate(@PathVariable("id") String id, @RequestParam(required = false, defaultValue = "false") boolean skipReferenceCheck) throws TranslationException {
+    public ResponseEntity<Map<?, ?>> translate(@PathVariable("id") String id) throws TranslationException {
         try {
             final List<String> typesOfInstance = kgV3.getTypesOfInstance(id, DataStage.IN_PROGRESS, false);
-            final TranslatorModel<?, ?> translatorModel = this.translatorRegistry.getTranslators().stream().filter(m -> m.getTranslator() != null && m.getTranslator().semanticTypes().stream().anyMatch(typesOfInstance::contains)).findFirst().orElse(null);
+            final TranslatorModel translatorModel = this.translatorRegistry.getTranslators().stream().filter(m -> m.translator() != null && m.semanticTypes().stream().anyMatch(typesOfInstance::contains)).findFirst().orElse(null);
             if (translatorModel != null) {
-                final String queryId = typesOfInstance.stream().map(type -> translatorModel.getTranslator().getQueryIdByType(type)).findFirst().orElse(null);
-                if (queryId != null) {
-                    final TargetInstance v = translationController.translateToTargetInstanceForLiveMode(kgV3, translatorModel.getTranslator(), queryId, DataStage.IN_PROGRESS, id, false, !skipReferenceCheck);
-                    if (v != null) {
-                        return ResponseEntity.ok(searchController.getLiveDocument(v));
-                    }
+                final String queryId = typesOfInstance.stream().map(translatorModel::queryId).findFirst().orElse(null);
+                final TargetInstance v = translationController.translateToTargetInstanceForLiveMode(kgV3, translatorModel, queryId, DataStage.IN_PROGRESS, id);
+                if (v != null) {
+                    return ResponseEntity.ok(searchController.getLiveDocument(v));
                 }
             }
             return ResponseEntity.notFound().build();
@@ -123,7 +122,7 @@ public class Search {
         }
     }
 
-    private boolean canReadLiveFiles(JwtAuthenticationToken token, UUID repositoryUUID){
+    private boolean canReadLiveFiles(JwtAuthenticationToken token, UUID repositoryUUID) {
         return UserRoles.hasInProgressRole(token) || searchController.isInvitedForFileRepository(repositoryUUID);
     }
 

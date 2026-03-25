@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.controller.search;
 
+import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.elasticsearch.Bucket;
@@ -34,11 +35,11 @@ import org.marmotgraph.search.common.model.target.*;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
 import org.marmotgraph.search.model.FacetValue;
 import org.marmotgraph.search.utils.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -56,7 +57,7 @@ import static org.marmotgraph.search.utils.FacetsUtils.FACET_BOOKMARKS;
 @Component
 @SuppressWarnings("java:S1452") // we keep the generics intentionally
 public class SearchController extends FacetAggregationUtils {
-;
+    ;
     private final ESServiceClient esServiceClient;
     private final FacetsController facetsController;
     private final SearchFieldsController searchFieldsController;
@@ -65,6 +66,7 @@ public class SearchController extends FacetAggregationUtils {
     private final KG kg;
 
     private final static String TOTAL = "total";
+    private final TranslatorRegistry translatorRegistry;
 
     public SearchController(
             ESServiceClient esServiceClient,
@@ -72,25 +74,27 @@ public class SearchController extends FacetAggregationUtils {
             SearchFieldsController searchFieldsController,
             MetaModelUtils utils,
             ESHelper esHelper,
-            KG kg
+            KG kg,
 
-    ) {
+            TranslatorRegistry translatorRegistry) {
         this.esServiceClient = esServiceClient;
         this.facetsController = facetsController;
         this.searchFieldsController = searchFieldsController;
         this.utils = utils;
         this.esHelper = esHelper;
         this.kg = kg;
+        this.translatorRegistry = translatorRegistry;
     }
 
-    public boolean isInvitedForFileRepository(UUID fileRepositoryId){
+    public boolean isInvitedForFileRepository(UUID fileRepositoryId) {
         final Set<UUID> invitationsFromKG = kg.getInvitationsFromKG();
         return invitationsFromKG.contains(fileRepositoryId);
     }
 
-    public boolean isBookmarked(UUID id){
+    public boolean isBookmarked(UUID id) {
         return !CollectionUtils.isEmpty(kg.getBookmarkIdsFromInstance(id));
     }
+
     public void addBookmark(UUID id) {
         List<UUID> bookmarkIdsFromInstance = kg.getBookmarkIdsFromInstance(id);
         if (CollectionUtils.isEmpty(bookmarkIdsFromInstance)) {
@@ -109,17 +113,17 @@ public class SearchController extends FacetAggregationUtils {
 
     private List<UUID> getBookmarkedIds(Map<String, FacetValue> facetValues, String type) {
 //        if (principal != null && principal.getToken() != null && principal.getToken().getExpiresAt()!=null && principal.getToken().getExpiresAt().isBefore(Instant.now())){
-            List<String> semanticTypes = this.utils.getSemanticTypes(type);
-            if (!CollectionUtils.isEmpty(semanticTypes)) {
-                List<UUID> ids = new ArrayList<>();
-                semanticTypes.forEach(s -> {
-                    try {
-                        ids.addAll(kg.getBookmarkedInstancesOfType(s));
-                    } catch (WebClientResponseException e) {
-                    }
-                });
-                return ids;
-            }
+        List<String> semanticTypes = this.utils.getSemanticTypes(type);
+        if (!CollectionUtils.isEmpty(semanticTypes)) {
+            List<UUID> ids = new ArrayList<>();
+            semanticTypes.forEach(s -> {
+                try {
+                    ids.addAll(kg.getBookmarkedInstancesOfType(s));
+                } catch (WebClientResponseException e) {
+                }
+            });
+            return ids;
+        }
 //        }
         return Collections.emptyList();
     }
@@ -127,11 +131,11 @@ public class SearchController extends FacetAggregationUtils {
     private Map<String, Object> formatFileAggregation(Result esResult, String aggregation) {
         Map<String, Object> result = new HashMap<>();
         if (StringUtils.isNotBlank(aggregation) &&
-                esResult != null &&
-                esResult.getAggregations() != null &&
-                esResult.getAggregations().containsKey(aggregation) &&
-                esResult.getAggregations().get(aggregation) != null &&
-                esResult.getAggregations().get(aggregation).getBuckets() != null) {
+            esResult != null &&
+            esResult.getAggregations() != null &&
+            esResult.getAggregations().containsKey(aggregation) &&
+            esResult.getAggregations().get(aggregation) != null &&
+            esResult.getAggregations().get(aggregation).getBuckets() != null) {
 
             List<String> formats = esResult.getAggregations().get(aggregation).getBuckets().stream()
                     .map(Bucket::getKey)
@@ -212,7 +216,7 @@ public class SearchController extends FacetAggregationUtils {
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", from);
         payload.put("size", size);
-        Map<String,Object> esHighlight = getEsHighlight(type);
+        Map<String, Object> esHighlight = getEsHighlight(type);
         if (esHighlight != null) {
             payload.put("highlight", esHighlight);
         }
@@ -240,11 +244,18 @@ public class SearchController extends FacetAggregationUtils {
         if (total != 0 && nbOfBookmarks != 0) {
             facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
         }
+        Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), translatorRegistry.getMainCategories());
+        if (typesAggregation.get(type) instanceof Map) {
+            Object countOfType = ((Map<?, ?>) typesAggregation.get(type)).get("count");
+            if(countOfType instanceof Integer){
+                total = (Integer)countOfType;
+            }
+        }
         Map<String, Object> response = new HashMap<>();
         response.put("total", total);
         response.put("hits", getHits(result, type, dataStage, metaInfo, bookmarkedIds));
         response.put("aggregations", facetAggregation);
-        response.put("types", getTypesAggregation(result.getAggregations()));
+        response.put("types", typesAggregation);
         response.put("suggestions", getSuggestions(sanitizedQuery, dataStage, type));
 
         return response;
@@ -330,7 +341,7 @@ public class SearchController extends FacetAggregationUtils {
         }
 
         Object meta = source.get("meta");
-        if (meta!=null) {
+        if (meta != null) {
             res.put("meta", meta);
             source.remove("meta");
         }
@@ -404,7 +415,7 @@ public class SearchController extends FacetAggregationUtils {
     }
 
     @Deprecated(forRemoval = true)
-    private  Map<String, Object> getPreviewFromOldFile(Map<String, Object> oldFile) {
+    private Map<String, Object> getPreviewFromOldFile(Map<String, Object> oldFile) {
         Map<String, Object> preview = new HashMap<>();
         String value = CastingUtils.getStringField(oldFile, "value");
         String staticImageUrl = CastingUtils.getObjectFieldStringProperty(oldFile, "staticImageUrl", "url");
@@ -459,7 +470,8 @@ public class SearchController extends FacetAggregationUtils {
                 hasPreviews.getPreviewObjects().forEach(o -> {
                     previews.add(getPreview(o.getDescription(), o.getLink(), o.getImageUrl(), o.getVideoUrl(), true));
                 });
-            };
+            }
+            ;
             if (!CollectionUtils.isEmpty(previews)) {
                 res.put("previews", previews);
             }
@@ -481,7 +493,7 @@ public class SearchController extends FacetAggregationUtils {
         if (StringUtils.isNotBlank(videoUrl) || StringUtils.isNotBlank(imageUrl)) {
             boolean isAnimated = isVideoAnimated && StringUtils.isNotBlank(videoUrl);
             preview.put("previewUrl", Map.of(
-                    "url", isAnimated?videoUrl:imageUrl,
+                    "url", isAnimated ? videoUrl : imageUrl,
                     "isAnimated", isAnimated
             ));
         }
@@ -541,7 +553,7 @@ public class SearchController extends FacetAggregationUtils {
             if (suggestResult != null) {
                 suggestResult.values().stream().flatMap(Collection::stream).forEach(s -> {
                     final Set<Suggestion.Option> options = suggestionsPerTerm.computeIfAbsent(s.getText(), k -> new HashSet<>());
-                        options.addAll(s.getOptions());
+                    options.addAll(s.getOptions());
                 });
             }
             Set<String> handledTerms = new HashSet<>();
@@ -567,11 +579,11 @@ public class SearchController extends FacetAggregationUtils {
     }
 
 
-    private Map<String,Object> getEsQuery(String q, String type) {
+    private Map<String, Object> getEsQuery(String q, String type) {
         if (StringUtils.isBlank(q)) {
             return null;
         }
-        Map<String,Object> queryString = new HashMap<>();
+        Map<String, Object> queryString = new HashMap<>();
         queryString.put("lenient", true);
         queryString.put("analyze_wildcard", true);
         queryString.put("query", q);
@@ -582,13 +594,13 @@ public class SearchController extends FacetAggregationUtils {
         return Map.of("query_string", queryString);
     }
 
-    private Map<String,Object> getEsHighlight(String type) {
+    private Map<String, Object> getEsHighlight(String type) {
         List<String> highlights = searchFieldsController.getHighlight(type);
         if (CollectionUtils.isEmpty(highlights)) {
             return null;
         }
         Map<String, Object> fields = new HashMap<>();
-        for (String h: highlights) {
+        for (String h : highlights) {
             fields.put(h, Collections.emptyMap());
         }
         return Map.of(

@@ -24,36 +24,29 @@
 
 package org.marmotgraph.search.common.utils;
 
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
+import lombok.AllArgsConstructor;
+import org.marmotgraph.search.common.customization.Customization;
 import org.marmotgraph.search.common.model.DataStage;
 import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
 @Component
 public class ESHelper {
 
-    private final TranslatorRegistry translatorRegistry;
-
-    public ESHelper(TranslatorRegistry translatorRegistry) {
-        this.translatorRegistry = translatorRegistry;
-    }
+    private final Customization customization;
 
     private final static String INDEX_PREFIX_IN_PROGRESS = "in_progress";
     private final static String INDEX_PREFIX_PUBLICLY_RELEASED = "publicly_released";
 
     private final static String INDEX_SUFFIX_IDENTIFIERS = "identifiers";
 
-    private String getProfilePrefix(){
-        if (this.translatorRegistry.getIndexPrefix().isPresent()) {
-            return String.format("%s_", translatorRegistry.getIndexPrefix().get());
-        }
-        else{
-            return "";
-        }
+    private String getPrefix(){
+        return String.format("%s_", this.customization.getConfiguration().technicalName());
     }
 
     private String getIndexPrefix(DataStage dataStage) {
         String indexPrefix =  dataStage == DataStage.IN_PROGRESS ? INDEX_PREFIX_IN_PROGRESS : INDEX_PREFIX_PUBLICLY_RELEASED;
-        return getProfilePrefix()+indexPrefix;
+        return getPrefix() + indexPrefix;
     }
 
 
@@ -78,6 +71,6 @@ public class ESHelper {
     }
 
     public String getResourcesIndex(){
-        return getProfilePrefix()+"resources";
+        return getPrefix() + "resources";
     }
 }

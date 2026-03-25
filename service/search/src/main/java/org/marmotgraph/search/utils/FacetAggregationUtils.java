@@ -228,7 +228,7 @@ public class FacetAggregationUtils {
         return res;
     }
 
-    public static Map<String, Object> getTypesAggregation(Map<String, Aggregation> aggregations) {
+    public static Map<String, Object> getTypesAggregation(Map<String, Aggregation> aggregations, List<String> mainCategories) {
         if (CollectionUtils.isEmpty(aggregations) ||
                 !aggregations.containsKey(FacetsUtils.FACET_TYPE) ||
                 aggregations.get(FacetsUtils.FACET_TYPE).getKeywords() == null ||
@@ -238,13 +238,18 @@ public class FacetAggregationUtils {
         }
         Map<String, Object> res = new HashMap<>();
         List<KeywordsBucket> buckets = aggregations.get(FacetsUtils.FACET_TYPE).getKeywords().getBuckets();
+        List<String> remainingMainCategories = new ArrayList<>(mainCategories);
         for (Bucket bucket : buckets) {
+            remainingMainCategories.remove(bucket.getKey());
             if (bucket.getDocCount() > 0) {
                 res.put(bucket.getKey(), Map.of(
                         "count", bucket.getDocCount()
                 ));
             }
         }
+        remainingMainCategories.forEach(c -> {
+            res.put(c, Map.of("count", 0));
+        });
         return res;
     }
 }

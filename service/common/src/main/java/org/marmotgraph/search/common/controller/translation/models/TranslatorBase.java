@@ -165,5 +165,14 @@ public abstract class TranslatorBase {
         return l;
     }
 
+    protected String createURL(String partialURL){
+        if(partialURL==null){
+            return null;
+        }
+        if(partialURL.startsWith("http")){
+            return partialURL;
+        }
+        return "https://"+partialURL;
+    }
 
 }

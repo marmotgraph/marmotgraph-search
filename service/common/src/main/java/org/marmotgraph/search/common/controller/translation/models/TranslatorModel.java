@@ -24,28 +24,28 @@
 
 package org.marmotgraph.search.common.controller.translation.models;
 
-import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.model.source.SourceInstance;
 import org.marmotgraph.search.common.model.target.TargetInstance;
-import lombok.Getter;
 
-@Getter
-@SuppressWarnings("java:S1452") // we keep the generics intentionally
-public class TranslatorModel<Input extends SourceInstance, Output extends TargetInstance> {
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
-    private final Class<Output> targetClass;
-    private final Translator<Input, Output, ? extends ResultsOfKG<Input>> translator;
-    private final boolean autoRelease;
-    private final int bulkSize;
+public record TranslatorModel(Class<? extends SourceInstance> sourceClass, Class<? extends TargetInstance> targetClass, Translator<? extends SourceInstance, ? extends TargetInstance> translator, boolean autoRelease, int bulkSize, boolean addToSitemap, List<String> semanticTypes, String category, int orderNumber) {
 
-    private final boolean addToSitemap;
-
-    public TranslatorModel(Class<Output> targetClass, Translator<Input, Output, ? extends ResultsOfKG<Input>> translator, boolean autoRelease, int bulkSize, boolean addToSitemap) {
-        this.targetClass = targetClass;
-        this.translator = translator;
-        this.autoRelease = autoRelease;
-        this.bulkSize = bulkSize;
-        this.addToSitemap = addToSitemap;
+    public List<String> queryIds(){
+        return semanticTypes().stream().map(this::queryId).toList();
     }
+
+    public String semanticType(String queryId){
+        return semanticTypes.stream().filter(s -> queryId(s).equals(queryId)).findFirst().orElse(null);
+    }
+
+    public String queryId(String semanticType) {
+        String queryId = translator.getClass().getCanonicalName() + "/" + semanticType;
+        return UUID.nameUUIDFromBytes(queryId.getBytes()).toString();
+    }
+
+    public static Comparator<TranslatorModel> COMPARATOR = Comparator.<TranslatorModel>comparingInt(c -> c.orderNumber).thenComparing(c -> c.category);
 
 }

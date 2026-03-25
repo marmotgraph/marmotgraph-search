@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.marmotgraph.search.common.utils.IdUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.marmotgraph.search.common.utils.queryGenerator.Query;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -35,8 +36,11 @@ import java.util.List;
 @Getter
 @Setter
 public class SourceInstance {
+    @Query.Field(required = true, path = @Query.PathElement(name = "@id"))
     private String id;
+    @Query.Field(required = true, path = @Query.PathElement(name = "http://schema.org/identifier"))
     private List<String> identifier;
+    @Query.Field(required = true, path = @Query.PathElement(name = "@type"))
     private List<String> type;
 
     public String getUUID(){

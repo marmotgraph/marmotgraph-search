@@ -27,21 +27,25 @@ package org.marmotgraph.search.common.services;
 import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.configuration.GracefulDeserializationProblemHandler;
 import org.marmotgraph.search.common.model.DataStage;
+import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
-import org.marmotgraph.search.common.utils.QueryUtils;
+import org.marmotgraph.search.common.utils.queryGenerator.MarmotGraphQuery;
+import org.marmotgraph.search.common.utils.queryGenerator.QueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -104,13 +108,15 @@ public class KGServiceClient {
     private final WebClient userWebClient;
     private final String serviceClientId;
     private final AppConfig appConfig;
+    private final QueryGenerator queryGenerator;
 
-    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig) {
+    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig, QueryGenerator queryGenerator) {
         this.kgCoreEndpoint = kgCoreEndpoint;
         this.serviceAccountWebClient = serviceAccountWebClient;
         this.userWebClient = userWebClient;
         this.serviceClientId = serviceClientId;
         this.appConfig = appConfig;
+        this.queryGenerator = queryGenerator;
     }
 
     @Cacheable(value = "authEndpoint", unless = "#result == null")
@@ -281,28 +287,26 @@ public class KGServiceClient {
     }
 
 
-    public <T> T executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String queryFileName, int from, int size) {
+    public <T> ResultsOfKG<T> executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, int from, int size) {
         String url;
-        if(appConfig.localQueries()){
+        if (appConfig.localQueries()) {
             url = String.format("%s/queries?stage=%s&from=%d&size=%d", kgCoreEndpoint, dataStage, from, size);
-        }
-        else{
+        } else {
             url = String.format("%s/queries/%s/instances?stage=%s&from=%d&size=%d", kgCoreEndpoint, queryId, dataStage, from, size);
         }
-        return executeCallForIndexing(clazz, url, semanticType, queryFileName);
+        return executeCallForIndexing(clazz, url, semanticType);
     }
 
 
-    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, String semanticType, String queryFileName, boolean asServiceAccount) {
+    public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, String semanticType, boolean asServiceAccount) {
         String url;
-        if(appConfig.localQueries()){
+        if (appConfig.localQueries()) {
             url = String.format("%s/queries?stage=%s&instanceId=%s", kgCoreEndpoint, dataStage, id);
-        }
-        else{
+        } else {
             url = String.format("%s/queries/%s/instances?stage=%s&instanceId=%s", kgCoreEndpoint, queryId, dataStage, id);
         }
         try {
-            return executeCallForInstance(clazz, url, queryFileName, semanticType, asServiceAccount);
+            return executeCallForInstance(clazz, url, semanticType, id, asServiceAccount);
         } catch (WebClientResponseException.NotFound e) {
             return null;
         }
@@ -311,7 +315,7 @@ public class KGServiceClient {
     @SuppressWarnings("java:S3740")
     public Map getInstance(String id, DataStage dataStage, boolean asServiceAccount) {
         String url = String.format("%s/instances/%s?stage=%s", kgCoreEndpoint, id, dataStage);
-        return executeCallForInstance(Map.class, url, null, null, asServiceAccount);
+        return executeCallForInstance(Map.class, url, id, null, asServiceAccount);
     }
 
     private final static String ID_FOR_BADGE_REGISTRATION = "8909ab6c-45c9-4b57-9f8a-6111eef752f6";
@@ -337,7 +341,7 @@ public class KGServiceClient {
         }
     }
 
-    public void uploadQuery(String queryId, String payload) {
+    public void uploadQuery(String queryId, MarmotGraphQuery payload) {
         String url = String.format("%s/queries/%s?space=%s", kgCoreEndpoint, queryId, serviceClientId);
         try {
             serviceAccountWebClient.put()
@@ -396,51 +400,53 @@ public class KGServiceClient {
         }
     }
 
-    private <T> T executeCallForInstance(Class<T> clazz, String url, String queryFileName, String semanticType, boolean asServiceAccount) {
+    private <T> T executeCallForInstance(Class<T> clazz, String url, String id, String semanticType, boolean asServiceAccount) {
         WebClient webClient = asServiceAccount ? this.serviceAccountWebClient : this.userWebClient;
-        WebClient.RequestHeadersSpec<?> request;
-        if(appConfig.localQueries() && queryFileName != null && semanticType != null){
-            try {
-                String query = QueryUtils.loadQuery(queryFileName, semanticType);
-                request = webClient.post().uri(url).bodyValue(query);
+
+        boolean byQuery = appConfig.localQueries() && semanticType != null;
+        if (byQuery) {
+            MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
+            ResultsOfKG<T> result = (ResultsOfKG<T>) webClient.post().uri(url).bodyValue(query).headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve().bodyToMono(ParameterizedTypeReference.forType(ResolvableType.forClassWithGenerics(ResultsOfKG.class, clazz).getType()))
+                    .doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
+                    .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
+                    .block();
+            if(result!=null && result.getData() != null){
+                if(result.getData().size() == 1){
+                    return result.getData().getFirst();
+                }
+                else{
+                  throw new RuntimeException(String.format("Too many (%d) results when querying %s with id %s of type %s", result.getData().size(), semanticType, id, clazz.getSimpleName()));
+
+                }
             }
-            catch (IOException e){
-                throw new RuntimeException(String.format("Was not able to read query %s", queryFileName), e);
-            }
+            return null;
+
+        } else {
+            return webClient.get().uri(url).headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+                    .retrieve().bodyToMono(clazz).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
+                    .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
+                    .block();
         }
-        else{
-            request = webClient.get().uri(url);
-        }
-        return request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(clazz)
-                .doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
-                .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
-                .block();
     }
 
-    private <T> T executeCallForIndexing(Class<T> clazz, String url, String semanticType, String queryFileName) {
-        return doExecuteCallForIndexing(clazz, url, semanticType, queryFileName, 0);
+    private <T> ResultsOfKG<T> executeCallForIndexing(Class<T> clazz, String url, String semanticType) {
+        return doExecuteCallForIndexing(clazz, url, semanticType, 0);
     }
 
-    private <T> T doExecuteCallForIndexing(Class<T> clazz, String url, String semanticType, String queryFileName, int currentTry) {
+    private <T> ResultsOfKG<T> doExecuteCallForIndexing(Class<T> clazz, String url, String semanticType, int currentTry) {
         try {
             WebClient.RequestHeadersSpec<?> request;
-            if(appConfig.localQueries()) {
-                try {
-                    String query = QueryUtils.loadQuery(queryFileName, semanticType);
-                    request = serviceAccountWebClient.post().uri(url).bodyValue(query);
-                }
-                catch (IOException e){
-                    throw new RuntimeException(String.format("Was not able to read query %s", queryFileName), e);
-                }
-            }
-            else {
+            if (appConfig.localQueries()) {
+                MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
+                request = serviceAccountWebClient.post().uri(url).bodyValue(query);
+            } else {
                 request = serviceAccountWebClient.get().uri(url);
             }
-            return request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+            ResolvableType resolvableType = ResolvableType.forClassWithGenerics(ResultsOfKG.class, clazz);
+            return (ResultsOfKG<T>) request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                     .retrieve()
-                    .bodyToMono(clazz).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
+                    .bodyToMono(ParameterizedTypeReference.forType(resolvableType.getType())).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
                     .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
                     .block();
         } catch (WebClientResponseException e) {
@@ -450,7 +456,7 @@ public class KGServiceClient {
                 logger.warn("Retrying to execute call for indexing for max {} more times - next time in {} seconds", MAX_RETRIES - currentTry, waitingTime / 1000);
                 try {
                     Thread.sleep(waitingTime);
-                    return doExecuteCallForIndexing(clazz, url, semanticType, queryFileName, currentTry + 1);
+                    return doExecuteCallForIndexing(clazz, url, semanticType, currentTry + 1);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return null;

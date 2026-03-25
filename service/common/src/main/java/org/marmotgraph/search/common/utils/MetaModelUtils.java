@@ -25,12 +25,11 @@
 package org.marmotgraph.search.common.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import org.marmotgraph.search.common.customization.TranslatorRegistry;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.MetaInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -54,7 +53,7 @@ public class MetaModelUtils {
         return this.translatorRegistry.getFileClass();
     }
 
-    public List<TranslatorModel<?,?>> getTranslatorModels(){
+    public List<TranslatorModel> getTranslatorModels(){
         return this.translatorRegistry.getTranslators();
     }
 
@@ -70,11 +69,11 @@ public class MetaModelUtils {
     }
 
     public Type getTypeTargetClass(String type) {
-        List<TranslatorModel<?, ?>> match = translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.getTargetClass()).equals(type)).toList();
+        List<TranslatorModel> match = translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(type)).toList();
         if (match.isEmpty()) {
             return null;
         }
-        return match.getFirst().getTargetClass();
+        return match.getFirst().targetClass();
     }
 
     public void visitTypeFields(String type, Consumer<Field> consumer) {
@@ -182,8 +181,8 @@ public class MetaModelUtils {
 
     public Class<?> getClassForType(String type){
         if (StringUtils.isNotBlank(type)) {
-            for (TranslatorModel<?, ?> model : translatorRegistry.getTranslators()) {
-                Class<?> targetModel = model.getTargetClass();
+            for (TranslatorModel model : translatorRegistry.getTranslators()) {
+                Class<?> targetModel = model.targetClass();
                 if (MetaModelUtils.getNameForClass(targetModel).equals(type)) {
                     return targetModel;
                 }
@@ -194,11 +193,11 @@ public class MetaModelUtils {
 
     public List<String> getSemanticTypes(String type) {
         if (!StringUtils.isBlank(type)) {
-            for (TranslatorModel<?, ?> model : translatorRegistry.getTranslators()) {
-                Class<?> targetModel = model.getTargetClass();
+            for (TranslatorModel model : translatorRegistry.getTranslators()) {
+                Class<?> targetModel = model.targetClass();
                 String name = MetaModelUtils.getNameForClass(targetModel);
                 if (name.equals(type)) {
-                    List<String> semanticTypes = model.getTranslator().semanticTypes();
+                    List<String> semanticTypes = model.semanticTypes();
                     if (CollectionUtils.isEmpty(semanticTypes)) {
                         return Collections.emptyList();
                     }
