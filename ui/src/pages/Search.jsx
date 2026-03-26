@@ -47,7 +47,7 @@ import { withTabKeyNavigation } from '../helpers/withTabKeyNavigation';
 import Matomo from '../services/Matomo';
 import {
   useGetSearchQuery,
-  getError,
+  getError, useGetSearchNewQuery,
 } from '../services/api';
 
 import Detail from './Search/Detail/Detail';
@@ -163,24 +163,45 @@ const SearchBase = () => {
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
   const queryString = useSelector(state => state.search.queryString);
   const selectedType = useSelector(state => state.search.selectedType);
-  const from = useSelector(state => state.search.from);
   const hitsPerPage = useSelector(state => state.search.hitsPerPage);
-
   const facets = useSelector(state => selectFacets(state, selectedType));
-
-  const page = useSelector(state => state.search.page);
+  const cursor = useSelector(state => state.search.cursor);
   const isUpToDate = useSelector(state => state.search.isUpToDate);
 
-  const searchParams = isInitialized
+  // const searchParams = isInitialized
+  //   ? {
+  //     group: group,
+  //     q: queryString,
+  //     type: selectedType,
+  //     from: from,
+  //     size: hitsPerPage,
+  //     payload: getAggregation(facets)
+  //   }
+  //   : {};
+
+  const searchNewParams = isInitialized
     ? {
       group: group,
       q: queryString,
       type: selectedType,
-      from: from,
       size: hitsPerPage,
+      cursor: cursor,
       payload: getAggregation(facets)
     }
     : {};
+
+  // const {
+  //   data,
+  //   //currentData,
+  //   error,
+  //   //isUninitialized,
+  //   //isLoading,
+  //   //isFetching,
+  //   //isSuccess,
+  //   isError,
+  //   refetch
+  // } = useGetSearchQuery(searchParams, { skip: !isInitialized });
+
 
   const {
     data,
@@ -192,12 +213,9 @@ const SearchBase = () => {
     //isSuccess,
     isError,
     refetch
-  } = useGetSearchQuery(searchParams, { skip: !isInitialized });
+  } = useGetSearchNewQuery(searchNewParams, { skip: !isInitialized });
 
-  const profile = useSelector(state => state.application.profile);
   useEffect(() => {
-
-
     if (!initializedRef.current) {
       initializedRef.current = true;
       const params = getSearchParametersFromUrl();
@@ -255,7 +273,6 @@ const SearchBase = () => {
           getUpdatedQuery(acc, item.name, item.checked, item.value, item.many),
         query
       );
-      query = getUpdatedQuery(query, 'p', page !== 1, page, false);
       query = getUpdatedQuery(
         query,
         'group',
@@ -273,7 +290,7 @@ const SearchBase = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive, isInitialized, queryString, selectedType, page, group, facets]);
+  }, [isActive, isInitialized, queryString, selectedType, cursor, group, facets]);
 
   useEffect(() => {
     if (isInitialized && isActive) {

@@ -131,7 +131,12 @@ const getFieldProps = (
       const singleGroupedLinks = Object.values(data)[0];
 
       if (label) {
-        label = `${label} in ${singleGroupedLinksLabel}`;
+        if(label.includes("{{value}}")){
+          label = label.replace("{{value}}", singleGroupedLinksLabel)
+        }
+        else {
+          label = `${label} ${singleGroupedLinksLabel}`;
+        }
       } else {
         label = singleGroupedLinksLabel;
       }

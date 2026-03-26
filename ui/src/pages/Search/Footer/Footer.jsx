@@ -24,8 +24,8 @@
 import React from 'react';
 import ShareButtons from '../../../features/ActionsButtons';
 import TermsShortNotice from '../../../features/TermsShortNotice';
-import Pagination from '../../../features/search/Pagination';
 import './Footer.css';
+import Pagination from '../../../features/search/Pagination';
 
 const Footer = () => (
   <div className="kgs-footer">

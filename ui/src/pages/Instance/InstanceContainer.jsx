@@ -51,6 +51,7 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
   const data = useSelector(state => state.instance.data);
   const meta = useSelector(state => state.instance.meta);
   const title = useSelector(state => state.instance.title);
+  const configuration = useSelector(state => state.application.config);
   const previousInstance = useSelector(state => selectPreviousInstance(state));
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
@@ -88,7 +89,7 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
 
   useEffect(() => {
     if (instanceId) {
-      document.title = `EBRAINS - ${title?title:instanceId}`;
+      document.title = `${configuration.name} - ${title?title:instanceId}`;
     }
   }, [instanceId, title]);
 

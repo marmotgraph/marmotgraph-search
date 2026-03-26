@@ -32,7 +32,6 @@ import useAuth from '../../hooks/useAuth';
 import Matomo from '../../services/Matomo';
 import { setGroup } from '../groups/groupsSlice';
 import { reset } from '../instance/instanceSlice';
-import { setPage } from '../search/searchSlice';
 
 import './SignIn.css';
 
@@ -46,7 +45,6 @@ const Group = ({ group }) => {
     Matomo.trackEvent('Group', 'Select', group.value);
     dispatch(setGroup(group.value));
     dispatch(reset());
-    dispatch(setPage(1));
   };
 
   return (

@@ -81,18 +81,16 @@ const Suggestions =  ({ words }) => {
   );
 };
 
-const Viewing = ({ hitCount, from, to }) => (
+const Viewing = ({ hitCount, count }) => (
   <>
-    Viewing <span className="kgs-hitsInfos-highlight">{from}-{to}</span> of <span className="kgs-hitsInfos-highlight">{hitCount}</span> results.
+    Viewing <span className="kgs-hitsInfos-highlight">{count}</span> of <span className="kgs-hitsInfos-highlight">{hitCount}</span> results.
   </>
 );
 
 const HitsInfo = () => {
 
   const isFetching = useSelector(state => state.search.isFetching);
-  const from = useSelector(state => (state.search.from?state.search.from:0) + 1);
   const count = useSelector(state => state.search.hits?state.search.hits.length:0);
-  const to = from + count - 1;
   const message = useSelector(state => state.search.message);
   const suggestions = useSelector(state => state.search.suggestions);
   const hitCount = useSelector(state => state.search.total?state.search.total:0);
@@ -112,7 +110,7 @@ const HitsInfo = () => {
         {hitCount === 0?
           'No results were found. '
           :
-          <Viewing hitCount={hitCount} from={from} to={to} />
+          <Viewing hitCount={hitCount} count={count} />
         }<br/>Did you mean <Suggestions words={suggestions} />?</span>
     );
   }
@@ -121,13 +119,8 @@ const HitsInfo = () => {
       <span className="kgs-hitsInfos">No results were found. Please refine your search.</span>
     );
   }
-  if (from > hitCount) {
-    return (
-      <span className="kgs-hitsInfos">No results were found. Only {hitCount} results are availalbe. Please navigate to previous page(s).</span>
-    );
-  }
   return (
-    <span className="kgs-hitsInfos"><Viewing hitCount={hitCount} from={from} to={to} /></span>
+    <span className="kgs-hitsInfos"><Viewing hitCount={hitCount} count={count} /></span>
   );
 };
 

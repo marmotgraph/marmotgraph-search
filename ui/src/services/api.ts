@@ -63,6 +63,16 @@ export const api = createApi({
       keepUnusedDataFor: 1,
       providesTags: ['Search']
     }),
+    getSearchNew: builder.query({
+      //query: () => '../static/data/search.json',
+      query: ({ group, q, type, size, cursor, payload }) => ({
+        url: `/search?group=${group}&${q?('q=' + encodeURIComponent(q) + '&'):''}type=${encodeURIComponent(type)}&size=${size}${cursor?('&cursor=' + cursor ):''}`,
+        method: 'POST',
+        body: payload
+      }),
+      keepUnusedDataFor: 1,
+      providesTags: ['Search']
+    }),
     getInstance: builder.query({
       // query: () => '../static/data/instance.json',
       // transformResponse: (data, _meta, arg) => {
@@ -201,6 +211,7 @@ export const {
   useGetSettingsQuery,
   useListGroupsQuery,
   useGetSearchQuery,
+  useGetSearchNewQuery,
   useGetInstanceQuery,
   useGetPreviewQuery,
   useGetCitationQuery,

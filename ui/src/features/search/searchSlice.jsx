@@ -20,14 +20,14 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
-import { resetFacet, constructFacet } from '../../helpers/Facets';
-import { api } from '../../services/api';
+import {constructFacet, resetFacet} from '../../helpers/Facets';
+import {api} from '../../services/api';
 
 
 const resolveType = (type, list) => {
-  const value = Array.isArray(type)?type[0]:type;
+  const value = Array.isArray(type) ? type[0] : type;
   let defaultType = null;
   let selectedType = null;
   list.some(t => {
@@ -57,26 +57,19 @@ const resolveFacets = (facets, params) => {
     const value = params[facet.name];
     if (value) {
       switch (facet.type) {
-      case 'list':
-        facet.value = Array.isArray(value)?value:[];
-        break;
-      case 'exists':
-        facet.value = true;
-        break;
-      default:
-        break;
+        case 'list':
+          facet.value = Array.isArray(value) ? value : [];
+          break;
+        case 'exists':
+          facet.value = true;
+          break;
+        default:
+          break;
       }
     }
   });
 };
 
-const resolvePage = page => {
-  const pageNumber = Number(page);
-  if(!isNaN(pageNumber) && pageNumber > 0) {
-    return Math.floor(pageNumber);
-  }
-  return 1;
-};
 
 const getFacet = (types, typeName, facetName) => {
   const type = types.find(t => t.type === typeName);
@@ -103,7 +96,7 @@ const updateListFacet = (facet, payload) => {
     } else {
       if (Array.isArray(facet.value)) {
         facet.value = facet.value.filter(value => {
-          if(Array.isArray(payload.keyword)) {
+          if (Array.isArray(payload.keyword)) {
             return !payload.keyword.includes(value);
           }
           return value !== payload.keyword;
@@ -126,17 +119,17 @@ const updateFacet = (facet, payload) => {
 };
 
 const updateFacetsFromResults = (facets, isSelectedType, results) => {
-  const aggs = (results?.aggregations)?results.aggregations:{};
+  const aggs = (results?.aggregations) ? results.aggregations : {};
   facets.forEach(facet => {
     if (isSelectedType) {
       const res = aggs[facet.name];
       if (facet.type === 'list') {
-        facet.keywords = (res?.keywords)?res.keywords:[];
-        facet.others =  (res?.others)?res.others:0;
+        facet.keywords = (res?.keywords) ? res.keywords : [];
+        facet.others = (res?.others) ? res.others : 0;
         facet.count = res?.count;
       }
       if (facet.type === 'exists') {
-        facet.count = res?res.count:null; //null value to hide the facet, undefined to hide the count
+        facet.count = res ? res.count : null; //null value to hide the facet, undefined to hide the count
       } else {
         facet.count = res?.count;
       }
@@ -147,7 +140,7 @@ const updateFacetsFromResults = (facets, isSelectedType, results) => {
 const updateTypesFromResults = (types, selectedType, results) => {
   types.forEach(type => {
     const count = Number(results?.types?.[type.type]?.count);
-    type.count = isNaN(count)?0:count;
+    type.count = isNaN(count) ? 0 : count;
     if (Array.isArray(type.facets)) {
       updateFacetsFromResults(type.facets, type.type === selectedType, results);
     }
@@ -163,25 +156,19 @@ const resetAllFacets = state => {
 };
 
 const syncParameters = (state, payload) => {
-  const {q, category, p} = (payload instanceof Object)?payload:{};
-
-  const queryString = q??'';
+  const {q, category} = (payload instanceof Object) ? payload : {};
+  const queryString = q ?? '';
   const selectedType = resolveType(category, state.types);
-  const page = resolvePage(p);
-  const from = (page -1) * state.hitsPerPage;
   const type = state.types.find(t => t.type === selectedType);
   resetAllFacets(state);
   resolveFacets(type?.facets, payload);
   state.queryString = queryString;
   state.selectedType = selectedType;
-  state.page = page;
-  state.from = from;
 };
 
 const initialState = {
   types: [],
-  page: 1,
-  totalPages: 0,
+  cursor: null,
   isInitialized: false,
   isFetching: false,
   queryString: '',
@@ -190,7 +177,6 @@ const initialState = {
   hits: [],
   suggestions: {},
   total: 0,
-  from: 0,
   isUpToDate: false
 };
 
@@ -201,33 +187,35 @@ const searchSlice = createSlice({
     initializeSearch(state, action) {
       syncParameters(state, action.payload);
       state.isInitialized = true;
+      state.hits = []
     },
     syncSearchParameters(state, action) {
       syncParameters(state, action.payload);
       state.isUpToDate = false;
+      state.hits = []
     },
     setQueryString(state, action) {
       state.queryString = action.payload;
-      state.page = 1;
-      state.from = 0;
+      state.cursor = null;
       state.isUpToDate = false;
     },
     setFacet(state, action) {
       const facet = getFacet(state.types, state.selectedType, action.payload.name);
       if (facet) {
         updateFacet(facet, action.payload);
-        state.page = 1;
-        state.from = 0;
+        state.hits = []
+        state.cursor = null;
         state.isUpToDate = false;
       }
     },
     resetFacets(state) {
       resetAllFacets(state);
-      state.page = 1;
-      state.from = 0;
+      state.hits = []
+      state.cursor = null;
       state.isUpToDate = false;
     },
     setFacetSize(state, action) {
+      state.hits = []
       const facet = getFacet(state.types, state.selectedType, action.payload.name);
       if (facet) {
         if (facet.type === 'list') {
@@ -236,37 +224,43 @@ const searchSlice = createSlice({
         }
       }
     },
-    setPage(state, action) {
-      state.page = action.payload;
-      state.from =  (action.payload - 1) * state.hitsPerPage;
+    setCursor(state, action) {
+      state.cursor = action.payload;
       state.isUpToDate = false;
     },
     setType(state, action) {
       const type = state.types.find(t => t.type === action.payload);
       if (type) {
+        state.hits = []
         state.selectedType = type.type;
-        state.page = 1;
-        state.from = 0;
+        state.cursor = null;
         state.isUpToDate = false;
       }
     },
     setSearchResults(state, action) {
       const results = action.payload;
       updateTypesFromResults(state.types, state.selectedType, results);
-      state.hits = Array.isArray(results?.hits)?results.hits:[];
-      state.suggestions = (results?.suggestions instanceof Object)?results.suggestions:{};
+      if (state.cursor != null) {
+        if (Array.isArray(results?.hits) && results.hits.length > 0) {
 
-      const total = isNaN(Number(results?.total))?0:Number(results.total);
-      state.total = total;
-      state.totalPages = Math.ceil(total / state.hitsPerPage);
+          const lastKnownCursor = Array.isArray(state.hits) && state.hits.length > 0 ? state.hits.at(-1)["cursor"] : null;
+          if (results.hits.at(-1)["cursor"] !== lastKnownCursor) {
+            state.hits.push(...results.hits);
+          }
+        }
+      } else {
+        state.hits = results.hits;
+      }
+      state.suggestions = (results?.suggestions instanceof Object) ? results.suggestions : {};
+      state.total = isNaN(Number(results?.total)) ? 0 : Number(results.total);
     }
   },
   extraReducers(builder) {
     builder
       .addMatcher(
         api.endpoints.getSettings.matchFulfilled,
-        (state, { payload }) => {
-          state.types = Array.isArray(payload?.types)?payload.types.map(t => {
+        (state, {payload}) => {
+          state.types = Array.isArray(payload?.types) ? payload.types.map(t => {
             const instanceType = {
               ...t,
               count: 0
@@ -275,30 +269,28 @@ const searchSlice = createSlice({
               instanceType.facets = t.facets.map(f => constructFacet(f));
             }
             return instanceType;
-          }):[];
+          }) : [];
         }
       )
       .addMatcher(
-        api.endpoints.getSearch.matchFulfilled,
+        api.endpoints.getSearchNew.matchFulfilled,
         state => {
           state.isUpToDate = true;
           state.isFetching = false;
         }
       )
       .addMatcher(
-        api.endpoints.getSearch.matchPending,
+        api.endpoints.getSearchNew.matchPending,
         state => {
           state.isFetching = true;
         }
       )
       .addMatcher(
-        api.endpoints.getSearch.matchRejected,
+        api.endpoints.getSearchNew.matchRejected,
         state => {
           state.hits = [];
           state.suggestions = {};
-          state.from = 0;
-          state.page = 1;
-          state.totalPages = 0;
+          state.cursor = null;
           state.isFetching = false;
         }
       );
@@ -315,6 +307,16 @@ export const selectFacets = (state, typeName) => {
   return type.facets;
 };
 
-export const { initializeSearch, syncSearchParameters, setQueryString, setFacet, resetFacets, setFacetSize, setPage, setType, setSearchResults} = searchSlice.actions;
+export const {
+  initializeSearch,
+  syncSearchParameters,
+  setQueryString,
+  setFacet,
+  resetFacets,
+  setFacetSize,
+  setType,
+  setSearchResults,
+  setCursor
+} = searchSlice.actions;
 
 export default searchSlice.reducer;
