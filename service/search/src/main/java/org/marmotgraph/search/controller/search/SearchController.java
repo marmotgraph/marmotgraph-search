@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.controller.search;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.model.DataStage;
@@ -54,10 +55,12 @@ import java.util.stream.Collectors;
 
 import static org.marmotgraph.search.utils.FacetsUtils.FACET_BOOKMARKS;
 
+@AllArgsConstructor
 @Component
 @SuppressWarnings("java:S1452") // we keep the generics intentionally
 public class SearchController extends FacetAggregationUtils {
     ;
+    private final SearchCursor searchCursor;
     private final ESServiceClient esServiceClient;
     private final FacetsController facetsController;
     private final SearchFieldsController searchFieldsController;
@@ -67,24 +70,6 @@ public class SearchController extends FacetAggregationUtils {
 
     private final static String TOTAL = "total";
     private final TranslatorRegistry translatorRegistry;
-
-    public SearchController(
-            ESServiceClient esServiceClient,
-            FacetsController facetsController,
-            SearchFieldsController searchFieldsController,
-            MetaModelUtils utils,
-            ESHelper esHelper,
-            KG kg,
-
-            TranslatorRegistry translatorRegistry) {
-        this.esServiceClient = esServiceClient;
-        this.facetsController = facetsController;
-        this.searchFieldsController = searchFieldsController;
-        this.utils = utils;
-        this.esHelper = esHelper;
-        this.kg = kg;
-        this.translatorRegistry = translatorRegistry;
-    }
 
     public boolean isInvitedForFileRepository(UUID fileRepositoryId) {
         final Set<UUID> invitationsFromKG = kg.getInvitationsFromKG();
@@ -199,8 +184,10 @@ public class SearchController extends FacetAggregationUtils {
         return ResponseEntity.ok(result);
     }
 
-    public Map<String, Object> search(String q, String type, int from, int size, Map<String, FacetValue> facetValues, DataStage dataStage) {
+
+    public Map<String, Object> search(String q, String type, int size, Map<String, FacetValue> facetValues, DataStage dataStage, String cursorToken){
         boolean isFilteredByBookmarks = facetValues != null && facetValues.containsKey(FACET_BOOKMARKS);
+
         if (isFilteredByBookmarks) {
             facetValues.remove(FACET_BOOKMARKS);
         }
@@ -214,8 +201,11 @@ public class SearchController extends FacetAggregationUtils {
             idsToFiler = bookmarkedIds;
         }
         Map<String, Object> payload = new HashMap<>();
-        payload.put("from", from);
+        //payload.put("from", 0);
         payload.put("size", size);
+        if(cursorToken!=null){
+            payload.put("search_after", searchCursor.decode(cursorToken));
+        }
         Map<String, Object> esHighlight = getEsHighlight(type);
         if (esHighlight != null) {
             payload.put("highlight", esHighlight);
@@ -239,7 +229,12 @@ public class SearchController extends FacetAggregationUtils {
         }
         String index = esHelper.getIndexesForSearch(dataStage);
         Result result = esServiceClient.searchDocuments(index, payload);
-        int total = (result.getHits() != null && result.getHits().getTotal() != null) ? result.getHits().getTotal().getValue() : 0;
+        int total = 0;
+        if(result.getHits()!=null){
+            if(result.getHits().getTotal() != null){
+                total = result.getHits().getTotal().getValue();
+            }
+        }
         Map<String, Object> facetAggregation = getFacetAggregation(facets, result.getAggregations(), facetValues, total != 0);
         if (total != 0 && nbOfBookmarks != 0) {
             facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
@@ -253,11 +248,11 @@ public class SearchController extends FacetAggregationUtils {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("total", total);
-        response.put("hits", getHits(result, type, dataStage, metaInfo, bookmarkedIds));
+        List<Map<String, Object>> hits = getHits(result, type, dataStage, metaInfo, bookmarkedIds);
+        response.put("hits", hits);
         response.put("aggregations", facetAggregation);
         response.put("types", typesAggregation);
         response.put("suggestions", getSuggestions(sanitizedQuery, dataStage, type));
-
         return response;
     }
 
@@ -267,11 +262,13 @@ public class SearchController extends FacetAggregationUtils {
 
 
     private List<Map<String, Object>> getHits(Result result, String type, DataStage dataStage, MetaInfo metaInfo, List<UUID> bookmarkedIds) {
-        if (result.getHits() == null || result.getHits().getHits() == null) {
+        if (result.getHits() == null || CollectionUtils.isEmpty(result.getHits().getHits())) {
             return Collections.emptyList();
         }
         List<String> fieldNames = getHitFieldNames(type);
-        return result.getHits().getHits().stream().map(h -> {
+        List<Document> hits = result.getHits().getHits();
+        Document last = hits.getLast();
+        List<Map<String, Object>> collect = hits.stream().map(h -> {
             Map<String, Object> source = h.getSource();
             Map<String, Object> hit = new HashMap<>();
             String id = h.getId();
@@ -301,6 +298,8 @@ public class SearchController extends FacetAggregationUtils {
             hit.put("fields", getFields(source, fieldNames));
             return hit;
         }).collect(Collectors.toList());
+        collect.getLast().put("cursor", searchCursor.encode(last.getSort()));
+        return collect;
     }
 
     private String getPreviewImage(Map<String, Object> source) {

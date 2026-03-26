@@ -24,19 +24,19 @@
 
 package org.marmotgraph.search.common.configuration;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import org.marmotgraph.search.common.model.ErrorReport;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.model.source.SourceInstance;
 import org.marmotgraph.search.common.utils.IdUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.deser.DeserializationProblemHandler;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,9 +48,9 @@ public class GracefulDeserializationProblemHandler extends DeserializationProble
     private final Logger logger = LoggerFactory.getLogger(getClass());
     public static ThreadLocal<Map<Integer, List<String>>> ERROR_REPORTING_THREAD_LOCAL = new ThreadLocal<>();
 
-    private void recordError( JsonParser p, Type targetType){
-        final int rootObjectIndex = p.getParsingContext().pathAsPointer().tail().getMatchingIndex();
-        final String path = p.getParsingContext().pathAsPointer().tail().tail().toString();
+    private void recordError(JsonParser p, Type targetType){
+        final int rootObjectIndex = p.streamReadContext().pathAsPointer().tail().getMatchingIndex();
+        final String path = p.streamReadContext().pathAsPointer().tail().tail().toString();
         if(ERROR_REPORTING_THREAD_LOCAL.get()==null){
             ERROR_REPORTING_THREAD_LOCAL.set(new HashMap<>());
         }
@@ -62,7 +62,7 @@ public class GracefulDeserializationProblemHandler extends DeserializationProble
         try{
             p.readValueAsTree();
         }
-        catch (IOException e){
+        catch (JacksonException e){
             logger.error("Was not able to read", e);
         }
     }

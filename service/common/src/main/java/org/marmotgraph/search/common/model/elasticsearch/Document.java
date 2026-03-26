@@ -54,5 +54,8 @@ public class Document {
 
     @JsonProperty("_score")
     private Double score;
+
+    private List<Object> sort;
+
 }
 

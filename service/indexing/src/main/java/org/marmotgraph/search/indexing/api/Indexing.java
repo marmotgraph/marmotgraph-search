@@ -75,7 +75,7 @@ public class Indexing {
     public ResponseEntity<ErrorReportResult> fullReplacement(@RequestParam("databaseScope") DataStage dataStage) {
         try {
             indexingController.recreateIdentifiersIndex(dataStage);
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease()).map(m -> {
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().parallelStream().filter(m -> !m.autoRelease()).map(m -> {
                 //In full replacement mode, we first create a temporary index
                 indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 //Which we're then going to populate.
@@ -96,7 +96,7 @@ public class Indexing {
     @Operation(summary="Full replacement by type")
     public ResponseEntity<ErrorReportResult> fullReplacementByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> m.category().toLowerCase().equals(category.toLowerCase())).map(m -> {
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().parallelStream().filter(m -> m.category().toLowerCase().equals(category.toLowerCase())).map(m -> {
                 //In full replacement mode, we first create a temporary index
                 indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 //Which we're then going to populate.

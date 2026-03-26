@@ -24,25 +24,24 @@
 
 package org.marmotgraph.search.common.model.source;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.TreeNode;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("java:S3740") // we keep the generics intentionally
-public class ListOrSingleStringAsListDeserializer extends JsonDeserializer<List> { 
+public class ListOrSingleStringAsListDeserializer extends ValueDeserializer<List<?>> {
 
     @Override
-    public List<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public List<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         final TreeNode treeNode = jsonParser.readValueAsTree();
         if(treeNode.isArray()){
-            List<?> list = jsonParser.getCodec().treeToValue(treeNode, List.class);
+            List<?> list = deserializationContext.readValue(treeNode.traverse(jsonParser.objectReadContext()), List.class);
             if(CollectionUtils.isEmpty(list)){
                 return null;
             }
@@ -51,7 +50,7 @@ public class ListOrSingleStringAsListDeserializer extends JsonDeserializer<List>
             }
         }
         else{
-            String s = jsonParser.getCodec().treeToValue(treeNode, String.class);
+            String s = deserializationContext.readValue(treeNode.traverse(jsonParser.objectReadContext()), String.class);
             if(StringUtils.isNotBlank(s)) {
                 return Collections.singletonList(s);
             }

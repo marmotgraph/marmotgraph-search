@@ -24,7 +24,6 @@
 
 package org.marmotgraph.search.common.services;
 
-import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +36,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
+
 @Component
 public class DOICitationFormatter {
 
@@ -47,9 +48,8 @@ public class DOICitationFormatter {
     }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(
-            HttpClient.create().followRedirect(true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-    )).build();
+
+    private final WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true).responseTimeout(Duration.ofSeconds(10)))).build();
 
     @Cacheable(value = "doiCitation", unless = "#result == null", key = "#doi.concat('-').concat(#style).concat(#contentType)")
     public String getDOICitation(String doi, String style, String contentType) {

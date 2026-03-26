@@ -24,8 +24,6 @@
 
 package org.marmotgraph.search.common.configuration;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,42 +32,40 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.codec.json.JacksonJsonDecoder;
+import org.springframework.http.codec.json.JacksonJsonEncoder;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.RemoveAuthorizedClientOAuth2AuthorizationFailureHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class OauthClient {
 
-    private final ObjectMapper objectMapper;
-
-    public OauthClient(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.objectMapper.addHandler(new GracefulDeserializationProblemHandler());
-        this.exchangeStrategies = ExchangeStrategies.builder()
-                .codecs(configurer -> {
-                    configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
-                    configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-                    configurer.defaultCodecs().maxInMemorySize(1024 * 1000000);
-                }).build();
-    }
-
-    protected final ExchangeStrategies exchangeStrategies;
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final JsonMapper jsonMapper = JsonMapper.builder().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).addHandler(new GracefulDeserializationProblemHandler()).build();
+    private final HttpClient httpClient = HttpClient.create().httpResponseDecoder(spec -> spec.maxHeaderSize(64*1024));
+
+    private WebClient.Builder defaultWebClientBuilder(){
+         return WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).codecs(config -> {
+            config.defaultCodecs().jacksonJsonDecoder(new JacksonJsonDecoder(jsonMapper));
+            config.defaultCodecs().jacksonJsonEncoder(new JacksonJsonEncoder(jsonMapper));
+            config.defaultCodecs().maxInMemorySize(1024 * 1000000);
+        });
+    }
 
     @Bean
     @Primary
     WebClient standardWebClient() {
-        return WebClient.builder().exchangeStrategies(exchangeStrategies).build();
+        return defaultWebClientBuilder().build();
     }
 
     @Bean
@@ -77,7 +73,7 @@ public class OauthClient {
     WebClient serviceAccountWebClient(ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientService authorizedClientService) {
         AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrations, authorizedClientService);
         final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 = getServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientService, clientManager);
-        return WebClient.builder().exchangeStrategies(exchangeStrategies).apply(oauth2.oauth2Configuration()).filter((clientRequest, nextFilter) -> {
+        return defaultWebClientBuilder().apply(oauth2.oauth2Configuration()).filter((clientRequest, nextFilter) -> {
             ClientRequest updatedHeaders = ClientRequest.from(clientRequest).headers(h -> {
                 h.put("Client-Authorization", h.get(Constants.AUTHORIZATION));
             }).build();
@@ -101,7 +97,7 @@ public class OauthClient {
     @Qualifier("asUser")
     WebClient userWebClient(HttpServletRequest request, @Value("${developmentMode:false}") boolean developmentMode, @Qualifier("asServiceAccount") WebClient serviceAccountWebClient) {
         if(!developmentMode) {
-            return WebClient.builder().exchangeStrategies(exchangeStrategies).defaultRequest(r -> {
+            return defaultWebClientBuilder().defaultRequest(r -> {
                 /**
                  * We just reuse the original authorization header for the given request and we
                  * explicitly don't want a client authorization to make the mechanism work with private

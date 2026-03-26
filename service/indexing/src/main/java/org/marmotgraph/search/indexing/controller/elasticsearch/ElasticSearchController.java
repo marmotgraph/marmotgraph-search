@@ -24,8 +24,6 @@
 
 package org.marmotgraph.search.indexing.controller.elasticsearch;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.target.TargetInstance;
 import org.marmotgraph.search.common.services.ESServiceClient;
@@ -37,6 +35,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.*;
 
@@ -119,7 +119,7 @@ public class ElasticSearchController {
             operations.append(String.format("{ \"index\" : { \"_id\" : \"%s\" } } \n", instance.getId()));
             try {
                 operations.append(objectMapper.writeValueAsString(instance)).append("\n");
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -171,7 +171,7 @@ public class ElasticSearchController {
         op.append(String.format("{ \"index\" : { \"_id\" : \"%s\" } } \n", id));
         try {
             op.append(objectMapper.writeValueAsString(instance));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
         op.append('\n');

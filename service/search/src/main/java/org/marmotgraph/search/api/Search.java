@@ -279,37 +279,25 @@ public class Search {
         }
     }
 
-    @PostMapping("/groups/public/search")
-    public ResponseEntity<?> searchPublic(
+
+
+    @PostMapping("/search")
+    public ResponseEntity<?> search(
             @RequestParam(required = false, defaultValue = "", name = "q") String q,
             @RequestParam(required = false, defaultValue = "", name = "type") String type,
-            @RequestParam(required = false, defaultValue = "0", name = "from") int from,
             @RequestParam(required = false, defaultValue = "20", name = "size") int size,
+            @RequestParam(name="group") String group,
+            @RequestParam(name="cursor", required = false) String cursorToken,
             @RequestBody Map<String, FacetValue> facetValues
     ) {
         try {
-            Map<String, Object> result = searchController.search(q, type, from, size, facetValues, DataStage.RELEASED);
+            Map<String, Object> result = searchController.search(q, type, size, facetValues, group.equals("public") ? DataStage.RELEASED : DataStage.IN_PROGRESS, cursorToken);
             return ResponseEntity.ok(result);
         } catch (WebClientResponseException e) {
             return ResponseEntity.status(e.getStatusCode()).build();
         }
     }
 
-    @PostMapping("/groups/curated/search")
-    @UserRoles.MustBeInProgress
-    public ResponseEntity<?> searchCurated(
-            @RequestParam(required = false, defaultValue = "", name = "q") String q,
-            @RequestParam(required = false, defaultValue = "", name = "type") String type,
-            @RequestParam(required = false, defaultValue = "0", name = "from") int from,
-            @RequestParam(required = false, defaultValue = "20", name = "size") int size,
-            @RequestBody Map<String, FacetValue> facetValues) {
-        try {
-            Map<String, Object> result = searchController.search(q, type, from, size, facetValues, DataStage.IN_PROGRESS);
-            return ResponseEntity.ok(result);
-        } catch (WebClientResponseException e) {
-            return ResponseEntity.status(e.getStatusCode()).build();
-        }
-    }
 
     @GetMapping("/{id}/bookmark")
     @PreAuthorize("isAuthenticated()")

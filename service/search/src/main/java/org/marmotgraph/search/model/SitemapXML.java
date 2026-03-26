@@ -24,16 +24,17 @@
 
 package org.marmotgraph.search.model;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.io.Serializable;
 import java.util.List;
 
-@JacksonXmlRootElement(localName = "urlset")
+@XmlRootElement(name="urlset")
 public class SitemapXML implements Serializable {
     @JacksonXmlProperty(isAttribute = true)
     private String xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
@@ -45,7 +46,7 @@ public class SitemapXML implements Serializable {
 
     @Setter
     @Getter
-    @JacksonXmlRootElement(localName = "url")
+    @XmlRootElement(name="url")
     public static class Url implements Serializable {
         private String loc;
     }

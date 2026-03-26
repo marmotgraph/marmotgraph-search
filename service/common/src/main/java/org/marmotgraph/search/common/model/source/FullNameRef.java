@@ -7,10 +7,6 @@ public interface FullNameRef {
 
     String getFullName();
 
-    void setId(String id);
-
-    void setFullName(String fullName);
-
     Comparator<FullNameRef> COMPARATOR = Comparator.comparing(FullNameRef::getFullName, Comparator.nullsFirst(String::compareToIgnoreCase));
 
 }
