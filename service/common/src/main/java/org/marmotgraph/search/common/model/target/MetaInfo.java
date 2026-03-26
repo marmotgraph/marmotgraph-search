@@ -43,7 +43,6 @@ public @interface MetaInfo {
      * (independent of the fact if all instances of this type are actually searchable e.g. only the latest version of a resource is searchable,
      * the annotation for the type is still searchable=true though)
      *
-     * To define which individual instances are actually searchable, please specify {@link TargetInstance#isSearchableInstance()}
      */
     boolean searchable() default false;
 
