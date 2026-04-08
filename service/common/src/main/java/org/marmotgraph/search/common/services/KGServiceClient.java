@@ -44,7 +44,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -306,7 +305,7 @@ public class KGServiceClient {
             url = String.format("%s/queries/%s/instances?stage=%s&instanceId=%s", kgCoreEndpoint, queryId, dataStage, id);
         }
         try {
-            return executeCallForInstance(clazz, url, semanticType, id, asServiceAccount);
+            return executeCallForInstance(clazz, url, id, semanticType, asServiceAccount);
         } catch (WebClientResponseException.NotFound e) {
             return null;
         }
@@ -402,21 +401,24 @@ public class KGServiceClient {
 
     private <T> T executeCallForInstance(Class<T> clazz, String url, String id, String semanticType, boolean asServiceAccount) {
         WebClient webClient = asServiceAccount ? this.serviceAccountWebClient : this.userWebClient;
-
-        boolean byQuery = appConfig.localQueries() && semanticType != null;
-        if (byQuery) {
-            MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
-            ResultsOfKG<T> result = (ResultsOfKG<T>) webClient.post().uri(url).bodyValue(query).headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+        if (semanticType != null) {
+            WebClient.RequestHeadersSpec<?> request;
+            if (appConfig.localQueries()) {
+                MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
+                request = webClient.post().uri(url).bodyValue(query);
+            } else {
+                request = webClient.get().uri(url);
+            }
+            ResultsOfKG<T> result = (ResultsOfKG<T>) request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                     .retrieve().bodyToMono(ParameterizedTypeReference.forType(ResolvableType.forClassWithGenerics(ResultsOfKG.class, clazz).getType()))
                     .doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
                     .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
                     .block();
-            if(result!=null && result.getData() != null){
-                if(result.getData().size() == 1){
+            if (result != null && result.getData() != null) {
+                if (result.getData().size() == 1) {
                     return result.getData().getFirst();
-                }
-                else{
-                  throw new RuntimeException(String.format("Too many (%d) results when querying %s with id %s of type %s", result.getData().size(), semanticType, id, clazz.getSimpleName()));
+                } else {
+                    throw new RuntimeException(String.format("Too many (%d) results when querying %s with id %s of type %s", result.getData().size(), semanticType, id, clazz.getSimpleName()));
 
                 }
             }

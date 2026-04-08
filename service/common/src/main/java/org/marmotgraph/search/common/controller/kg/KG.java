@@ -45,7 +45,7 @@ public class KG  {
     }
 
     public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String id, boolean asServiceAccount) {
-        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, semanticType, id, asServiceAccount);
+        return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, id, semanticType, asServiceAccount);
     }
 
     public Set<UUID> getInvitationsFromKG(){
