@@ -25,7 +25,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import ShareButtons from '../components/ShareButtons/ShareButtons';
-import FavoriteButton from './FavoriteButton';
 
 import './ActionsButtons.css';
 
@@ -49,8 +48,7 @@ const ActionsButtons = () => {
   if (instanceId) {
     return (
       <span className="kgs-actions-buttons">
-        <FavoriteButton  />
-        <ShareButtons url={url} />
+        <ShareButtons url={url} instanceId={instanceId} />
       </span>
     );
   }

@@ -73,7 +73,8 @@ const initialState = {
       help: null,
       navbarItems: null,
       footerContent: null,
-      footerSocial: null
+      footerSocial: null,
+      editorEndpoint: null
     }
   }
 };

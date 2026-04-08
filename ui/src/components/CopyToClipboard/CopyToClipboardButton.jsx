@@ -66,9 +66,9 @@ const CopyToClipboardButton = ({
 
   return (
     <span className={`kgs-copy-to-clipboard ${className??''}`}>
-      <button role="link" onClick={clickHandler} title={title}>
+      <a onClick={clickHandler} title={title}>
         <ButtonContent icon={icon} text={text} />
-      </button>
+      </a>
       <div className="kgs-copy-confirmation">{confirmationText}</div>
     </span>
   );

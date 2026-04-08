@@ -72,7 +72,7 @@ export const getUpdatedQuery = (query, name, checked, value, many) => {
     const isParamWithBracketsMatchingName = regParamWithBrackets.test(name) && name === key;
     const doesParamHasBrackets = !isParamWithBracketsMatchingName && regParamWithBrackets.test(key);
     const [, queryName] = doesParamHasBrackets?key.match(regParamWithBrackets):[null, key];
-    const current = queryName === name && (!many || v === val );
+    const current = queryName === name && (!many || encodeURIComponent(v) === val );
     found = found || current;
     if (!current || checked) {
       if (queryName === name) { // same param name

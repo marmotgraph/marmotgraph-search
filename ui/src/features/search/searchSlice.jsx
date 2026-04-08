@@ -230,7 +230,8 @@ const searchSlice = createSlice({
     },
     setType(state, action) {
       const type = state.types.find(t => t.type === action.payload);
-      if (type) {
+      if (type && state.selectedType !== type.type) {
+        resetAllFacets(state);
         state.hits = []
         state.selectedType = type.type;
         state.cursor = null;

@@ -27,5 +27,56 @@
 }
 
 .kgs-actions-buttons .kgs-share-links .kgs-share-links-panel {
-  padding-left: 0px;
+  padding-left: 0;
+}
+
+.kgs-share-links {
+  white-space: nowrap;
+}
+.kgs-share-links .item {
+  display:inline-block;
+  height: 1.3em;
+  margin: 0 0.3em;
+}
+
+.kgs-share-links .item svg{
+  height: 100%;
+}
+
+
+.kgs-share-links a,
+.kgs-share-links a:visited {
+  color: var(--color-2);
+  transition: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.kgs-share-links a:hover,
+.kgs-share-links a:visited:hover {
+  box-shadow: none;
+  font-weight: bold;
+  color: var(--link-highlight-color);
+}
+
+.kgs-share-links a .svg-inline--fa:before,
+.kgs-share-links a:visited .svg-inline--fa:before {
+  color: var(--color-2);
+}
+
+.kgs-share-links a:hover .svg-inline--fa:before,
+.kgs-share-links a:visited:hover .svg-inline--fa:before {
+  font-weight: bold;
+}
+
+
+.kgs-share-links .kgs-share-links-panel {
+  display: inline-block;
+  position: relative;
+  padding: 2px 4px 2px 6px;
+  border: 0
+}
+
+.kgs-share-links .kgs-share-links-panel:before {
+  display: none;
 }

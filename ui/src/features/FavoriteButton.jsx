@@ -63,9 +63,9 @@ const FavoriteToggle = ({ instanceId, isBookmarked, onClick }) => {
 
   const label = isBookmarked?'Remove from bookmarks':'Add to bookmarks';
   return (
-    <button className="kgs-favorite_button" onClick={handleToggle} title={label} aria-label={label}>
+    <a className="item kgs-favorite_button" onClick={handleToggle} title={label} aria-label={label}>
       <FontAwesomeIcon icon={isBookmarked?on:off} />
-    </button>
+    </a>
   );
 };
 

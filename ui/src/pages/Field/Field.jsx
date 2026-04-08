@@ -155,7 +155,7 @@ const getFieldProps = (
       const multipleGroupedLinksMapping = {
         ...mapping,
         enforceList: true,
-        children: Object.keys(data).reduce((acc, service) => {
+        children: Object.keys(data).sort().reduce((acc, service) => {
           acc[service] = { label: service, enforceShowMore: true };
           return acc;
         }, {})

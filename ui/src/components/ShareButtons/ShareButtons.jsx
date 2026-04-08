@@ -22,12 +22,10 @@
  */
 
 import {faClipboard} from '@fortawesome/free-solid-svg-icons/faClipboard';
-import {faEnvelope} from '@fortawesome/free-solid-svg-icons/faEnvelope';
 import React from 'react';
 import CopyToClipboardButton from '../CopyToClipboard/CopyToClipboardButton';
-import EmailToLink from '../EmailToLink/EmailToLink';
-
-import './ShareButtons.css';
+import FavoriteButton from '../../features/FavoriteButton';
+import {useSelector} from 'react-redux';
 
 const getShareEmailToLink = url => {
   const to = '';
@@ -36,13 +34,27 @@ const getShareEmailToLink = url => {
   return `mailto:${to}?subject=${subject}&body=${body} ${encodeURIComponent(url)}.`;
 };
 
-const ShareButtons = ({ url }) => {
+const ShareButtons = ({ url, instanceId }) => {
+  const editorEndpoint = useSelector(state => state.custom?.editorEndpoint);
+
   const link = getShareEmailToLink(url);
   return (
     <span className="kgs-share-links" >
       <span className="kgs-share-links-panel">
-        <CopyToClipboardButton icon={faClipboard}  title="Copy search link to clipboard" confirmationText="search link copied to clipoard" content={url} />
-        <EmailToLink icon={faEnvelope} title="Send search link by email" link={link} />
+        <FavoriteButton />
+        <span className="item">
+          {editorEndpoint != null ?
+        <a href={editorEndpoint+"/instances/" + instanceId} target={'_blank'}>
+         <svg className="svg-inline--fa" viewBox="0 0 470 509" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="23.5" y="23.5" width="181" height="154" rx="25" stroke="currentColor" stroke-width="47"/>
+<rect x="23.5" y="236.5" width="181" height="249" rx="25" stroke="currentColor" stroke-width="47"/>
+<rect x="265.5" y="331.5" width="181" height="154" rx="25" stroke="currentColor" stroke-width="47"/>
+<rect x="265.5" y="23.5" width="181" height="249" rx="25" stroke="currentColor" stroke-width="47"/>
+</svg>
+</a> : null }
+        </span>
+        <CopyToClipboardButton icon={faClipboard} title="Copy search link to clipboard"
+                               confirmationText="search link copied to clipoard" content={url} className="item"/>
       </span>
     </span>
   );

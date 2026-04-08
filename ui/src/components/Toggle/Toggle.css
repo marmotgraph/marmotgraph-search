@@ -62,7 +62,7 @@
 .kgs-toggle > div > button.is-active {
     background-color: var(--link-highlight-color);
     border-color: var(--link-highlight-color);
-    cursor: default;
+    /*cursor: default;*/
 }
 
 .kgs-toggle > div > button:not(.is-active):not(.is-disabled):hover,
