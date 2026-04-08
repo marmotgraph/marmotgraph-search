@@ -147,7 +147,7 @@ public class IndexingController {
                     final List<Target> processableInstances = instances.stream().filter(instance -> !excludedIds.contains(instance.getId())).map(instance -> (Target)instance).collect(Collectors.toList());
                     referenceResolver.clearNonResolvableReferences(processableInstances, existingIdentifiers);
                     processableInstances.forEach(instance -> {
-                        logger.info("Translating instance {}", instance.getId());
+                        logger.debug("Translating instance {}", instance.getId());
                         Target handledInstance = instanceHandler != null ? instanceHandler.apply(instance) : instance;
                         if (handledInstance.isSearchableInstance()) {
                             updateResult.searchableIds.add(handledInstance.getId());

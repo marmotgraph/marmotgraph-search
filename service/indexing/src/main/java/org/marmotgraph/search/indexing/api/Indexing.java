@@ -24,12 +24,14 @@
 
 package org.marmotgraph.search.indexing.api;
 
+import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.ErrorReportResult;
 import org.marmotgraph.search.common.security.UserRoles;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
+import org.marmotgraph.search.indexing.configuration.IndexingScheduler;
 import org.marmotgraph.search.indexing.controller.indexing.IndexingController;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
@@ -45,17 +47,13 @@ import java.util.stream.Collectors;
 
 @RequestMapping("/indexing")
 @RestController
+@AllArgsConstructor
 public class Indexing {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final IndexingController indexingController;
     private final DOICitationFormatter doiCitationFormatter;
     private final TranslatorRegistry translatorRegistry;
-
-    public Indexing(IndexingController indexingController, DOICitationFormatter doiCitationFormatter, TranslatorRegistry translatorRegistry) {
-        this.indexingController = indexingController;
-        this.doiCitationFormatter = doiCitationFormatter;
-        this.translatorRegistry = translatorRegistry;
-    }
+    private final IndexingScheduler indexingScheduler;
 
     @PostMapping("/doiCitations")
     @UserRoles.MustBeAdmin
@@ -147,6 +145,22 @@ public class Indexing {
             logger.info("Unsuccessful incremental indexing", e);
             return ResponseEntity.status(e.getStatusCode()).build();
         }
+    }
+
+
+    @UserRoles.MustBeAdmin
+    @GetMapping
+    @Operation(summary="error reports")
+    public ResponseEntity<ErrorReportResult> getErrorReport(@RequestParam("databaseScope") DataStage dataStage, @RequestParam(value = "autorelease", defaultValue = "false") boolean autorelease) {
+        IndexingScheduler.IndexingMode indexingMode;
+        if(dataStage == DataStage.IN_PROGRESS){
+            indexingMode = autorelease ? IndexingScheduler.IndexingMode.IN_PROGRESS_AUTORELEASE : IndexingScheduler.IndexingMode.IN_PROGRESS;
+        }
+        else{
+            indexingMode = autorelease ? IndexingScheduler.IndexingMode.RELEASED_AUTORELEASE : IndexingScheduler.IndexingMode.RELEASED;
+        }
+        ErrorReportResult result = indexingScheduler.getErrorReports().get(indexingMode);
+        return result != null ? ResponseEntity.ok(result) : ResponseEntity.notFound().build();
     }
 
     @UserRoles.MustBeAdmin

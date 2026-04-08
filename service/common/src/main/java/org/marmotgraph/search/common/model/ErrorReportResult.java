@@ -43,4 +43,12 @@ public class ErrorReportResult {
         private ErrorReport errors;
     }
 
+    @Getter
+    @Setter
+    public static class Extended extends ErrorReportResult{
+        private String startedAt;
+        private String endedAt;
+        private long duration;
+    }
+
 }
