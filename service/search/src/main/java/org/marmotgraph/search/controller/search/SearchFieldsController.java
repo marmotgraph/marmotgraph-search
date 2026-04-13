@@ -70,38 +70,32 @@ public class SearchFieldsController {
     }
 
     private List<String> getFieldsHighlight(Type type) {
-        List<String> highlights = new ArrayList<>();
         List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(type);
-        allFields.forEach(f -> {
+        return allFields.stream().map(f -> {
             try {
-                addFieldHighlight(highlights, f, "");
+                return fieldHighlight(f, "");
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        });
-        return highlights;
+        }).filter(Objects::nonNull).toList();
     }
 
-    private void addFieldHighlight(List<String> highlights, MetaModelUtils.FieldWithGenericTypeInfo f, String parentPath) throws ClassNotFoundException {
+    private String fieldHighlight(MetaModelUtils.FieldWithGenericTypeInfo f, String parentPath) throws ClassNotFoundException {
         FieldInfo info = f.field().getAnnotation(FieldInfo.class);
         if (info != null && !info.ignoreForSearch()) {
             String propertyName = utils.getPropertyName(f.field());
             String path = String.format("%s%s", parentPath, propertyName);
             if (!propertyName.equals("children")) { // if (f.getField().getType() != Children.class) { if (f.getField().getDeclaringClass() != Children.class) {
                 if (StringUtils.isBlank(parentPath) || f.field().getType() == Value.class) {
-                    String valuePath = String.format("%s.value", path);
-                    if (FIELDS_TO_HIGHLIGHT.contains(valuePath)) {
-                        highlights.add(valuePath);
-                    }
+                    return String.format("%s.value", path);
                 } else {
-                    if (FIELDS_TO_HIGHLIGHT.contains(path)) {
-                        highlights.add(path);
-                    }
+                    return path;
                 }
             }
 //          Type topTypeToHandle = f.getGenericType() != null ? f.getGenericType() : MetaModelUtils.getTopTypeToHandle(f.getField().getGenericType());
 //          addChildrenFieldHighlight(highlights, topTypeToHandle, String.format("%s.children", path));
         }
+        return null;
     }
 
     @Cacheable(value = "suggestFields", key = "#type")
