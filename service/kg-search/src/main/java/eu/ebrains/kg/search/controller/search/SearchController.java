@@ -340,7 +340,10 @@ public class SearchController extends FacetAggregationUtils {
         if (StringUtils.isNotBlank(version)) {
             res.put("version", version);
         }
-
+        String watermark = CastingUtils.getStringValueField(source, "watermark");
+        if (StringUtils.isNotBlank(watermark)) {
+            res.put("watermark", watermark);
+        }
         List<Object> versions = CastingUtils.getListField(source, "versions");
         if (!CollectionUtils.isEmpty(versions)) {
             res.put("versions", versions);
