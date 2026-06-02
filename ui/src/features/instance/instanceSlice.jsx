@@ -90,7 +90,6 @@ const instanceSlice = createSlice({
         state.data = data;
         state.meta = data.meta;
         state.watermark = data.watermark;
-        debugger;
         state.title = getTitle(data);
         state.tab = state.context?.tab; // tab should keep current view until the data of the new instanceId is successufully fetched
       } else {

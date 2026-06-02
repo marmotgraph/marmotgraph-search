@@ -28,7 +28,6 @@
 .kgs-filtered-list .kgs-filtered-list_filter {
     margin-bottom: 6px;
     border: 1px solid var(--color-8);
-    border-radius: 5px;
     background: var(--background-color-2);
 }
 

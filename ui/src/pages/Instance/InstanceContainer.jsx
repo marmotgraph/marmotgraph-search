@@ -51,7 +51,6 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
   const data = useSelector(state => state.instance.data);
   const meta = useSelector(state => state.instance.meta);
   const watermarkFromInstance = useSelector(state => state.instance.watermark);
-  debugger;
   const title = useSelector(state => state.instance.title);
   const previousInstance = useSelector(state => selectPreviousInstance(state));
   const group = useSelector(state => state.groups.group);
