@@ -39,6 +39,7 @@ import Tabs from './Tabs/Tabs';
 
 import './InstanceView.css';
 import './Fields.css';
+import Watermark from '../../components/Watermark/Watermark';
 
 const getField = (type, name, data, mapping) => {
   if (name === 'type') {
@@ -137,7 +138,7 @@ const getTags = (groupLabel, isDefaultGroup, category) => {
   return tags;
 };
 
-const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
+const InstanceView = ({ data, path, isSearch, customNavigationComponent, watermark }) => {
 
   const navigate = useNavigate();
 
@@ -146,7 +147,7 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
   const type = data?.type;
   const fields = data?.fields;
   const mapping =  useSelector(state => selectTypeMapping(state, type));
-
+  const watermarkFromInstance = useSelector(state => state.instance.watermark);
   const hasNoData = !fields;
   const hasUnknownData = !mapping;
 
@@ -166,6 +167,7 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
   const tags = getTags(groupLabel, isDefaultGroup, data?.category);
 
   const badges = data?.badges;
+  const finalWatermark = watermarkFromInstance ? watermark ? watermark + "\n" + watermarkFromInstance : watermarkFromInstance : watermark;
 
   const onVersionChange = version => {
     const context = {
@@ -208,6 +210,8 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
       <Disclaimer content={data?.disclaimer} />
       <TermsShortNotice />
       <ImagePopup className="kgs-instance__image_popup" />
+
+      <Watermark text={finalWatermark} />
     </div>
   );
 };

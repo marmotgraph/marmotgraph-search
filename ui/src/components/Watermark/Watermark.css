@@ -23,7 +23,10 @@
 
 .kgs-watermark {
   position: absolute;
-  top: 25%;
+  top: 40vw;
+  left: -10%;
+  min-height: 100px;
+  white-space: pre;
 }
 
 .kgs-watermark p { 
@@ -33,6 +36,7 @@
   pointer-events: none;
   transform: rotate(-45deg);
   opacity: 0.2;
+  text-align: center;
 }
 
 @media (min-width:768px) {
@@ -43,9 +47,9 @@
 }
 
 @media (min-width:992px) {
-  .kgs-watermark {
-    top: 40%; 
-  }
+   .kgs-watermark{
+     top: 50%;
+   }
 
   .kgs-watermark p { 
     font-size: 300px;
