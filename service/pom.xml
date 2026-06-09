@@ -54,6 +54,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github-packages</id>
+            <url>https://maven.pkg.github.com/marmotgraph/marmotgraph-search</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
