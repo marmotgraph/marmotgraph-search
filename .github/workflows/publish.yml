@@ -2,7 +2,8 @@ name: Publish Maven Packages
 
 on:
   push:
-    branches: [ search_as_library ]
+    branches:
+       - search_as_a_library
     tags: [ 'v*' ]          # also publish on version tags
 
 jobs:
@@ -24,9 +25,11 @@ jobs:
 
       - name: Set version from tag
         if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: service
         run: mvn --batch-mode versions:set -DnewVersion=${GITHUB_REF_NAME#v}
 
       - name: Publish to GitHub Packages
+        working-directory: service
         run: mvn --batch-mode deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ github.actor }}
