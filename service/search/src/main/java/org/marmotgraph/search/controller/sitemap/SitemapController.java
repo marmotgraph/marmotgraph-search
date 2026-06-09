@@ -77,14 +77,7 @@ public class SitemapController {
     private SitemapXML fetchSitemap() {
         List<SitemapXML.Url> urls = new ArrayList<>();
         String index = esHelper.getIndexesForDocument(DataStage.RELEASED);
-        final Set<String> relevantTypes = translatorRegistry.getTranslators().stream().filter(TranslatorModel::addToSitemap).map(t -> {
-            try {
-                return t.targetClass().getConstructor().newInstance().getType().getValue();
-            } catch (InstantiationException | IllegalAccessException| InvocationTargetException | NoSuchMethodException e) {
-                logger.error("Was not able to find type for sitemap generation", e);
-                return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
+        final Set<String> relevantTypes = translatorRegistry.getTranslators().stream().filter(TranslatorModel::addToSitemap).map(TranslatorModel::category).filter(Objects::nonNull).collect(Collectors.toSet());
         try {
             List<Document> documents = esServiceClient.getDocumentsForSitemap(index, relevantTypes);
             documents.forEach(doc -> {
