@@ -30,6 +30,9 @@ public @interface Query {
         PathElement[] path() default {};
 
         boolean required() default false;
+
+        //TODO interpret for ensurance of order
+        boolean ensureOrder() default false;
     }
 
 

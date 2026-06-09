@@ -43,21 +43,21 @@ import java.util.stream.Stream;
 public abstract class TranslatorBase {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Value<Integer> value(Integer v) {
+    public static Value<Integer> value(Integer v) {
         if (v != null) {
             return new Value<>(v);
         }
         return null;
     }
 
-    protected Value<Boolean> value(Boolean v) {
+    public static Value<Boolean> value(Boolean v) {
         if (v != null) {
             return new Value<>(v);
         }
         return null;
     }
 
-    protected Value<String> value(String v) {
+    public static Value<String> value(String v) {
         if (StringUtils.isNotBlank(v)) {
             return new Value<>(v.trim());
         }
@@ -65,7 +65,7 @@ public abstract class TranslatorBase {
     }
 
 
-    protected ISODateValue value(Date date) {
+    public static ISODateValue value(Date date) {
         if (date != null) {
             return new ISODateValue(date);
         } else {
@@ -81,9 +81,9 @@ public abstract class TranslatorBase {
         return null;
     }
 
-    protected List<Value<String>> value(List<String> values) {
+    public static List<Value<String>> value(List<String> values) {
         if (!CollectionUtils.isEmpty(values)) {
-            return values.stream().map(this::value).filter(Objects::nonNull).collect(Collectors.toList());
+            return values.stream().map(TranslatorBase::value).filter(Objects::nonNull).collect(Collectors.toList());
         }
         return null;
     }
@@ -95,7 +95,7 @@ public abstract class TranslatorBase {
         return null;
     }
 
-    protected List<TargetExternalReference> link(List<ExternalRef> urls) {
+    protected List<TargetExternalReference> link(List<? extends ExternalRef> urls) {
         if (!CollectionUtils.isEmpty(urls)) {
             return urls.stream().map(this::link).filter(Objects::nonNull).collect(Collectors.toList());
         }

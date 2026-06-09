@@ -39,7 +39,6 @@
     <description>This is the common library for the generic MarmotGraph Search component</description>
     <url>https://marmotgraph.org</url>
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

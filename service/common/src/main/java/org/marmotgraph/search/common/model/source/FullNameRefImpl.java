@@ -27,6 +27,7 @@ package org.marmotgraph.search.common.model.source;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.marmotgraph.search.common.utils.queryGenerator.Query;
 
 import java.util.Comparator;
 
@@ -35,6 +36,7 @@ import java.util.Comparator;
 @EqualsAndHashCode
 public class FullNameRefImpl implements FullNameRef {
 
+    @Query.Field(required = true, path = @Query.PathElement(name = "@id"))
     private String id;
     private String fullName;
 

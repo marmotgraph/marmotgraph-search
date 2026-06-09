@@ -25,6 +25,7 @@
 package org.marmotgraph.search.common.model.target;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -70,7 +71,20 @@ public abstract class TargetInstance {
     @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> watermark;
+
+    @JsonProperty("first_release")
+    @FieldInfo(ignoreForSearch = true, visible = false, type = FieldInfo.Type.DATE)
+    private ISODateValue firstRelease;
+
+    @JsonProperty("last_release")
+    @FieldInfo(ignoreForSearch = true, visible = false, type = FieldInfo.Type.DATE)
+    private ISODateValue lastRelease;
+
     private boolean trending = false;
+
+    private int last30DaysViews;
 
     public abstract Value<String> getTitle();
 

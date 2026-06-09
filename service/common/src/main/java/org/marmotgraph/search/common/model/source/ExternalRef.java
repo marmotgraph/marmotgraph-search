@@ -24,16 +24,8 @@
 
 package org.marmotgraph.search.common.model.source;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@EqualsAndHashCode
-public class ExternalRef {
-
-    private String url;
-    private String label;
+public interface ExternalRef {
+    String getUrl();
+    String getLabel();
 
 }
