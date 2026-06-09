@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.marmotgraph.search</groupId>
     <artifactId>search-parent</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MarmotGraph Search parent</name>
     <description>This is the parent of MarmotGraph Search</description>

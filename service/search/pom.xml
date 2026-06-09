@@ -30,11 +30,11 @@
     <parent>
         <groupId>org.marmotgraph.search</groupId>
         <artifactId>search-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>search</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.0-SNAPSHOT</version>
     <name>MarmotGraph Search</name>
     <description>This is the parent of the "Search" component - which is the API layer for the MarmotGraph Search</description>
     <url>https://marmotgraph.org</url>
