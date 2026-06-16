@@ -14,6 +14,25 @@ jobs:
       packages: write       # required to push to GitHub Packages
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ui/package-lock.json 
+          
+      - name: Install UI dependencies
+        working-directory: ui                            
+        run: npm ci
+        
+      - name: Build UI
+        working-directory: ui                            
+        run: npm run build        
+        
+      - name: Copy UI build into service resources
+        run:  cp -r ui/dist/* service/search/src/main/resources/public/
+        
       - uses: actions/setup-java@v4
         with:
           java-version: '24'
