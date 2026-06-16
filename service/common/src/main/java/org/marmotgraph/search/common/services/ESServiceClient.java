@@ -499,7 +499,6 @@ public class ESServiceClient {
         }
     }
 
-
     public void createIndex(String index, Map<String, Object> mapping) {
         webClient.put()
                 .uri(String.format("%s/%s", elasticSearchEndpoint, index))

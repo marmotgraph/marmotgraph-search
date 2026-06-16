@@ -72,10 +72,15 @@ public class IndexingScheduler {
             case IN_PROGRESS_AUTORELEASE, RELEASED_AUTORELEASE ->  true;
             default -> false;
         };
+        indexingController.recreateIdentifiersIndex(stage, false);
         logger.info("Starting scheduled indexing for stage \"{}\" (autorelease: {}) - interval: {}ms", stage.name(), isAutorelease, interval);
         ZonedDateTime start = ZonedDateTime.now(ZoneOffset.UTC);
         ErrorReportResult.Extended result = new ErrorReportResult.Extended();
-        result.setErrorsByTarget(translatorRegistry.getTranslators().stream().filter(m -> m.autoRelease() == isAutorelease).map(m -> indexingController.populateIndex(m, stage, false)).filter(Objects::nonNull).toList());
+        result.setErrorsByTarget(translatorRegistry.getTranslators().stream().filter(m -> m.autoRelease() == isAutorelease).map(m ->
+        {
+            indexingController.recreateIndex(stage, m.targetClass(), m.autoRelease(), false, false); //Ensures the creation of the index if it doesn't exist yet
+            return indexingController.populateIndex(m, stage, false);
+        }).filter(Objects::nonNull).toList());
         ZonedDateTime end = ZonedDateTime.now(ZoneOffset.UTC);
         Duration duration = Duration.between(start, end);
         result.setStartedAt(start.format( DateTimeFormatter.ISO_INSTANT ));

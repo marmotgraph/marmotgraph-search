@@ -76,18 +76,20 @@ public class ElasticSearchController {
         logger.info(String.format("Successfully created index %s for %s", index, MetaModelUtils.getNameForClass(type)));
     }
 
-    public void recreateIdentifiersIndex(Map<String, Object> mapping, DataStage dataStage) {
+    public void recreateIdentifiersIndex(Map<String, Object> mapping, DataStage dataStage, boolean force) {
         String index = esHelper.getIdentifierIndex(dataStage);
-        logger.info(String.format("Creating identifier index %s", index));
-        try {
-            esServiceClient.deleteIndex(index);
-        } catch (WebClientResponseException e) {
-            if(e.getStatusCode() != HttpStatus.NOT_FOUND) {
-                throw  e;
+        if(!esServiceClient.checkIfIndexExists(index) || force) {
+            logger.info(String.format("Creating identifier index %s", index));
+            try {
+                esServiceClient.deleteIndex(index);
+            } catch (WebClientResponseException e) {
+                if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
+                    throw e;
+                }
             }
+            esServiceClient.createIndex(index, mapping);
+            logger.info(String.format("Successfully created identifier index %s", index));
         }
-        esServiceClient.createIndex(index, mapping);
-        logger.info(String.format("Successfully created identifier index %s", index));
     }
 
     public void recreateAutoReleasedIndex(DataStage stage, Map<String, Object> mapping, Class<?> type, boolean temporary) {
@@ -164,6 +166,10 @@ public class ElasticSearchController {
         if(!esServiceClient.checkIfIndexExists(esHelper.getResourcesIndex())) {
             esServiceClient.createIndex(esHelper.getResourcesIndex(), Collections.emptyMap());
         }
+    }
+
+    public boolean indexNotExists(String index){
+        return !esServiceClient.checkIfIndexExists(index);
     }
 
     public void addResource(String id, Map<String, Object> instance){

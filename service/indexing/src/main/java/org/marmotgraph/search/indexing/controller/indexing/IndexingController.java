@@ -189,9 +189,13 @@ public class IndexingController {
     }
 
     public void recreateIdentifiersIndex(DataStage dataStage) {
+        recreateIdentifiersIndex(dataStage, true);
+    }
+
+    public void recreateIdentifiersIndex(DataStage dataStage, boolean force) {
         Map<String, Object> mapping = mappingController.generateIdentifierMapping();
         Map<String, Object> payload = Map.of("mappings", mapping);
-        elasticSearchController.recreateIdentifiersIndex(payload, dataStage);
+        elasticSearchController.recreateIdentifiersIndex(payload, dataStage, force);
     }
 
 
@@ -200,17 +204,29 @@ public class IndexingController {
         elasticSearchController.reindexTemporaryToRealIndex(clazz, dataStage, autorelease);
     }
 
+
     public void recreateIndex(DataStage dataStage, Class<? extends TargetInstance> clazz, boolean autorelease, boolean temporary) {
+        recreateIndex(dataStage, clazz, autorelease, temporary, true);
+    }
+
+    public void recreateIndex(DataStage dataStage, Class<? extends TargetInstance> clazz, boolean autorelease, boolean temporary, boolean force) {
+        elasticSearchController.ensureResourcesIndex();
         Map<String, Object> mapping = mappingController.generateMapping(clazz, !autorelease);
         if (autorelease) {
-            Map<String, Object> payload = Map.of("mappings", mapping);
-            elasticSearchController.recreateAutoReleasedIndex(dataStage, payload, clazz, temporary);
+            String index = esHelper.getAutoReleasedIndex(dataStage, clazz, temporary);
+            if(elasticSearchController.indexNotExists(index) || force) {
+                Map<String, Object> payload = Map.of("mappings", mapping);
+                elasticSearchController.recreateAutoReleasedIndex(dataStage, payload, clazz, temporary);
+            }
         } else {
-            Map<String, Object> settings = settingsController.generateSearchIndexSettings();
-            Map<String, Object> payload = Map.of(
-                    "mappings", mapping,
-                    "settings", settings);
-            elasticSearchController.recreateSearchIndex(payload, clazz, dataStage, temporary);
+            String index = esHelper.getSearchableIndex(dataStage, clazz, temporary);
+            if(elasticSearchController.indexNotExists(index) || force) {
+                Map<String, Object> settings = settingsController.generateSearchIndexSettings();
+                Map<String, Object> payload = Map.of(
+                        "mappings", mapping,
+                        "settings", settings);
+                elasticSearchController.recreateSearchIndex(payload, clazz, dataStage, temporary);
+            }
         }
     }
 
