@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.indexing.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.DataStage;
@@ -33,7 +34,6 @@ import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.indexing.configuration.IndexingScheduler;
 import org.marmotgraph.search.indexing.controller.indexing.IndexingController;
-import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -94,7 +94,7 @@ public class Indexing {
     @Operation(summary="Full replacement by type")
     public ResponseEntity<ErrorReportResult> fullReplacementByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().parallelStream().filter(m -> m.category().toLowerCase().equals(category.toLowerCase())).map(m -> {
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().parallelStream().filter(m -> m.category().equalsIgnoreCase(category)).map(m -> {
                 //In full replacement mode, we first create a temporary index
                 indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
                 //Which we're then going to populate.

@@ -41,7 +41,6 @@ const ShareButtons = ({ url, instanceId }) => {
   return (
     <span className="kgs-share-links" >
       <span className="kgs-share-links-panel">
-        <FavoriteButton />
         <span className="item">
           {editorEndpoint != null ?
         <a href={editorEndpoint+"/instances/" + instanceId} target={'_blank'}>

@@ -39,6 +39,7 @@ import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public class TranslatorRegistry {
                 MergedAnnotation<Translator.Instance> translatorAnnotation = MergedAnnotations.from(t.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(Translator.Instance.class);
 
                 return new TranslatorModel((Class<? extends SourceInstance>) source, (Class<? extends TargetInstance>) target, t, translatorAnnotation.getBoolean("autoRelease"), queryAnnotation.getInt("bulkSize"), translatorAnnotation.getBoolean("addToSitemap"), normalizedSemanticTypes, metaInfoAnnotation.getString("name"), translatorAnnotation.getInt("orderNumber"));
-            }).sorted(TranslatorModel.COMPARATOR).toList();
+            }).sorted(Comparator.comparing(TranslatorModel::category)).toList();
         }
     }
 

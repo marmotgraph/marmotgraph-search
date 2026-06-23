@@ -56,6 +56,7 @@ public class TranslatorUtils {
     private final Integer trendingThreshold;
     private final ESHelper esHelper;
 
+    public static final String TYPE_INFORMATION = "typeInformation";
     private final Map<String, Object> translationContext;
 
     private final List<String> errors;
@@ -70,7 +71,30 @@ public class TranslatorUtils {
         this.errors = errors != null ? errors : new ArrayList<>();
     }
 
+    public void addTypeBadge(HasBadges target, String type){
+        Map<?, ?> typeInformation = getTypeInformation(type);
+        if(typeInformation!=null){
+            Object typeName = typeInformation.get("http://schema.org/name");
+            Object color = typeInformation.get("https://core.kg.ebrains.eu/vocab/meta/color");
+            if(typeName instanceof String && color instanceof String) {
+                addCustomBadge(target, (String) typeName, (String) color);
+            }
+        }
+    }
 
+    public void addCustomBadge(HasBadges target, String label, String color){
+        if(target.getBadges()==null){
+            target.setBadges(new ArrayList<>());
+        }
+        target.getBadges().add(String.format("%s;%s", label, color));
+    }
+
+
+
+    public Map<?,?> getTypeInformation(String type){
+        List<Map<?,?>> typeInformation = (List<Map<?,?>>)translationContext.get(TYPE_INFORMATION);
+        return typeInformation!=null ? typeInformation.stream().filter(t -> type.equals(t.get("http://schema.org/identifier"))).findFirst().orElse(Collections.emptyMap()) : Collections.emptyMap();
+    }
 
     public <T extends HasBadges & HasTrendingInformation> void defineBadgesAndTrendingState(T target, String issueDate, Date firstRelease, Integer last30DaysViews, List<String> metaBadges) {
         List<String> badges = new ArrayList<>();

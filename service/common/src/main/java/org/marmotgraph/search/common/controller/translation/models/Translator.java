@@ -40,6 +40,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Translator<Source extends SourceInstance, Target extends TargetInstance> extends TranslatorBase {
@@ -56,7 +57,7 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
     public static final class DontIndexException extends Exception{}
 
     public final Target translate(SourceInstance source, DataStage dataStage, String category, Class<?> targetType, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException{
-        Target t = setup(category, (Source)source, (Class<Target>)targetType);
+        Target t = setup(category, (Source)source, (Class<Target>)targetType, translatorUtils);
         try {
             translate((Source) source, t, dataStage, liveMode, translatorUtils);
             return t;
@@ -66,7 +67,7 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
         }
     }
 
-    private Target setup(String category, Source sourceEntity, Class<Target> targetType){
+    protected Target setup(String category, Source sourceEntity, Class<Target> targetType, TranslatorUtils translatorUtils) throws TranslationException{
         try {
             Target target = null;
             target = targetType.getConstructor().newInstance();
@@ -84,6 +85,6 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
     protected abstract void translate(Source source, Target target, DataStage dataStage, boolean liveMode, TranslatorUtils translatorUtils) throws DontIndexException, TranslationException;
 
     public Map<String, Object> populateTranslationContext(ESServiceClient esServiceClient, ESHelper esHelper, DataStage stage){
-        return Collections.emptyMap();
+        return new HashMap<>();
     }
 }

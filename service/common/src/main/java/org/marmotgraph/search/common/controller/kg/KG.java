@@ -58,6 +58,11 @@ public class KG  {
     }
 
 
+    public List<Map<?,?>> getTypeInformation(DataStage stage){
+        return kgServiceClient.getTypeInformation(stage);
+    }
+
+
     @SuppressWarnings("java:S3740") // we keep the generics intentionally
     public List<String> getTypesOfInstance(String instanceId, DataStage stage, boolean asServiceAccount) {
         final Map<?, ?> instance = kgServiceClient.getInstance(instanceId, stage, asServiceAccount);

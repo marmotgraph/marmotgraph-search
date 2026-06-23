@@ -311,6 +311,17 @@ public class KGServiceClient {
         }
     }
 
+    public List<Map<?, ?>> getTypeInformation(DataStage dataStage) {
+        Map<?, ?> result = this.serviceAccountWebClient.get().uri(String.format("%s/types?stage=%s&reflect=false&returnTotalResults=false", kgCoreEndpoint, dataStage)).retrieve().bodyToMono(Map.class).block();
+        if (result != null) {
+            Object data = result.get("data");
+            if (data instanceof List) {
+                return (List<Map<?,?>>)data;
+            }
+        }
+        return Collections.emptyList();
+    }
+
     @SuppressWarnings("java:S3740")
     public Map getInstance(String id, DataStage dataStage, boolean asServiceAccount) {
         String url = String.format("%s/instances/%s?stage=%s", kgCoreEndpoint, id, dataStage);
