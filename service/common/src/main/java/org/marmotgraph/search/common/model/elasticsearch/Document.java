@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +38,6 @@ public class Document {
 
     @JsonProperty("_index")
     private String index;
-
-    @JsonProperty("_type")
-    private String type;
 
     @JsonProperty("_id")
     private String id;
@@ -57,5 +55,18 @@ public class Document {
 
     private List<Object> sort;
 
+
+    public String getType(){
+        if(source!=null){
+            Object type = source.get("type");
+            if(type instanceof Map){
+                Object value = ((Map<?,?>)type).get("value");
+                if(value instanceof String){
+                    return ((String)value);
+                }
+            }
+        }
+        return null;
+    }
 }
 

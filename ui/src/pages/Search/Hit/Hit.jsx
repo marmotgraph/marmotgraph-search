@@ -151,10 +151,6 @@ export const Hit = ({ data }) => {
   const highlightColor = {
     borderLeft: "5px solid "+data?.highlightColor
   }
-  const highlightsField = {
-    fields: filterHighlightFields(data?.highlight, ['title.value', 'description.value']),
-    mapping: mapping
-  };
   //['structural connectivity','functional connectivity', 'connectome', 'fMRI time series', 'Preparation', 'Experimental approach', 'Technique', 'tractography', 'anatomical segmentation technique']
   return (
     <div className="kgs-hit" data-type={type} style={highlightColor}>
@@ -162,7 +158,7 @@ export const Hit = ({ data }) => {
       <div className={`kgs-hit__body ${previewImage? 'has-previewImage':''} ${badges?'has-badges':''}`} >
         <div className="kgs-hit__content">
           <Title key="title" text={title} />
-          <HighlightsField key="highlights" {...highlightsField} />
+          <HighlightsField key="highlights" mapping={mapping} fields={filterHighlightFields(data?.highlight, ['title.value', 'description.value'])} />
           {fields.map(({ name, data, mapping }) =>
             <PrintViewField key={name} name={name} data={data} mapping={mapping} />
           )}

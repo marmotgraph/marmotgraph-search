@@ -28,15 +28,9 @@ import {api} from '../../services/api';
 
 const resolveType = (type, list) => {
   const value = Array.isArray(type) ? type[0] : type;
-  let defaultType = null;
+  let defaultType = "";
   let selectedType = null;
   list.some(t => {
-    if (!defaultType) {
-      defaultType = t;
-    }
-    if (t.defaultSelection) {
-      defaultType = t.type;
-    }
     if (t.type === value) {
       selectedType = t.type;
       return true;

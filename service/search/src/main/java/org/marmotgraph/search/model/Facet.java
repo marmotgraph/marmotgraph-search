@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.model;
 
+import lombok.EqualsAndHashCode;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.utils.FacetsUtils;
 import lombok.AccessLevel;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Facet {
     private String name;
     @Setter(AccessLevel.NONE)

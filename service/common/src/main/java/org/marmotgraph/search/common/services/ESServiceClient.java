@@ -349,11 +349,10 @@ public class ESServiceClient {
         if (documents.isEmpty()) {
             Document doc = new Document();
             doc.setId(id);
-            doc.setType("_doc");
             doc.setIndex(index);
             return doc;
         }
-        Document doc = documents.get(0);
+        Document doc = documents.getFirst();
         doc.setId(id);
         return doc;
     }

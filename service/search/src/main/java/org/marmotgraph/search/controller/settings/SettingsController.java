@@ -183,9 +183,10 @@ public class SettingsController {
     @Cacheable(value = "types", unless = "#result == null")
     public List<Object> generateTypes() {
         Map<Integer, Object> types = new LinkedHashMap<>();
+        types.put(0, generateType(null, "All", true, true));
         for (TranslatorModel model : utils.getTranslatorModels()) {
             Class<?> targetModel = model.targetClass();
-            Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true, types.isEmpty());
+            Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true, false);
             if (type != null) {
                 types.put(types.size(), type);
             }
@@ -211,11 +212,17 @@ public class SettingsController {
 
 
     public Map<String, Object> generateType(Class<?> clazz, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
-        MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
-        if (metaInfo == null || !metaInfo.searchable()) {
-            return null;
+        String type;
+        if(clazz == null){
+            type = "";
         }
-        String type = MetaModelUtils.getNameForClass(clazz);
+        else {
+            MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
+            if (metaInfo == null || !metaInfo.searchable()) {
+                return null;
+            }
+            type = MetaModelUtils.getNameForClass(clazz);
+        }
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("type", type);
         result.put("label", label);
