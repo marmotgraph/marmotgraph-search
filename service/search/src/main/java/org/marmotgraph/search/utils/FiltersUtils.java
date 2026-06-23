@@ -27,7 +27,6 @@ package org.marmotgraph.search.utils;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.model.FacetValue;
 import org.marmotgraph.search.model.Facet;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -36,22 +35,6 @@ import java.util.stream.Collectors;
 import static org.marmotgraph.search.utils.FacetsUtils.FACET_TYPE;
 
 public class FiltersUtils {
-
-    public static List<String> parseTypes(String type) {
-        if (StringUtils.isBlank(type)) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(type.split(","))
-                .map(String::trim)
-                .filter(StringUtils::isNotBlank)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    public static String singleTypeOrNull(String type) {
-        List<String> types = parseTypes(type);
-        return types.size() == 1 ? types.get(0) : null;
-    }
 
     private static List<Object> filterActiveFilters(Map<String, Object> activeFilters, String facetIdToSkip) {
         if (facetIdToSkip == null) {
@@ -85,9 +68,9 @@ public class FiltersUtils {
         );
     }
 
-    public static Map<String, Object> getActiveFilters(List<Facet> facets, String type, List<UUID> idsToFiler, Map<String, FacetValue> values) {
+    public static Map<String, Object> getActiveFilters(List<Facet> facets, List<String> types, List<UUID> idsToFiler, Map<String, FacetValue> values) {
         Map<String, Object> filters = new HashMap<>();
-        addTypeFilter(filters, type);
+        addTypeFilter(filters, types);
         addIdsFilter(filters, idsToFiler);
         facets.forEach(facet -> {
             if (values.containsKey(facet.getName())) {
@@ -138,24 +121,13 @@ public class FiltersUtils {
         filters.put(facet.getName(), exists);
     }
 
-    private static void addTypeFilter(Map<String, Object> filters, String type) {
-        List<String> types = parseTypes(type);
-        if (types.isEmpty()) {
-            return;
-        }
-        if (types.size() == 1) {
-            filters.put(FACET_TYPE, Map.of(
-                    "term", Map.of(
-                            "type.value", types.get(0)
-                    )
-            ));
-            return;
-        }
-        filters.put(FACET_TYPE, Map.of(
+    private static void addTypeFilter(Map<String, Object> filters, List<String> types) {
+        Map<String, Object> filter = Map.of(
                 "terms", Map.of(
                         "type.value", types
                 )
-        ));
+        );
+        filters.put(FACET_TYPE, filter);
     }
 
     private static void addIdsFilter(Map<String, Object> filters, List<UUID> ids) {

@@ -28,6 +28,7 @@ import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
 import org.marmotgraph.search.model.Facet;
 import org.marmotgraph.search.utils.FacetsUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.utils.FiltersUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
