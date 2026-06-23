@@ -24,12 +24,11 @@
 
 package org.marmotgraph.search.controller.facets;
 
+import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
 import org.marmotgraph.search.model.Facet;
 import org.marmotgraph.search.utils.FacetsUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.marmotgraph.search.utils.FiltersUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -50,30 +49,11 @@ public class FacetsController {
 
     @Cacheable(value = "facets", unless = "#type == null", key = "#type")
     public List<Facet> getFacets(String type) {
-        List<Facet> facets  = new ArrayList<>();
-        List<String> types = FiltersUtils.parseTypes(type);
-        if (types.isEmpty()) {
-            utils.getTranslatorModels().forEach(m -> {
-                Class<?> targetModel = m.targetClass();
-                String rootType = MetaModelUtils.getNameForClass(targetModel);
-                handleChildren(targetModel, rootType, facets, "", "");
-            });
-        } else if (types.size() == 1) {
-            String singleType = types.get(0);
-            utils.getTranslatorModels().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(singleType)).forEach(m -> {
-                Class<?> targetModel = m.targetClass();
-                handleChildren(targetModel, singleType, facets, "", "");
-            });
-        } else {
-            Set<String> selectedTypes = new HashSet<>(types);
-            utils.getTranslatorModels().stream()
-                    .filter(m -> selectedTypes.contains(MetaModelUtils.getNameForClass(m.targetClass())))
-                    .forEach(m -> {
-                        Class<?> targetModel = m.targetClass();
-                        String rootType = MetaModelUtils.getNameForClass(targetModel);
-                        handleChildren(targetModel, rootType, facets, "", "");
-                    });
-        }
+        List<Facet> facets = new ArrayList<>();
+        utils.getTranslatorModels().stream().filter(m -> StringUtils.isBlank(type) || MetaModelUtils.getNameForClass(m.targetClass()).equals(type)).forEach(m -> {
+            Class<?> targetModel = m.targetClass();
+            handleChildren(targetModel, type, facets, "", "");
+        });
         Set<String> names = new HashSet<>();
         facets.forEach(facet -> {
             String name = FacetsUtils.getUniqueFacetName(facet, names);

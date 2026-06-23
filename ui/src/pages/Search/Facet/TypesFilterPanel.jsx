@@ -37,7 +37,12 @@ const TypeFilter = ({ type }) => {
   const dispatch = useDispatch();
 
   const handleOnClick = () => {
-    dispatch(toggleCategory(type.type));
+    if(type.type === ""){
+      dispatch(clearCategories());
+    }
+    else {
+      dispatch(toggleCategory(type.type));
+    }
   };
 
   return (
@@ -60,56 +65,23 @@ const TypeFilter = ({ type }) => {
   );
 };
 
-const AllCategoriesFilter = ({ count, active }) => {
-  const dispatch = useDispatch();
-
-  const handleOnClick = () => {
-    dispatch(clearCategories());
-  };
-
-  return (
-    <div
-      className={`kgs-fieldsFilter-checkbox ${active ? 'is-active' : ''}`}
-      onClick={handleOnClick}
-      role="checkbox"
-      aria-checked={active}
-      tabIndex={0}
-      onKeyDown={event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          handleOnClick();
-        }
-      }}
-    >
-      <div className="kgs-fieldsFilter-checkbox__text">All categories</div>
-      <div className="kgs-fieldsFilter-checkbox__count">{formatCount(count)}</div>
-    </div>
-  );
-};
-
 const TypesFilterPanel = () => {
 
   const selectedTypes = useSelector(state => state.search.selectedTypes);
-  const total = useSelector(state => state.search.total);
-
   const types = useSelector(state => state.search.types
     .map(t => ({
       ...t,
-      active: selectedTypes.includes(t.type)
+      active: (t.type === "" && selectedTypes.length===0) || selectedTypes.includes(t.type)
     }))
   );
 
-  const allCategoriesActive = selectedTypes.length === 0;
-  const allCount = allCategoriesActive && total > 0
-    ? total
-    : types.reduce((sum, type) => sum + (Number(type.count) || 0), 0);
 
   return (
     <div className="kgs-fieldsFilter" >
       <div className="kgs-fieldsFilter-title" >Categories</div>
-      <AllCategoriesFilter count={allCount} active={allCategoriesActive} />
-      {types.map(type =>
-        <TypeFilter key={type.type} type={type} />
+      {types.map(type => {
+          return <TypeFilter key={type.type} type={type}/>
+        }
       )}
     </div>
   );
