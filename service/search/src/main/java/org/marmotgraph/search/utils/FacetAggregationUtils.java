@@ -29,6 +29,7 @@ import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.model.FacetValue;
 import org.marmotgraph.search.model.Facet;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -236,11 +237,17 @@ public class FacetAggregationUtils {
         ) {
             return Collections.emptyMap();
         }
+        int overallTotal = 0;
+        int totalOthers = 0;
         Map<String, Object> res = new HashMap<>();
         List<KeywordsBucket> buckets = aggregations.get(FacetsUtils.FACET_TYPE).getKeywords().getBuckets();
         List<String> remainingMainCategories = new ArrayList<>(mainCategories);
         for (Bucket bucket : buckets) {
             remainingMainCategories.remove(bucket.getKey());
+            if(!mainCategories.contains(bucket.getKey()) && StringUtils.hasText(bucket.getKey())) {
+                totalOthers += bucket.getDocCount();
+            }
+            overallTotal += bucket.getDocCount();
             if (bucket.getDocCount() > 0) {
                 res.put(bucket.getKey(), Map.of(
                         "count", bucket.getDocCount()
@@ -250,6 +257,14 @@ public class FacetAggregationUtils {
         remainingMainCategories.forEach(c -> {
             res.put(c, Map.of("count", 0));
         });
+        if(totalOthers>0){
+            res.put("others", Map.of(
+                    "count", totalOthers
+            ));
+        }
+        res.put("", Map.of(
+                "count", overallTotal
+        ));
         return res;
     }
 }

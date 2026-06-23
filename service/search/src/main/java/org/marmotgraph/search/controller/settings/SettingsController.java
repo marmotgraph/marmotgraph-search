@@ -183,7 +183,7 @@ public class SettingsController {
     @Cacheable(value = "types", unless = "#result == null")
     public List<Object> generateTypes() {
         Map<Integer, Object> types = new LinkedHashMap<>();
-        types.put(0, generateType(null, "All", true, true));
+        types.put(0, generateType("", "All", false, true));
         for (TranslatorModel model : utils.getTranslatorModels()) {
             Class<?> targetModel = model.targetClass();
             Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true, false);
@@ -199,6 +199,7 @@ public class SettingsController {
                         }
                     });
         }
+        types.put(types.size(), generateType("others", "Others", false, false));
         ArrayList<Map.Entry<Integer, Object>> list = new ArrayList<>(types.entrySet());
         return list.stream().sorted(new TypeComparator()).map(Map.Entry::getValue).collect(Collectors.toList());
     }
@@ -212,17 +213,15 @@ public class SettingsController {
 
 
     public Map<String, Object> generateType(Class<?> clazz, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
-        String type;
-        if(clazz == null){
-            type = "";
+        MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
+        if (metaInfo == null || !metaInfo.searchable()) {
+            return null;
         }
-        else {
-            MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
-            if (metaInfo == null || !metaInfo.searchable()) {
-                return null;
-            }
-            type = MetaModelUtils.getNameForClass(clazz);
-        }
+        String type = MetaModelUtils.getNameForClass(clazz);
+        return generateType(type, label, includeBookmarkFacet, defaultSelection);
+    }
+
+    public Map<String, Object> generateType(String type, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("type", type);
         result.put("label", label);

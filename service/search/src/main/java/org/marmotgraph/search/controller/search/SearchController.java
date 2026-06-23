@@ -54,6 +54,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.marmotgraph.search.utils.FacetsUtils.FACET_BOOKMARKS;
 
@@ -189,12 +190,16 @@ public class SearchController extends FacetAggregationUtils {
 
     public Map<String, Object> search(String q, List<String> types, int size, Map<String, FacetValue> facetValues, DataStage dataStage, String cursorToken){
         boolean isFilteredByBookmarks = facetValues != null && facetValues.containsKey(FACET_BOOKMARKS);
+        List<String> mainCategories = translatorRegistry.getMainCategories();
         if(CollectionUtils.isEmpty(types)){
-            //TODO Reduce to searchable?
-            types = translatorRegistry.getTranslators().stream().map(TranslatorModel::category).collect(Collectors.toList());
             //No types = all types.
+            types = translatorRegistry.getTranslators().stream().map(TranslatorModel::category).collect(Collectors.toList());
         }
         else{
+            Optional<String> others = types.stream().filter(t -> t.equals("others")).findAny();
+            if(others.isPresent()) {
+                types = Stream.concat(types.stream().filter(t -> !t.equals("others")), translatorRegistry.getTranslators().stream().map(TranslatorModel::category).filter(c -> !mainCategories.contains(c))).toList();
+            }
             //Sanitize user input by excluding those which are not defined in translators
             types = translatorRegistry.getTranslators().stream().map(TranslatorModel::category).filter(types::contains).toList();
         }
@@ -259,14 +264,12 @@ public class SearchController extends FacetAggregationUtils {
         if (total != 0 && nbOfBookmarks != 0) {
             facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
         }
-        Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), translatorRegistry.getMainCategories());
+        Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), mainCategories);
+
         int totalSelected = types.stream().filter(t -> typesAggregation.get(t) instanceof Map).map(t -> ((Map<?, ?>) typesAggregation.get(t)).get("count")).filter(c -> c instanceof Integer).map(c -> (Integer) c).mapToInt(Integer::intValue).sum();
         if(totalSelected>0) {
             total = totalSelected;
         }
-        int overallTotal = typesAggregation.values().stream().filter(t -> t instanceof Map).map(t -> ((Map<?, ?>) t).get("count")).filter(c -> c instanceof Integer).map(c -> (Integer) c).mapToInt(Integer::intValue).sum();
-
-        typesAggregation.put("", Map.of("count", overallTotal));
         Map<String, Object> response = new HashMap<>();
         response.put("total", total);
         List<Map<String, Object>> hits = getHits(result, dataStage, bookmarkedIds);
