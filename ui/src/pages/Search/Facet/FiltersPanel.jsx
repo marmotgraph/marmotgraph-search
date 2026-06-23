@@ -21,30 +21,24 @@
  *
  */
 
-import {faChevronRight} from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import { faSliders } from '@fortawesome/free-solid-svg-icons/faSliders';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Facet from '../../../components/Facet/Facet';
 import { setFacet, setFacetSize, resetFacets, selectFacets } from '../../../features/search/searchSlice';
 import useAuth from '../../../hooks/useAuth';
 
-
 import './FiltersPanel.css';
-
 const FiltersPanel = () => {
 
   const { isAuthenticated } = useAuth();
 
-  const [collapsed, setCollapsed] = useState(true);
-
   const dispatch = useDispatch();
 
-  const typeFacets = useSelector(state => selectFacets(state, state.search.selectedType));
-  const facets = isAuthenticated?typeFacets:typeFacets.filter(f => !f.authenticationRequired);
-
-  const handleToggleFilters = () => setCollapsed(!collapsed);
+  const typeFacets = useSelector(state => selectFacets(state, state.search.selectedTypes));
+  const facets = isAuthenticated ? typeFacets : typeFacets.filter(f => !f.authenticationRequired);
 
   const handleOnChange = (name, active, keyword) => {
     dispatch(setFacet({
@@ -70,27 +64,25 @@ const FiltersPanel = () => {
   }
 
   return (
-    <div className="kgs-filters collapsible">
-      <div className="kgs-filters__header" >
-        <div className="kgs-filters__title" >
-          <button type="button" className={`kgs-filters__toggle ${collapsed?'':'in'}`} onClick={handleToggleFilters}>
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button> Filters </div>
-        <div className= "kgs-filters__reset" >
-          <button type="button" className="kgs-filters__reset-button" onClick={handleOnReset}>Reset</button>
+    <div className="kgs-filters">
+      <div className="kgs-filters__header">
+        <div className="kgs-filters__title">
+          <FontAwesomeIcon icon={faSliders} className="kgs-filters__icon" aria-hidden="true" />
+          Filters
         </div>
+        <button type="button" className="kgs-filters__reset-button" onClick={handleOnReset}>
+          Clear all
+        </button>
       </div>
-      <div className={`kgs-filters__body collapse ${collapsed?'':'in'}`}>
-        {
-          facets.map(facet => (
-            <Facet
-              key={facet.name}
-              facet={facet}
-              onChange={handleOnChange}
-              onViewChange={handleOnViewChange}
-            />
-          ))
-        }
+      <div className="kgs-filters__body">
+        {facets.map(facet => (
+          <Facet
+            key={facet.name}
+            facet={facet}
+            onChange={handleOnChange}
+            onViewChange={handleOnViewChange}
+          />
+        ))}
       </div>
     </div>
   );

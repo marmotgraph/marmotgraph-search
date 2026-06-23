@@ -21,7 +21,11 @@
  *
  */
 
-import React from 'react';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
+
+import { getFacetSelectionCount } from '../../helpers/Facets';
 import { FilteredList } from '../FilteredList/FilteredList';
 import { Item } from '../List/List';
 import { PaginatedList } from '../PaginatedList/PaginatedList';
@@ -30,6 +34,15 @@ import FacetCheckbox from './FacetCheckbox';
 import './Facet.css';
 
 const Facet = ({ facet, onChange, onViewChange }) => {
+  const selectionCount = getFacetSelectionCount(facet);
+  const [collapsed, setCollapsed] = useState(selectionCount === 0);
+
+  useEffect(() => {
+    if (selectionCount > 0) {
+      setCollapsed(false);
+    }
+  }, [selectionCount]);
+
   let Component = null;
   let parameters = null;
   switch (facet.type) {
@@ -112,7 +125,7 @@ const Facet = ({ facet, onChange, onViewChange }) => {
     break;
   }
   case 'exists':
-    if (facet.count !== null) { // set null value to skip the facet
+    if (facet.count !== null) {
       Component = Item;
       parameters = {
         item: {
@@ -128,14 +141,36 @@ const Facet = ({ facet, onChange, onViewChange }) => {
   default:
     break;
   }
-  if (Component) {
-    return ( <div className = "kgs-facet" >
-      <div className = "kgs-facet-title" > { facet.title??facet.label } </div>
-      <Component {...parameters }/>
-    </div>
-    );
+
+  if (!Component) {
+    return null;
   }
-  return null;
+
+  const facetTitle = facet.title ?? facet.label;
+
+  return (
+    <div className={`kgs-facet${collapsed ? ' is-collapsed' : ' is-expanded'}`}>
+      <button
+        type="button"
+        className="kgs-facet__header"
+        onClick={() => setCollapsed(current => !current)}
+        aria-expanded={!collapsed}
+      >
+        <span className="kgs-facet__title">{facetTitle}</span>
+        <span className="kgs-facet__header-actions">
+          {selectionCount > 0 && (
+            <span className="kgs-facet__badge">{selectionCount}</span>
+          )}
+          <FontAwesomeIcon icon={faChevronDown} className="kgs-facet__chevron" aria-hidden="true" />
+        </span>
+      </button>
+      {!collapsed && (
+        <div className="kgs-facet__body">
+          <Component {...parameters} />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Facet;

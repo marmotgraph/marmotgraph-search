@@ -82,9 +82,9 @@ const Suggestions =  ({ words }) => {
 };
 
 const Viewing = ({ hitCount, count }) => (
-  <>
+  <span className="kgs-hitsInfos-viewing">
     Viewing <span className="kgs-hitsInfos-highlight">{count}</span> of <span className="kgs-hitsInfos-highlight">{hitCount}</span> results.
-  </>
+  </span>
 );
 
 const HitsInfo = () => {

@@ -24,9 +24,10 @@
 
 .kgs-fieldsFilter {
     width: 100%;
-    background-color: var(--background-color-2);
-    padding: 15px;
-    border-radius: var(--border-radius-1);
+    flex-shrink: 0;
+    background-color: var(--filters-types-bg, var(--filters-column-bg, var(--background-color-2)));
+    padding: var(--filters-types-padding, 15px);
+    border-radius: var(--filters-types-radius, var(--border-radius-1));
 }
 
 .kgs-fieldsFilter .kgs-fieldsFilter-title {
@@ -47,33 +48,38 @@
     font-weight: 300;
 }
 
+.kgs-fieldsFilter .kgs-fieldsFilter-checkbox:hover {
+    background-color: rgb(249, 250, 251);
+}
+
 .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active {
-    background-color: var(--color-selected);
+    /*background-color: var(--color-selected);*/
+    background-color: rgb(243, 244, 246);
 }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__text {
-    flex: auto;
-    color: var(--color-8);
-    font-size: var(--font-size);
-}
+    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__text {
+        flex: auto;
+        color: var(--color-8);
+        font-size: var(--font-size);
+    }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__text {
-    font-weight: bold;
-    font-size: var(--font-size);
-}
+    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__text {
+        font-weight: bold;
+        font-size: var(--font-size);
+    }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__count {
-    display: inline-block;
-    min-width: 36px;
-    max-height: 28px;
-    background-color: var(--background-color-1);
-    color: var(--color-10);
-    font-size: var(--font-size-small);
-    text-align: center;
-}
+    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__count {
+        display: inline-block;
+        min-width: 36px;
+        max-height: 28px;
+        /*background-color: var(--background-color-1);*/
+        color: var(--color-10);
+        font-size: var(--font-size-small);
+        text-align: center;
+    }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__count {
-    font-weight: bold;
-    font-size: var(--font-size);
-    background-color: var(--color-selected);
-}
+    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__count {
+        font-weight: bold;
+        font-size: var(--font-size);
+        /*background-color: var(--color-selected);*/
+    }

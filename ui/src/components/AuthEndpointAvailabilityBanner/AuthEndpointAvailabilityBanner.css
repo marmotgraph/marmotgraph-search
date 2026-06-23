@@ -21,10 +21,16 @@
  *
  */
 
+.container-fluid {
+    --bs-gutter-x: 0 !important; /* Added to override bootstrap */
+}
+
 .alert {
     margin-bottom: 0;
     padding: 8px;
-    color: #7f8c8d;
-    background-color: #ecf0f1;
+    /*color: #7f8c8d;*/
+    color: #78350F;
+    /*background-color: #ecf0f1;*/
+    background-color: #FEF3C7;
     border-radius: 0;
 }

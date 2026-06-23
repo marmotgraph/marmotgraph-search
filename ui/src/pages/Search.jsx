@@ -35,7 +35,8 @@ import {
   initializeSearch,
   syncSearchParameters,
   setSearchResults,
-  selectFacets
+  selectFacets,
+  typesToQueryParam
 } from '../features/search/searchSlice';
 import {
   getUpdatedQuery,
@@ -57,6 +58,7 @@ import Footer from './Search/Footer/Footer';
 import Hits from './Search/Hit/Hits';
 import HitsInfo from './Search/HitsInfo/HitsInfo';
 import SearchFetching from './Search/SearchFetching';
+import SelectedFilters from './Search/SelectedFilters/SelectedFilters';
 
 import './Search.css';
 
@@ -140,6 +142,24 @@ const getSearchParametersFromUrl = () => {
   return searchParams;
 };
 
+const stripCategoryParams = query => Object.fromEntries(
+  Object.entries(query).filter(([key]) => {
+    const regParamWithBrackets = /^([^[]+)\[(\d+)\]$/;
+    const name = regParamWithBrackets.test(key) ? key.match(regParamWithBrackets)[1] : key;
+    return name !== 'category';
+  })
+);
+
+const syncCategoryQuery = (query, selectedTypes) => {
+  let nextQuery = stripCategoryParams(query);
+  if (Array.isArray(selectedTypes)) {
+    selectedTypes.forEach(type => {
+      nextQuery = getUpdatedQuery(nextQuery, 'category', true, type, true);
+    });
+  }
+  return nextQuery;
+};
+
 const getGroupFromUrl = () => {
   const params = getUrlParmeters();
   return params.group;
@@ -162,9 +182,9 @@ const SearchBase = () => {
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
   const queryString = useSelector(state => state.search.queryString);
-  const selectedType = useSelector(state => state.search.selectedType);
+  const selectedTypes = useSelector(state => state.search.selectedTypes);
   const hitsPerPage = useSelector(state => state.search.hitsPerPage);
-  const facets = useSelector(state => selectFacets(state, selectedType));
+  const facets = useSelector(state => selectFacets(state, selectedTypes));
   const cursor = useSelector(state => state.search.cursor);
   const isUpToDate = useSelector(state => state.search.isUpToDate);
 
@@ -183,7 +203,7 @@ const SearchBase = () => {
     ? {
       group: group,
       q: queryString,
-      type: selectedType,
+      type: typesToQueryParam(selectedTypes),
       size: hitsPerPage,
       cursor: cursor,
       payload: getAggregation(facets)
@@ -260,13 +280,7 @@ const SearchBase = () => {
         queryString,
         false
       );
-      query = getUpdatedQuery(
-        query,
-        'category',
-        !!selectedType,
-        selectedType,
-        false
-      );
+      query = syncCategoryQuery(query, selectedTypes);
       const list = calculateFacetList(facets);
       query = list.reduce(
         (acc, item) =>
@@ -290,7 +304,7 @@ const SearchBase = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive, isInitialized, queryString, selectedType, cursor, group, facets]);
+  }, [isActive, isInitialized, queryString, selectedTypes, cursor, group, facets]);
 
   useEffect(() => {
     if (isInitialized && isActive) {
@@ -327,10 +341,13 @@ const SearchBase = () => {
           <SearchBox />
           <TermsShortNotice className="kgs-search__terms-short-notice" />
           <div className="kgs-search__panel">
-            <TypesFilterPanel />
-            <FiltersPanel />
+            <div className="kgs-search__filters">
+              <TypesFilterPanel />
+              <FiltersPanel />
+            </div>
             <div className="kgs-search__main">
               <HitsInfo />
+              <SelectedFilters />
               <Hits />
               <KnowledgeSpaceLink />
             </div>

@@ -23,21 +23,29 @@
 
 .kgs-facet-checkbox {
     display: flex;
+    align-items: center;
     position: relative;
     cursor: pointer;
-    padding: 3px 5px;
-    border-radius: 5px;
-    line-height: 22px;
-    font-weight: 300;
+    padding: 6px 4px;
+    border-radius: 4px;
+    line-height: 1.35;
+    font-weight: 400;
+    gap: 10px;
+}
+
+.kgs-facet-checkbox:hover {
+    background: #F8FAFC;
 }
 
 .kgs-facet-checkbox input[type="checkbox"] {
-    margin: 1px 10px 0 1px;
+    margin: 0;
     border: 0;
-    flex: 0 0 15px;
-    color: var(--color-8);
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    color: #fff;
     -webkit-appearance: none;
-    transform: scale(.9);
+    appearance: none;
     pointer-events: none;
 }
 
@@ -47,43 +55,45 @@
 
 .kgs-facet-checkbox input[type="checkbox"] + svg {
     position: absolute;
-    transform: translate(4px, 4px);
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: #fff;
+    pointer-events: none;
 }
 
 .kgs-facet-checkbox input[type="checkbox"]:after {
-    position: absolute;
     content: "";
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    padding: 2px;
-    border: 1px solid var(--color-8);
-    background-color: transparent;
-    color: var(--color-8);
-    cursor: pointer;
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #CBD5E1;
+    background-color: #fff;
     border-radius: 3px;
-    box-shadow: 0 0 2px #8f8a8a inset;
+    box-shadow: none;
 }
 
 .kgs-facet-checkbox input[type="checkbox"]:focus:after {
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline: 2px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 1px;
 }
 
 .kgs-facet-checkbox.is-active input[type="checkbox"]:after {
-    border-color: transparent;
-    background-color: var(--color-selected);
+    border-color: var(--color-selected, #2563EB);
+    background-color: var(--color-selected, #2563EB);
 }
 
 .kgs-facet-checkbox .kgs-facet-checkbox__text {
-    flex: auto;
-    color: var(--color-8);
-    font-size: var(--font-size);
+    flex: 1;
+    min-width: 0;
+    color: #334155;
+    font-size: 13px;
 }
 
 .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text {
-    color: var(--color-selected);
-    font-weight: 900;
+    color: #1E293B;
+    font-weight: 600;
 }
 
 body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text {
@@ -92,33 +102,40 @@ body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text 
 }
 
 .kgs-facet-checkbox .kgs-facet-checkbox__count {
-    display: inline-block;
-    min-width: 36px;
-    max-height: 28px;
-    background-color: var(--background-color-1);
-    color: var(--color-10);
-    font-size: var(--font-size-small);
-    text-align: center;
-}
-
-body[profile="tefhealth"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count{
-    color: white;
-}
-body[profile="tefhealth"]  .kgs-facet-checkbox.is-active .fa-check {
-    color: white;
+    flex-shrink: 0;
+    min-width: auto;
+    padding: 0;
+    background: transparent;
+    color: #94A3B8;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
 }
 
 .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count {
-    background-color: var(--color-selected);
-    font-weight: 900;
+    background: transparent;
+    color: #64748B;
+    font-weight: 500;
+}
+
+body[profile="tefhealth"] .kgs-facet-checkbox.is-active .fa-check {
+    color: #fff;
 }
 
 .kgs-facet-checkbox.has-any-child-active:not(.is-active) input[type="checkbox"]:after {
-    border-color: transparent;
-    background-color: var(--color-selected);
+    border-color: var(--color-selected, #2563EB);
+    background-color: var(--color-selected, #2563EB);
 }
 
 .kgs-facet-checkbox.has-any-child-active:not(.is-active) .kgs-facet-checkbox__text {
-    color: var(--color-selected);
-    font-weight: 900;
+    color: #1E293B;
+    font-weight: 600;
+}
+
+.kgs-list .kgs-list-item:focus {
+    outline: none;
+}
+
+.kgs-list .kgs-list-item:focus .kgs-facet-checkbox {
+    background: #F1F5F9;
 }

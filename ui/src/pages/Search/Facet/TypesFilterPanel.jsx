@@ -24,38 +24,90 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setType } from '../../../features/search/searchSlice';
+import { toggleCategory, clearCategories } from '../../../features/search/searchSlice';
 import './TypesFilterPanel.css';
+
+const formatCount = count => {
+  const value = Number(count);
+  return Number.isFinite(value) ? value.toLocaleString() : count;
+};
 
 const TypeFilter = ({ type }) => {
 
   const dispatch = useDispatch();
 
   const handleOnClick = () => {
-    dispatch(setType(type.type));
+    dispatch(toggleCategory(type.type));
   };
 
   return (
-    <div className={`kgs-fieldsFilter-checkbox ${type.active?'is-active':''}`} onClick={handleOnClick} >
+    <div
+      className={`kgs-fieldsFilter-checkbox ${type.active ? 'is-active' : ''}`}
+      onClick={handleOnClick}
+      role="checkbox"
+      aria-checked={type.active}
+      tabIndex={0}
+      onKeyDown={event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleOnClick();
+        }
+      }}
+    >
       <div className="kgs-fieldsFilter-checkbox__text">{type.label}</div>
-      <div className="kgs-fieldsFilter-checkbox__count">{type.count}</div>
+      <div className="kgs-fieldsFilter-checkbox__count">{formatCount(type.count)}</div>
+    </div>
+  );
+};
+
+const AllCategoriesFilter = ({ count, active }) => {
+  const dispatch = useDispatch();
+
+  const handleOnClick = () => {
+    dispatch(clearCategories());
+  };
+
+  return (
+    <div
+      className={`kgs-fieldsFilter-checkbox ${active ? 'is-active' : ''}`}
+      onClick={handleOnClick}
+      role="checkbox"
+      aria-checked={active}
+      tabIndex={0}
+      onKeyDown={event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleOnClick();
+        }
+      }}
+    >
+      <div className="kgs-fieldsFilter-checkbox__text">All categories</div>
+      <div className="kgs-fieldsFilter-checkbox__count">{formatCount(count)}</div>
     </div>
   );
 };
 
 const TypesFilterPanel = () => {
 
+  const selectedTypes = useSelector(state => state.search.selectedTypes);
+  const total = useSelector(state => state.search.total);
+
   const types = useSelector(state => state.search.types
-    //.filter(t => t.count > 0 || t.type === state.search.selectedType)
     .map(t => ({
       ...t,
-      active: t.type === state.search.selectedType
+      active: selectedTypes.includes(t.type)
     }))
   );
+
+  const allCategoriesActive = selectedTypes.length === 0;
+  const allCount = allCategoriesActive && total > 0
+    ? total
+    : types.reduce((sum, type) => sum + (Number(type.count) || 0), 0);
 
   return (
     <div className="kgs-fieldsFilter" >
       <div className="kgs-fieldsFilter-title" >Categories</div>
+      <AllCategoriesFilter count={allCount} active={allCategoriesActive} />
       {types.map(type =>
         <TypeFilter key={type.type} type={type} />
       )}

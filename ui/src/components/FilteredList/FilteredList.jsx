@@ -22,7 +22,7 @@
  */
 
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
-import {faFilter} from '@fortawesome/free-solid-svg-icons/faFilter';
+import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
@@ -139,8 +139,8 @@ export class FilteredList extends React.Component {
             onChange={this.handleChangeUserInput}
             onFocus={this.handleFocus}
             value={filter}
-            placeholder={(!dropdownOpen) ? 'add ' + label.toLowerCase() + ' filters' : ''} />
-          <FontAwesomeIcon icon={faFilter} className="kgs-filtered-facet_filter_icon" />
+            placeholder={(!dropdownOpen) ? `Filter ${label.toLowerCase()}` : ''} />
+          <FontAwesomeIcon icon={faSearch} className="kgs-filtered-facet_filter_icon" />
           <FontAwesomeIcon icon={faChevronDown} className="kgs-filtered-facet_filter_dropdown_icon"/>
           <input style={{ display: 'none' }} type="text" ref={ref => this.hiddenInputRef = ref} />
         </div>

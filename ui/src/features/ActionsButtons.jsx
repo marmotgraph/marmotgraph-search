@@ -29,7 +29,7 @@ import ShareButtons from '../components/ShareButtons/ShareButtons';
 import './ActionsButtons.css';
 
 const getUrlToShare = (location, instanceId, group, defaultGroup) => {
-  if (location.pathname === '/' && instanceId) {
+  if ((location.pathname === '/' || location.pathname === '/search') && instanceId) {
     const rootPath = window.location.pathname.substring(0, window.location.pathname.length - location.pathname.length);
     return `${window.location.protocol}//${window.location.host}${rootPath}/instances/${instanceId}${group !== defaultGroup ? ('?group=' + group) : ''}`;
   }

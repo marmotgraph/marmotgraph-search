@@ -37,10 +37,10 @@ const Detail = () => {
   useEffect(() => {
     if (id) {
       if (data?.id && window.location.hash !== `#${data.id}`) {
-        navigate(`/${window.location.search}#${data.id}`);
+        navigate(`/search${window.location.search}#${data.id}`);
       }
     } else if (window.location.hash) {
-      navigate(`/${window.location.search}`);
+      navigate(`/search${window.location.search}`);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, data]);

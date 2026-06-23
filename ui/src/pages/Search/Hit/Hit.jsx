@@ -166,7 +166,7 @@ export const Hit = ({ data }) => {
           {fields.map(({ name, data, mapping }) =>
             <PrintViewField key={name} name={name} data={data} mapping={mapping} />
           )}
-          <Tags tags={data?.tags} />
+
         </div>
         {!!previewImage &&
           <div className="kgs-hit__preview">
@@ -174,6 +174,7 @@ export const Hit = ({ data }) => {
           </div>
         }
       </div>
+        <Tags tags={data?.tags} />
       {hasNoData && (
         <div className="kgs-hit__no-data">This data is currently not available.</div>
       )}

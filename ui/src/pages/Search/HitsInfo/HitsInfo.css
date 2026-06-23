@@ -22,29 +22,53 @@
  */
 
 .kgs-hitsInfos {
-    display: inline-block; 
-    margin: 15px 0;
-    font-size: 20px;
+    display: block;
+    margin: 8px 0 10px;
+    font-size: 14px;
     color: var(--color-15);
-    line-height: 1.5rem;
+    line-height: 1.4;
     white-space: normal;
     text-align: left;
 }
 
-body[profile="ebrains"] .kgs-hitsInfos {
-    margin: 5px;
-    font-size: var(--text-base);
-    line-height: var(--tw-leading, var(--text-base--line-height));
-    font-family: var(--font-plexsans), serif;
-    --tw-leading: 1.4;
-    --tw-font-weight: var(--font-weight-normal);
-    font-weight: var(--font-weight-normal);
+.kgs-hitsInfos-viewing {
+    display: inline-block;
+    color: #64748B;
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
 }
 
 .kgs-hitsInfos .kgs-hitsInfos-highlight {
     color: var(--color-10);
     font-weight: bold;
     white-space: nowrap;
+}
+
+.kgs-hitsInfos-viewing .kgs-hitsInfos-highlight {
+    color: #334155;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+body[profile="ebrains"] .kgs-hitsInfos {
+    margin: 6px 0 8px;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    font-family: var(--font-plexsans), serif;
+    --tw-leading: 1.4;
+    --tw-font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-normal);
+}
+
+body[profile="ebrains"] .kgs-hitsInfos-viewing {
+    font-size: var(--text-sm);
+    color: var(--color-eb-darkgrey);
+}
+
+body[profile="ebrains"] .kgs-hitsInfos-viewing .kgs-hitsInfos-highlight {
+    color: var(--color-15);
+    font-weight: var(--font-weight-semibold, 600);
 }
 
 .kgs-hitsInfos ul.kgs-suggestions {
@@ -64,8 +88,15 @@ body[profile="ebrains"] .kgs-hitsInfos {
     border: 0;
     color: var(--link-color-1);
     background-color: transparent;
+    font-size: inherit;
 }
 
 .kgs-hitsInfos button.kgs-suggestion__btn:hover, .kgs-hitsInfos button.kgs-suggestion__btn:focus, .kgs-hitsInfos button.kgs-suggestion__btn:active {
     color: var(--link-color-active);
+}
+
+@media (min-width: 576px) {
+    .kgs-hitsInfos {
+        margin: 10px 0 12px;
+    }
 }

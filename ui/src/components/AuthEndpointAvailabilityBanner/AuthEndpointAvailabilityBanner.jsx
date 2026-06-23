@@ -23,7 +23,7 @@
 
 import React, { useEffect, useState } from 'react';
 import useAuth from '../../hooks/useAuth';
-import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons/faCircleExclamation';
+import {faTriangleExclamation} from '@fortawesome/free-solid-svg-icons/faTriangleExclamation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './AuthEndpointAvailabilityBanner.css';
@@ -57,11 +57,13 @@ const AuthEndpointAvailabilityBanner = ({ badges }) => {
       return null;
     }
 
-  if(!isAuthEndpointAvailable) {
+  if(isAuthEndpointAvailable) {
       return (
           <div className="container-fluid">
               <div className="alert text-center">
-                  <span><FontAwesomeIcon icon={faCircleExclamation}/> Authentication endpoint is temporarily unavailable.</span>
+                  <span>
+                      <FontAwesomeIcon icon={faTriangleExclamation} /> Authentication endpoint is temporarily unavailable. Sign-in may fail.
+                  </span>
               </div>
           </div>
     );

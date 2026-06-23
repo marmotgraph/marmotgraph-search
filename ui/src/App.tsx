@@ -42,6 +42,7 @@ import Header from './pages/Header/Header';
 import type AuthAdapter from './services/AuthAdapter';
 import type {Store} from 'redux';
 
+const SearchLandingComp = React.lazy(() => import('./pages/SearchLanding.jsx'));
 const SearchComp = React.lazy(() => import('./pages/Search.jsx'));
 const InstanceComp = React.lazy(() => import('./pages/Instance.jsx'));
 const PreviewComp = React.lazy(() => import('./pages/Preview.jsx'));
@@ -58,7 +59,8 @@ const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => (
             <Groups>
               <Suspense fallback={<FetchingPanel message="Loading resource..."/>}>
                 <Routes>
-                  <Route path="/" element={<SearchComp/>}/>
+                  <Route path="/" element={<SearchLandingComp/>}/>
+                  <Route path="/search" element={<SearchComp/>}/>
                   <Route path="/instances/:id" element={<InstanceComp/>}/>
                   <Route path="/instances/:type/:id" element={<InstanceComp/>}/>
                   <Route path="/live/:org/:domain/:schema/:version/:id" element={<PreviewComp/>}/>

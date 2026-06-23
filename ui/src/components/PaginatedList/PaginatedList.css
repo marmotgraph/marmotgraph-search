@@ -23,16 +23,20 @@
 
 .kgs-paginated-list button.kgs-paginated-list__viewMore-button {
     display: inline-block;
-    margin: 10px 0 0 0;
+    margin: 6px 0 0 4px;
     padding: 0;
     border: 0;
     background: transparent;
-    color: var(--link-color-1);
-    font-size: 12px;
+    color: var(--link-highlight-color, #2563EB);
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     text-decoration: none;
 }
 
-.kgs-paginated-list button.kgs-paginated-list__viewMore-button:hover {
-    color: var(--link-color-active);
+.kgs-paginated-list button.kgs-paginated-list__viewMore-button:hover,
+.kgs-paginated-list button.kgs-paginated-list__viewMore-button:focus {
+    color: var(--color-37, #1D4ED8);
+    outline: none;
+    text-decoration: underline;
 }

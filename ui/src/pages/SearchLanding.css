@@ -21,22 +21,30 @@
  *
  */
 
-import React from 'react';
+.kgs-search-landing {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+    padding: 24px var(--site-margin);
+    background-color: #F0F4F8;
+}
 
-import './Tags.css';
+.kgs-search-landing__content {
+    width: 100%;
+    max-width: 960px;
+}
 
-const Tags = ({ tags }) => {
-  if (!tags || !Array.isArray(tags.data) || tags.size === 0) {
-    return null;
-  }
-  return (
-    <div className="kgs-tags">
-      {tags.data.map(tag => (
-        <span key={tag} className={'kgs-tag'}>{tag}</span>
-      ))}
-      {tags.total > tags.size && <span className="kgs-tag-ellipsis" >...</span>}
-    </div>
-  );
-};
+.kgs-search-landing__search.kgs-search-panel {
+    padding: 0;
+    background: transparent;
+    border-bottom: 0;
+}
 
-export default Tags;
+@media (min-width: 576px) {
+    .kgs-search-landing {
+        min-height: calc(100vh - 240px);
+        padding: 48px var(--site-margin);
+    }
+}

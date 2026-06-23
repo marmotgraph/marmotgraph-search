@@ -88,7 +88,7 @@ const SignIn = ({ className, Tag }) => {
     return (
       <Tag className={`${className} dropdown`}>
         <a className="dropdown-toggle kgs-sign__in kgs_signed__in" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <FontAwesomeIcon icon={faUser} size="2x" />
+          <FontAwesomeIcon icon={faUser} size="md" />
         </a>
         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
           {groups.map(g => (

@@ -22,14 +22,33 @@
  */
 
  .kgs-tags {
-  order: 2;
-  margin-top: 1em;
+     width: 100%;
+     display: flex;
+     flex-wrap: wrap;
+     align-items: start;
+     gap: 6px;
+     padding: 7px 14px;
+     border-top: 1px solid #F0F4F8;
 }
 
 .kgs-tags .kgs-tag {
-  background: var(--color-38);
-  margin: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #F0F4F8;
+    border: 1px solid #E2E8EE;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: #4A6278;
+    transition: background .1s;
 }
+
+.kgs-tags .kgs-tag:hover {
+    background: #EBF4FF;
+    border-color: #93C5FD;
+    color: #1A4E8A;
+    text-decoration: none !important;
 
 body[profile="ebrains"] .kgs-tags .kgs-tag {
     background: none;

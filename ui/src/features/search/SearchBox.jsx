@@ -34,7 +34,7 @@ import { setQueryString } from './searchSlice';
 
 import './SearchBox.css';
 
-const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }) => {
+const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }) => {
   const configuration = useSelector(state => state.application.config);
   const textInput = useRef();
   const [value, setValue] = useState(queryString);
@@ -104,7 +104,7 @@ const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating })
     <div className={`kgs-search-panel ${isFloating ? ' is-fixed-position' : ''}`}>
       <div>
         <div>
-          <FontAwesomeIcon icon={faSearch} size="2x" className="kg-search-bar__icon" />
+          <FontAwesomeIcon icon={faSearch} size="1x" className="kg-search-bar__icon" />
           <input className="kg-search-bar"
             type="text"
             placeholder={'Search '+configuration.searchExample}
@@ -129,8 +129,8 @@ const SeachBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating })
 
 };
 
-const SeachBoxComponent = ({ queryString, isFloating, relatedElements, onQueryStringChange }) => (
-  <SeachBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onQueryStringChange={onQueryStringChange} />
+const SearchBoxComponent = ({ queryString, isFloating, relatedElements, onQueryStringChange }) => (
+    <SearchBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onQueryStringChange={onQueryStringChange} />
 );
 
 const SearchBoxContainer = connect(
@@ -144,7 +144,7 @@ const SearchBoxContainer = connect(
       dispatch(setQueryString(value));
     }
   })
-)(SeachBoxComponent);
+)(SearchBoxComponent);
 
 const SearchBox = withFloatingScrollEventsSubscription(
   'top',

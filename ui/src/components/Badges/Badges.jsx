@@ -30,7 +30,7 @@ const BadgesEnum = [
   { name: 'isTrending', title: 'Top trending', color: '#20C997FF', fontColor: '#FFFFFFFF' }
 ];
 
-const Badge = ({ name, title, style }) => <span className={`badge rounded-pill kgs-badge kgs-badge-${name}`} style={style}>{title}</span>;
+const Badge = ({ name, title, style }) => <span className={`badge kgs-badge kgs-badge-${name}`} style={style}>{title}</span>;
 
 const Badges = ({ badges }) => {
   const allBadges = [];

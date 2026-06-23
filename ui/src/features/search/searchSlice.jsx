@@ -25,28 +25,21 @@ import {createSlice} from '@reduxjs/toolkit';
 import {constructFacet, resetFacet} from '../../helpers/Facets';
 import {api} from '../../services/api';
 
+export const typesToQueryParam = selectedTypes => (
+  Array.isArray(selectedTypes) && selectedTypes.length > 0
+    ? selectedTypes.join(',')
+    : ''
+);
 
-const resolveType = (type, list) => {
-  const value = Array.isArray(type) ? type[0] : type;
-  let defaultType = null;
-  let selectedType = null;
-  list.some(t => {
-    if (!defaultType) {
-      defaultType = t;
-    }
-    if (t.defaultSelection) {
-      defaultType = t.type;
-    }
-    if (t.type === value) {
-      selectedType = t.type;
-      return true;
-    }
-    return false;
-  });
-  if (selectedType) {
-    return selectedType;
+const resolveTypes = (category, list) => {
+  let values = [];
+  if (Array.isArray(category)) {
+    values = category;
+  } else if (category) {
+    values = [category];
   }
-  return defaultType;
+  const valid = new Set(list.map(t => t.type));
+  return values.filter(value => valid.has(value));
 };
 
 const resolveFacets = (facets, params) => {
@@ -70,13 +63,37 @@ const resolveFacets = (facets, params) => {
   });
 };
 
-
 const getFacet = (types, typeName, facetName) => {
   const type = types.find(t => t.type === typeName);
   if (!Array.isArray(type?.facets)) {
     return null;
   }
   return type.facets.find(f => f.name === facetName);
+};
+
+const getRelevantTypes = (types, selectedTypes) => {
+  if (!Array.isArray(selectedTypes) || selectedTypes.length === 0) {
+    return types;
+  }
+  return types.filter(type => selectedTypes.includes(type.type));
+};
+
+const applyFacetUpdate = (types, selectedTypes, facetName, payload) => {
+  if (selectedTypes.length === 1) {
+    const facet = getFacet(types, selectedTypes[0], facetName);
+    if (facet) {
+      updateFacet(facet, payload);
+    }
+    return;
+  }
+  getRelevantTypes(types, selectedTypes).forEach(type => {
+    if (!Array.isArray(type.facets)) {
+      return;
+    }
+    type.facets
+      .filter(facet => facet.name === facetName)
+      .forEach(facet => updateFacet(facet, payload));
+  });
 };
 
 const updateListFacet = (facet, payload) => {
@@ -93,15 +110,13 @@ const updateListFacet = (facet, payload) => {
         values.push(payload.keyword);
       }
       facet.value = values;
-    } else {
-      if (Array.isArray(facet.value)) {
-        facet.value = facet.value.filter(value => {
-          if (Array.isArray(payload.keyword)) {
-            return !payload.keyword.includes(value);
-          }
-          return value !== payload.keyword;
-        });
-      }
+    } else if (Array.isArray(facet.value)) {
+      facet.value = facet.value.filter(value => {
+        if (Array.isArray(payload.keyword)) {
+          return !payload.keyword.includes(value);
+        }
+        return value !== payload.keyword;
+      });
     }
   }
 };
@@ -137,12 +152,16 @@ const updateFacetsFromResults = (facets, isSelectedType, results) => {
   });
 };
 
-const updateTypesFromResults = (types, selectedType, results) => {
+const updateTypesFromResults = (types, selectedTypes, results) => {
   types.forEach(type => {
     const count = Number(results?.types?.[type.type]?.count);
     type.count = isNaN(count) ? 0 : count;
     if (Array.isArray(type.facets)) {
-      updateFacetsFromResults(type.facets, type.type === selectedType, results);
+      updateFacetsFromResults(
+        type.facets,
+        selectedTypes.length === 0 || selectedTypes.includes(type.type),
+        results
+      );
     }
   });
 };
@@ -158,12 +177,20 @@ const resetAllFacets = state => {
 const syncParameters = (state, payload) => {
   const {q, category} = (payload instanceof Object) ? payload : {};
   const queryString = q ?? '';
-  const selectedType = resolveType(category, state.types);
-  const type = state.types.find(t => t.type === selectedType);
+  const selectedTypes = resolveTypes(category, state.types);
   resetAllFacets(state);
-  resolveFacets(type?.facets, payload);
+  if (selectedTypes.length === 1) {
+    const type = state.types.find(t => t.type === selectedTypes[0]);
+    resolveFacets(type?.facets, payload);
+  } else {
+    getRelevantTypes(state.types, selectedTypes).forEach(type => {
+      if (Array.isArray(type.facets)) {
+        resolveFacets(type.facets, payload);
+      }
+    });
+  }
   state.queryString = queryString;
-  state.selectedType = selectedType;
+  state.selectedTypes = selectedTypes;
 };
 
 const initialState = {
@@ -172,7 +199,7 @@ const initialState = {
   isInitialized: false,
   isFetching: false,
   queryString: '',
-  selectedType: null,
+  selectedTypes: [],
   hitsPerPage: 20,
   hits: [],
   suggestions: {},
@@ -200,13 +227,10 @@ const searchSlice = createSlice({
       state.isUpToDate = false;
     },
     setFacet(state, action) {
-      const facet = getFacet(state.types, state.selectedType, action.payload.name);
-      if (facet) {
-        updateFacet(facet, action.payload);
-        state.hits = []
-        state.cursor = null;
-        state.isUpToDate = false;
-      }
+      applyFacetUpdate(state.types, state.selectedTypes, action.payload.name, action.payload);
+      state.hits = []
+      state.cursor = null;
+      state.isUpToDate = false;
     },
     resetFacets(state) {
       resetAllFacets(state);
@@ -216,7 +240,9 @@ const searchSlice = createSlice({
     },
     setFacetSize(state, action) {
       state.hits = []
-      const facet = getFacet(state.types, state.selectedType, action.payload.name);
+      const facet = state.selectedTypes.length === 1
+        ? getFacet(state.types, state.selectedTypes[0], action.payload.name)
+        : state.types.flatMap(type => type.facets ?? []).find(f => f.name === action.payload.name);
       if (facet) {
         if (facet.type === 'list') {
           facet.size = action.payload.size;
@@ -228,19 +254,33 @@ const searchSlice = createSlice({
       state.cursor = action.payload;
       state.isUpToDate = false;
     },
-    setType(state, action) {
-      const type = state.types.find(t => t.type === action.payload);
-      if (type && state.selectedType !== type.type) {
+    toggleCategory(state, action) {
+      const typeName = action.payload;
+      const type = state.types.find(t => t.type === typeName);
+      if (!type) {
+        return;
+      }
+      const isSelected = state.selectedTypes.includes(typeName);
+      resetAllFacets(state);
+      state.selectedTypes = isSelected
+        ? state.selectedTypes.filter(value => value !== typeName)
+        : [...state.selectedTypes, typeName];
+      state.hits = [];
+      state.cursor = null;
+      state.isUpToDate = false;
+    },
+    clearCategories(state) {
+      if (state.selectedTypes.length > 0) {
         resetAllFacets(state);
-        state.hits = []
-        state.selectedType = type.type;
+        state.selectedTypes = [];
+        state.hits = [];
         state.cursor = null;
         state.isUpToDate = false;
       }
     },
     setSearchResults(state, action) {
       const results = action.payload;
-      updateTypesFromResults(state.types, state.selectedType, results);
+      updateTypesFromResults(state.types, state.selectedTypes, results);
       if (state.cursor != null) {
         if (Array.isArray(results?.hits) && results.hits.length > 0) {
 
@@ -300,12 +340,31 @@ const searchSlice = createSlice({
 
 export const selectType = (state, typeName) => state.search.types.find(t => t.type === typeName);
 
-export const selectFacets = (state, typeName) => {
-  const type = selectType(state, typeName);
-  if (!Array.isArray(type?.facets)) {
-    return [];
+export const selectFacets = (state, selectedTypes) => {
+  const types = Array.isArray(selectedTypes) ? selectedTypes : [];
+  if (types.length === 1) {
+    const type = selectType(state, types[0]);
+    if (!Array.isArray(type?.facets)) {
+      return [];
+    }
+    return type.facets;
   }
-  return type.facets;
+  const relevantTypes = types.length === 0
+    ? state.search.types
+    : state.search.types.filter(type => types.includes(type.type));
+  const seen = new Set();
+  return relevantTypes.flatMap(type => {
+    if (!Array.isArray(type.facets)) {
+      return [];
+    }
+    return type.facets.filter(facet => {
+      if (seen.has(facet.name)) {
+        return false;
+      }
+      seen.add(facet.name);
+      return true;
+    });
+  });
 };
 
 export const {
@@ -315,7 +374,8 @@ export const {
   setFacet,
   resetFacets,
   setFacetSize,
-  setType,
+  toggleCategory,
+  clearCategories,
   setSearchResults,
   setCursor
 } = searchSlice.actions;

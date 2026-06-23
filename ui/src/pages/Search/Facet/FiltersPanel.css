@@ -21,100 +21,82 @@
  *
  */
 
+@import './FiltersPanel.theme.css';
+
 .kgs-filters {
     position: relative;
-    width: 100%;
-    background-color: var(--background-color-2);
-    padding: 15px;
-    border-radius: var(--border-radius-1);
-}
-
-.kgs-filters.collapsible {
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    background-color: var(--filters-panel-bg);
+    border: var(--filters-panel-border);
+    border-radius: var(--filters-panel-radius);
+    box-shadow: var(--filters-panel-shadow);
+    overflow: hidden;
 }
 
 @media (min-width: 500px) {
-    .kgs-filters {  
-        min-width: 400px;
+    .kgs-filters {
+        min-width: var(--filters-panel-min-width);
     }
 }
 
-.kgs-filters .kgs-filters__header {
-    width: 100%;
+.kgs-filters__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: var(--filters-panel-header-padding);
+    background: var(--filters-panel-header-bg);
+    border-bottom: var(--filters-panel-header-border);
 }
 
-.kgs-filters.collapsible button.kgs-filters__toggle {
-    display: inline-block;
+.kgs-filters__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--filters-panel-title-color);
+    font-size: var(--filters-panel-title-size);
+    font-weight: var(--filters-panel-title-weight);
+    line-height: 1.2;
+}
+
+.kgs-filters__icon {
+    color: var(--filters-panel-icon-color);
+    font-size: 14px;
+}
+
+.kgs-filters__reset-button {
+    flex-shrink: 0;
     margin: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    transition: transform 0.75s cubic-bezier(.34,1.06,.63,.93);
-}
-
-.kgs-filters.collapsible .kgs-filters__toggle i {
-    display: inline-block;
-}
-
-.kgs-filters.collapsible .kgs-filters__toggle.in i {
-    transform: rotateZ(90deg);
-}
-
-.kgs-filters.collapsible .kgs-filters__body.collapse {
-    display: inline-block;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(.34,1.06,.63,.93);
-    max-height: 0;
-  }
-  
-  .kgs-filters.collapsible .kgs-filters__body.collapse.in {
-    max-height: 1500px;
-    overflow: unset;
-  }
-  
-@media (min-width: 992px) {
-    .kgs-filters.collapsible button.kgs-filters__toggle,
-    .kgs-filters.collapsible button.kgs-filters__toggle.in {
-        display: none;
-    }
-
-    .kgs-filters.collapsible .kgs-filters__body.collapse,
-    .kgs-filters.collapsible .kgs-filters__body.collapse.in {
-        max-height: unset;
-        overflow: unset;
-    }
-}
-
-.kgs-filters .kgs-filters__header .kgs-filters__title {
-    display: inline-block;
-    color: var(--color-15);
-    font-size: var(--font-size-big);
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.kgs-filters .kgs-filters__header .kgs-filters__reset {
-    display: inline-block;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-}
-
-.kgs-filters .kgs-filters__header .kgs-filters__reset button.kgs-filters__reset-button {
     padding: 0;
     border: 0;
-    background-color: transparent;
-    color: var(--link-highlight-color);
+    background: transparent;
+    color: var(--filters-panel-reset-color);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.kgs-filters__reset-button:hover,
+.kgs-filters__reset-button:focus {
+    color: var(--color-37, #1D4ED8);
     outline: none;
-    font-weight: bolder;
-}
-
-.kgs-filters .kgs-filters__header .kgs-filters__reset button.kgs-filters__reset-button:hover,
-.kgs-filters .kgs-filters__header .kgs-filters__reset button.kgs-filters__reset-button:focus {
-    color: var(--color-37);
-}
-
-/* .kgs-filters .kgs-filters__header .kgs-filters__reset button.kgs-filters__reset-button:focus {
     text-decoration: underline;
-}        */
+}
+
+.kgs-filters__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: var(--filters-panel-body-overflow);
+}
+
+body[profile="ebrains"] .kgs-filters__title {
+    font-family: var(--font-plexsans), serif;
+}

@@ -26,63 +26,78 @@
 }
 
 .kgs-filtered-list .kgs-filtered-list_filter {
-    margin-bottom: 6px;
-    border: 1px solid var(--color-8);
-    border-radius: 5px;
-    background: var(--background-color-2);
+    position: relative;
+    margin-bottom: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: #F1F5F9;
 }
 
 .kgs-filtered-list .kgs-filtered-facet_filter_icon {
     position: absolute;
-    left: 9px;
-    top: 9px;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     background: transparent;
-    font-size: 1em;
-    color: #999;
+    font-size: 12px;
+    color: #94A3B8;
     pointer-events: none;
 }
 
 .kgs-filtered-list .kgs-filtered-facet_filter_dropdown_icon {
     position: absolute;
-    margin-top: 8px;
-    margin-left: -30px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
     background: transparent;
-    font-size: 1em;
-    color: #999;
+    font-size: 11px;
+    color: #94A3B8;
     pointer-events: none;
 }
-
 
 .kgs-filtered-list .kgs-filtered-list_input {
     width: 100%;
     margin: 0;
     border: 0;
-    padding: 4px 40px 4px 30px;
+    padding: 8px 28px 8px 30px;
     background: transparent;
-    color: var(--color-8);
+    color: #334155;
+    font-size: 13px;
     z-index: 1;
+}
+
+.kgs-filtered-list .kgs-filtered-list_input::placeholder {
+    color: #94A3B8;
+}
+
+.kgs-filtered-list .kgs-filtered-list_input:focus {
+    outline: none;
+}
+
+.kgs-filtered-list .kgs-filtered-list_filter:focus-within {
+    background: #E2E8F0;
 }
 
 .kgs-filtered-list .kgs-filtered-list_dropdown {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
     width: 100%;
-    float: left;
-    margin: 2px 0 0;
-    border: 1px solid var(--color-8);
+    margin: 0;
+    border: 1px solid #E2E8F0;
     z-index: 1000;
-    padding: 5px 0;
+    padding: 4px 0;
     min-width: 160px;
-    font-size: 14px;
+    font-size: 13px;
     max-height: 33vh;
     overflow-y: auto;
     text-align: left;
-    box-shadow: 0 6px 12px rgba(0,0,0,.175);
-    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    border-radius: 6px;
     background-clip: padding-box;
-    background-color: var(--background-color-2);
+    background-color: var(--background-color-2, #fff);
 }
 
 .kgs-filtered-list .kgs-filtered-list_dropdown.is-open {

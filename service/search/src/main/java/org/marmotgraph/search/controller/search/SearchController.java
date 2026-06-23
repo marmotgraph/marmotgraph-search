@@ -210,7 +210,8 @@ public class SearchController extends FacetAggregationUtils {
         if (esHighlight != null) {
             payload.put("highlight", esHighlight);
         }
-        Type targetClass = utils.getTypeTargetClass(type);
+        String singleType = FiltersUtils.singleTypeOrNull(type);
+        Type targetClass = utils.getTypeTargetClass(singleType);
         MetaInfo metaInfo = null;
         if (targetClass != null) {
             metaInfo = ((Class<?>) targetClass).getAnnotation(MetaInfo.class);
@@ -240,8 +241,8 @@ public class SearchController extends FacetAggregationUtils {
             facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
         }
         Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), translatorRegistry.getMainCategories());
-        if (typesAggregation.get(type) instanceof Map) {
-            Object countOfType = ((Map<?, ?>) typesAggregation.get(type)).get("count");
+        if (singleType != null && typesAggregation.get(singleType) instanceof Map) {
+            Object countOfType = ((Map<?, ?>) typesAggregation.get(singleType)).get("count");
             if(countOfType instanceof Integer){
                 total = (Integer)countOfType;
             }
@@ -265,6 +266,7 @@ public class SearchController extends FacetAggregationUtils {
         if (result.getHits() == null || CollectionUtils.isEmpty(result.getHits().getHits())) {
             return Collections.emptyList();
         }
+        String singleType = FiltersUtils.singleTypeOrNull(type);
         List<String> fieldNames = getHitFieldNames(type);
         List<Document> hits = result.getHits().getHits();
         Document last = hits.getLast();
@@ -273,7 +275,10 @@ public class SearchController extends FacetAggregationUtils {
             Map<String, Object> hit = new HashMap<>();
             String id = h.getId();
             hit.put("id", id);
-            hit.put("type", type); // getValueField(source, "type")
+            String hitType = singleType != null
+                ? singleType
+                : CastingUtils.getStringValueField(source, "type");
+            hit.put("type", hitType);
             hit.put("group", getGroup(dataStage));
             hit.put("category", CastingUtils.getStringValueField(source, "category"));
             hit.put("title", CastingUtils.getStringValueField(source, "title"));
@@ -531,7 +536,11 @@ public class SearchController extends FacetAggregationUtils {
     }
 
     private List<String> getHitFieldNames(String type) {
-        return getFieldNames(type, FieldInfo::overview, List.of("title"));
+        String singleType = FiltersUtils.singleTypeOrNull(type);
+        if (singleType == null) {
+            return List.of();
+        }
+        return getFieldNames(singleType, FieldInfo::overview, List.of("title"));
     }
 
     private Map<String, String> getSuggestions(List<String> sanitizedQuery, DataStage dataStage, String type) {
@@ -586,7 +595,10 @@ public class SearchController extends FacetAggregationUtils {
         queryString.put("lenient", true);
         queryString.put("analyze_wildcard", true);
         queryString.put("query", q);
-        List<String> fields = searchFieldsController.getEsQueryFields(type);
+        String singleType = FiltersUtils.singleTypeOrNull(type);
+        List<String> fields = singleType != null
+                ? searchFieldsController.getEsQueryFields(singleType)
+                : Collections.emptyList();
         if (!CollectionUtils.isEmpty(fields)) {
             queryString.put("fields", fields);
         }
@@ -594,7 +606,11 @@ public class SearchController extends FacetAggregationUtils {
     }
 
     private Map<String, Object> getEsHighlight(String type) {
-        List<String> highlights = searchFieldsController.getHighlight(type);
+        String singleType = FiltersUtils.singleTypeOrNull(type);
+        if (singleType == null) {
+            return null;
+        }
+        List<String> highlights = searchFieldsController.getHighlight(singleType);
         if (CollectionUtils.isEmpty(highlights)) {
             return null;
         }

@@ -45,6 +45,58 @@ export const constructFacet = facet => ({
   defaultSize: facet.isFilterable?FACET_ALL_SIZE:FACET_DEFAULT_SIZE
 });
 
+export const getFacetSelectionCount = facet => {
+  switch (facet.type) {
+  case 'list':
+    return Array.isArray(facet.value) ? facet.value.length : 0;
+  case 'exists':
+    return facet.value ? 1 : 0;
+  default:
+    return 0;
+  }
+};
+
+export const getSelectedFilters = facets => {
+  if (!Array.isArray(facets)) {
+    return [];
+  }
+  return facets.reduce((acc, facet) => {
+    switch (facet.type) {
+    case 'list':
+      if (Array.isArray(facet.value) && facet.value.length) {
+        const facetLabel = facet.title ?? facet.label;
+        facet.value.forEach(keyword => {
+          acc.push({
+            name: facet.name,
+            keyword,
+            facetLabel,
+            valueLabel: keyword,
+            label: facetLabel ? `${facetLabel}: ${keyword}` : keyword,
+            many: true
+          });
+        });
+      }
+      break;
+    case 'exists':
+      if (facet.value) {
+        const valueLabel = facet.subLabel ?? `Has ${facet.label}`;
+        acc.push({
+          name: facet.name,
+          keyword: undefined,
+          facetLabel: null,
+          valueLabel,
+          label: valueLabel,
+          many: false
+        });
+      }
+      break;
+    default:
+      break;
+    }
+    return acc;
+  }, []);
+};
+
 export const getAggregation = facets => {
   if (!Array.isArray(facets)) {
     return {};

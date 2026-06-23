@@ -23,7 +23,8 @@
 
 .kgs-navbar.navbar {
   height: auto;
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F0F4F8;
   border: none;
   margin-bottom: 0;
   padding: 0 var(--site-margin) 0 0;

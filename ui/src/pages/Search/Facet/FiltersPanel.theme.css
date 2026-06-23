@@ -1,0 +1,130 @@
+/*
+ * Filters column & panel theme tokens.
+ *
+ * Override per tenant with body[profile="tenant-id"] { --filters-*: ... }
+ *
+ * Column ( .kgs-search__filters wrapper in Search.css ):
+ *   --filters-column-bg
+ *   --filters-column-min-height
+ *   --filters-column-max-height
+ *   --filters-column-padding
+ *   --filters-column-gap
+ *   --filters-column-sticky-top
+ *   --filters-column-overflow
+ *   --filters-column-width
+ *
+ * Panel ( .kgs-filters in FiltersPanel.css ):
+ *   --filters-panel-bg
+ *   --filters-panel-border
+ *   --filters-panel-radius
+ *   --filters-panel-shadow
+ *   --filters-panel-min-width
+ *   --filters-panel-header-padding
+ *   --filters-panel-header-bg
+ *   --filters-panel-header-border
+ *   --filters-panel-title-color
+ *   --filters-panel-title-size
+ *   --filters-panel-title-weight
+ *   --filters-panel-icon-color
+ *   --filters-panel-reset-color
+ *   --filters-panel-body-overflow
+ *
+ * Facet sections ( Facet.css ):
+ *   --filters-facet-divider
+ *   --filters-facet-header-padding
+ *   --filters-facet-header-hover-bg
+ *   --filters-facet-title-color
+ *   --filters-facet-title-size
+ *   --filters-facet-badge-bg
+ *   --filters-facet-badge-color
+ *   --filters-facet-chevron-color
+ *   --filters-facet-body-padding
+ */
+
+.kgs-search {
+    /* Column – default: full viewport height, white background */
+    --filters-column-bg: #fff;
+    --filters-column-min-height: auto;
+    --filters-column-max-height: none;
+    --filters-column-padding: 0;
+    --filters-column-gap: 0;
+    --filters-column-sticky-top: 0;
+    --filters-column-overflow: visible;
+    --filters-column-width: 400px;
+
+    /* Panel – flush inside the column by default */
+    --filters-panel-bg: transparent;
+    --filters-panel-border: none;
+    --filters-panel-radius: 0;
+    --filters-panel-shadow: none;
+    --filters-panel-min-width: 0;
+    --filters-panel-header-padding: 12px 16px;
+    --filters-panel-header-bg: transparent;
+    --filters-panel-header-border: 1px solid #E2E8F0;
+    --filters-panel-title-color: #1E293B;
+    --filters-panel-title-size: 15px;
+    --filters-panel-title-weight: 700;
+    --filters-panel-icon-color: #64748B;
+    --filters-panel-reset-color: var(--link-highlight-color, #2563EB);
+    --filters-panel-body-overflow: visible;
+
+    /* Facet sections */
+    --filters-facet-divider: 1px solid #E2E8F0;
+    --filters-facet-header-padding: 12px 16px;
+    --filters-facet-header-hover-bg: #F8FAFC;
+    --filters-facet-title-color: #1E293B;
+    --filters-facet-title-size: 14px;
+    --filters-facet-badge-bg: var(--color-selected, #2563EB);
+    --filters-facet-badge-color: #fff;
+    --filters-facet-chevron-color: #94A3B8;
+    --filters-facet-body-padding: 0 16px 14px;
+
+    /* Categories block above facets */
+    --filters-types-bg: transparent;
+    --filters-types-padding: 12px 16px 8px;
+    --filters-types-radius: 0;
+
+    /* Legacy aliases used elsewhere */
+    --filters-bg: var(--filters-column-bg);
+    --filters-radius: var(--filters-panel-radius);
+    --filters-gap: var(--filters-column-gap);
+}
+
+@media (min-width: 992px) {
+    .kgs-search {
+        --filters-column-min-height: 100vh;
+        --filters-column-max-height: 100vh;
+        --filters-column-overflow: auto;
+        --filters-panel-body-overflow: auto;
+    }
+}
+
+body[profile="cscs"] .kgs-search {
+    --filters-column-bg: transparent;
+    --filters-column-min-height: auto;
+    --filters-column-max-height: none;
+    --filters-column-padding: 0;
+    --filters-column-gap: 30px;
+    --filters-column-overflow: visible;
+
+    --filters-types-bg: var(--background-color-2, #fff);
+    --filters-types-radius: 8px;
+
+    --filters-panel-bg: var(--background-color-2, #fff);
+    --filters-panel-border: 1px solid #E2E8F0;
+    --filters-panel-radius: 8px;
+    --filters-panel-shadow: none;
+    --filters-panel-body-overflow: visible;
+}
+
+body[profile="tefhealth"] .kgs-search {
+    --filters-panel-radius: 1rem;
+}
+
+body[profile="ebrains"] .kgs-search {
+    --filters-panel-border: 1px solid var(--color-eb-darkgrey);
+    --filters-panel-header-border: 1px solid var(--color-eb-darkgrey);
+    --filters-facet-divider: 1px solid var(--color-eb-darkgrey);
+    --filters-panel-title-size: var(--text-base);
+    --filters-facet-title-size: var(--text-sm);
+}

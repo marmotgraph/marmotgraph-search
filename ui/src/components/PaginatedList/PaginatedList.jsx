@@ -53,13 +53,9 @@ export class PaginatedList extends React.PureComponent {
 
     let viewMoreText = null;
     if (others > 0) {
-      if (viewMoreIncrement >= others) {
-        viewMoreText = 'View all';
-      } else {
-        viewMoreText = 'View more';
-      }
+      viewMoreText = others === 1 ? 'Show 1 more' : `Show ${others} more`;
     } else if (currentSize > defaultSize) {
-      viewMoreText = 'View less';
+      viewMoreText = 'Show less';
     }
 
     return (
