@@ -88,8 +88,8 @@ public class TranslatorRegistry {
     }
 
     public List<String> getMainCategories(){
-        return translators.stream().filter(t -> t.orderNumber()<Integer.MAX_VALUE).map(TranslatorModel::category).toList();
-
+        return translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::category).toList();
     }
+
 
 }

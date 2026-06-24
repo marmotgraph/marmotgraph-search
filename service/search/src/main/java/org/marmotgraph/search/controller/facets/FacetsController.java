@@ -33,13 +33,22 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class FacetsController {
+
+    private static Map<String, Object> createTypeFacet(){
+        Map<String, Object> facet = new LinkedHashMap<>();
+        facet.put("name", "otherTypes");
+        facet.put("label", "Other types");
+        facet.put("type", FieldInfo.Facet.LIST.name().toLowerCase());
+        facet.put("isFilterable", false);
+        facet.put("isHierarchical", false);
+        return facet;
+    }
+
+    public static Map<String, Object> TYPE_FACET = createTypeFacet();
 
     private final MetaModelUtils utils;
 

@@ -25,6 +25,7 @@
 package org.marmotgraph.search.common.controller.translation.models;
 
 import org.marmotgraph.search.common.model.source.SourceInstance;
+import org.marmotgraph.search.common.model.target.MetaInfo;
 import org.marmotgraph.search.common.model.target.TargetInstance;
 
 import java.util.Comparator;
@@ -48,4 +49,8 @@ public record TranslatorModel(Class<? extends SourceInstance> sourceClass, Class
 
     public static Comparator<TranslatorModel> COMPARATOR = Comparator.<TranslatorModel>comparingInt(c -> c.orderNumber).thenComparing(c -> c.category);
 
+    public boolean isFirstCitizen(){
+        MetaInfo annotation = targetClass.getAnnotation(MetaInfo.class);
+        return annotation != null && annotation.searchable();
+    }
 }

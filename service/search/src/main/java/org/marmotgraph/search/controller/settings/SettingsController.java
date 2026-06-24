@@ -24,14 +24,13 @@
 
 package org.marmotgraph.search.controller.settings;
 
+import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.MetaInfo;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
 import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
-import org.apache.commons.lang3.StringUtils;
-import org.marmotgraph.search.utils.FacetsUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -195,11 +194,11 @@ public class SettingsController {
                     .forEachOrdered(innerClass -> {
                         Map<String, Object> innerType = generateType(innerClass, String.format("%s.%s", MetaModelUtils.getNameForClass(targetModel), MetaModelUtils.getNameForClass(innerClass)), false, false);
                         if (innerType != null) {
-                            types.put(types.size()+1, innerType);
+                            types.put(types.size() + 1, innerType);
                         }
                     });
         }
-        types.put(types.size(), generateType("others", "Others", false, false));
+        types.put(types.size(), generateOthers());
         ArrayList<Map.Entry<Integer, Object>> list = new ArrayList<>(types.entrySet());
         return list.stream().sorted(new TypeComparator()).map(Map.Entry::getValue).collect(Collectors.toList());
     }
@@ -220,6 +219,13 @@ public class SettingsController {
         String type = MetaModelUtils.getNameForClass(clazz);
         return generateType(type, label, includeBookmarkFacet, defaultSelection);
     }
+
+    public Map<String, Object> generateOthers() {
+        Map<String, Object> others = generateType("others", "Others", false, false);
+        others.put("facets", Collections.singletonList(FacetsController.TYPE_FACET));
+        return others;
+    }
+
 
     public Map<String, Object> generateType(String type, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
         Map<String, Object> result = new LinkedHashMap<>();
