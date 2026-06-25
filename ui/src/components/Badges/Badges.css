@@ -22,18 +22,47 @@
  */
 
 .kgs-badges {
-  display: inline-block;
-  margin-right: 10px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
 }
 
-.kgs-badge + .kgs-badge {
-  margin-left: 3px;
+.kgs-badge {
+  --badge-accent: #64748B;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 2px 8px 2px 6px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--badge-accent) 30%, #E2E8EE);
+  background: #fff;
+  color: var(--color-8, #333);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
-.kgs-badge-isTrending {
-  background: var(--bs-teal);
+.kgs-badge__dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--badge-accent);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+.kgs-badge__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kgs-badge-isNew {
-  background: var(--bs-cyan);
+  --badge-accent: var(--bs-cyan, #0DCAF0);
+}
+
+.kgs-badge-isTrending {
+  --badge-accent: var(--bs-teal, #20C997);
 }

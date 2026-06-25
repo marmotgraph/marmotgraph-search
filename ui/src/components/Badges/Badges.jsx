@@ -26,37 +26,53 @@ import React from 'react';
 import './Badges.css';
 
 const BadgesEnum = [
-  { name: 'isNew', title: 'New', color: '#0DCAF0FF', fontColor: '#FFFFFFFF' },
-  { name: 'isTrending', title: 'Top trending', color: '#20C997FF', fontColor: '#FFFFFFFF' }
+  { name: 'isNew', title: 'New', color: '#0DCAF0' },
+  { name: 'isTrending', title: 'Top trending', color: '#20C997' }
 ];
 
-const Badge = ({ name, title, style }) => <span className={`badge kgs-badge kgs-badge-${name}`} style={style}>{title}</span>;
+const normalizeColor = color => {
+  if (!color) {
+    return '#64748B';
+  }
+  const trimmed = color.trim();
+  if (/^#[0-9A-Fa-f]{8}$/.test(trimmed)) {
+    return trimmed.slice(0, 7);
+  }
+  return trimmed;
+};
+
+const Badge = ({ name, title, color }) => (
+  <span
+    className={`kgs-badge kgs-badge-${name}`}
+    style={{ '--badge-accent': normalizeColor(color) }}
+  >
+    <span className="kgs-badge__dot" aria-hidden="true" />
+    <span className="kgs-badge__label">{title}</span>
+  </span>
+);
 
 const Badges = ({ badges }) => {
   const allBadges = [];
   badges.forEach(b => {
-    const fixedBadge = BadgesEnum.filter(fixedBadge => fixedBadge.name === b)[0]
-    if(fixedBadge !== undefined){
+    const fixedBadge = BadgesEnum.find(fixedBadge => fixedBadge.name === b);
+    if (fixedBadge !== undefined) {
       allBadges.push(fixedBadge);
-    }
-    else{
-      const splittedBadge = b.split(";");
-      if(splittedBadge.length>1) {
+    } else {
+      const splittedBadge = b.split(';');
+      if (splittedBadge.length > 1) {
         allBadges.push({
           name: splittedBadge[0].trim(),
           title: splittedBadge[0].trim(),
-          color: splittedBadge[1].trim(),
-          fontColor: splittedBadge.length > 2 ? splittedBadge[2].trim() : '#FFFFFFFF'
-        })
+          color: splittedBadge[1].trim()
+        });
       }
     }
-  })
+  });
   return (
     <div className="kgs-badges">
-      {allBadges.map(badge => <Badge key={badge.name} name={badge.name} title={badge.title} style={{
-        background: badge.color,
-        color: badge.fontColor
-      }} />)}
+      {allBadges.map(badge => (
+        <Badge key={badge.name} name={badge.name} title={badge.title} color={badge.color} />
+      ))}
     </div>
   );
 };
