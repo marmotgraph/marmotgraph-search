@@ -161,11 +161,11 @@ const getFieldProps = (
         }, {})
       };
 
-      const sortedKeys = Object.keys(data).sort();
-      const labels = sortedKeys.length <= 2
-        ? sortedKeys.join(' & ')
-        : `${sortedKeys.slice(0, -1).join(', ')} & ${sortedKeys[sortedKeys.length - 1]}`;
-      if(label.includes("{{value}}")){
+      if (label && label.includes("{{value}}")) {
+        const sortedKeys = Object.keys(data).sort();
+        const labels = sortedKeys.length <= 2
+          ? sortedKeys.join(' & ')
+          : `${sortedKeys.slice(0, -1).join(', ')} & ${sortedKeys[sortedKeys.length - 1]}`;
         label = label.replace("{{value}}", labels);
       }
 
