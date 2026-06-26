@@ -132,7 +132,7 @@ const getFieldProps = (
 
       if (label) {
         if(label.includes("{{value}}")){
-          label = label.replace("{{value}}", singleGroupedLinksLabel)
+          label = label.replace("{{value}}", singleGroupedLinksLabel);
         }
         else {
           label = `${label} ${singleGroupedLinksLabel}`;
@@ -160,6 +160,14 @@ const getFieldProps = (
           return acc;
         }, {})
       };
+
+      const sortedKeys = Object.keys(data).sort();
+      const labels = sortedKeys.length <= 2
+        ? sortedKeys.join(' & ')
+        : `${sortedKeys.slice(0, -1).join(', ')} & ${sortedKeys[sortedKeys.length - 1]}`;
+      if(label.includes("{{value}}")){
+        label = label.replace("{{value}}", labels);
+      }
 
       valueProps = {
         data: data,
