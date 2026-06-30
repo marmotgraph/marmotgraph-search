@@ -416,8 +416,11 @@ public class DatasetVersionTranslator extends EBRAINSTranslator<DatasetVersionV3
                     List<TargetExternalReference> targetExternalReferences = viewData.get(s.getService());
                     String label = s.getLabel();
                     if (StringUtils.isBlank(label)) {
-                        translatorUtils.getErrors().add(String.format("Service link %s is missing the label!", s.getUrl()));
-                        label = s.getUrl();
+                        label = s.getDisplayLabel();
+                        if(StringUtils.isBlank(label)) {
+                            translatorUtils.getErrors().add(String.format("Service link %s is missing the label!", s.getUrl()));
+                            label = s.getUrl();
+                        }
                     }
                     targetExternalReferences.add(new TargetExternalReference(s.getUrl(), label));
                     targetExternalReferences.sort(Comparator.comparing(TargetExternalReference::getValue));
