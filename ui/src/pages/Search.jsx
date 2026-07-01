@@ -342,7 +342,6 @@ const SearchBase = () => {
       <div className="kgs-search-container">
         <div className="kgs-search" ref={searchLayoutRef}>
           <SearchBox />
-          <TermsShortNotice className="kgs-search__terms-short-notice" />
           <div className="kgs-search__panel">
             <div className="kgs-search__filters-bg" aria-hidden="true" />
             <div className="kgs-search__filters">
