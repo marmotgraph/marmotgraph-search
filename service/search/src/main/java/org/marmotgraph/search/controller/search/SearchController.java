@@ -225,7 +225,7 @@ public class SearchController extends FacetAggregationUtils {
         List<UUID> idsToFilter = null;
         List<UUID> bookmarkedIds = null;
         //TODO we currently only allow the bookmark feature on chosen categories for performance reasons (the gathering process of ids on KG is too slow. We can enable it once optimized.
-        if (categories.size() == 1) {
+        if (categories.size() == 1 && !categories.getFirst().equals(TranslatorUtils.OTHERS_CATEGORY)) {
             bookmarkedIds = getBookmarkedIds(facetValues, types);
             if (!CollectionUtils.isEmpty(bookmarkedIds)) {
                 nbOfBookmarks = bookmarkedIds.size();

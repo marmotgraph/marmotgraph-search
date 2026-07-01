@@ -31,22 +31,16 @@ const KnowledgeSpaceLink = () => {
   const page = useSelector(state => state.search.page);
   const queryString = useSelector(state => state.search.queryString);
   const totalPages = useSelector(state => state.search.totalPages);
+  const notFoundFooter = useSelector(state => state.application.custom.notFoundFooter);
 
   const show = (!totalPages || page === totalPages) && typeof queryString === 'string' && queryString.length > 0;
 
-  if(!show) {
+  if(!show || notFoundFooter === "") {
     return null;
   }
   return (
     <div className="kgs-search__knowledge-space">
-      Not found what you&apos;re looking for? Have a look at the&nbsp;
-      <a
-        href={`https://knowledge-space.org/search?q=${queryString}`}
-        rel="noreferrer"
-        target="_blank"
-      >
-        Knowledge Space
-      </a>
+      {notFoundFooter}
     </div>
   );
 };

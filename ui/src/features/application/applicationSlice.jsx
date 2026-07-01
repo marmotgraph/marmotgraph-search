@@ -74,6 +74,7 @@ const initialState = {
       navbarItems: null,
       footerContent: null,
       footerSocial: null,
+      notFoundFooter: null,
       editorEndpoint: null
     }
   }

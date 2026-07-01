@@ -33,6 +33,7 @@ public interface Customization {
     String getNavBarItems();
     String getFooterContent();
     String getFooterSocial();
+    String getNotFoundFooter();
 
     record Configuration(String home, String name, String copyright, String copyrightSince, String copyrightAddition,
                          String searchExample, String logo, String logoDark, boolean login, boolean inProgressOnly) {

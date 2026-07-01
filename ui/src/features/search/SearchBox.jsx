@@ -58,9 +58,9 @@ const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }
       }
     };
 
-    const blur = () => textInput && textInput.current && textInput.current.blur();
+    //const blur = () => textInput && textInput.current && textInput.current.blur();
     window.addEventListener('popstate', popstateHandler, false);
-    window.addEventListener('scroll', blur);
+    //window.addEventListener('scroll', blur);
 
     const initialQuery = getQueryFromUrl();
     if (initialQuery) {
@@ -69,7 +69,7 @@ const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }
     textInput && textInput.current.focus();
     return () => {
       window.removeEventListener('popstate', popstateHandler);
-      window.removeEventListener('scroll', blur);
+      //window.removeEventListener('scroll', blur);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -133,7 +133,7 @@ const SearchBoxComponent = ({ queryString, isFloating, relatedElements, onQueryS
     <SearchBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onQueryStringChange={onQueryStringChange} />
 );
 
-const SearchBoxContainer = connect(
+const SearchBox = connect(
   (state, props) => ({
     isFloating: props.isFloating,
     relatedElements: props.relatedElements,
@@ -146,12 +146,12 @@ const SearchBoxContainer = connect(
   })
 )(SearchBoxComponent);
 
-const SearchBox = withFloatingScrollEventsSubscription(
-  'top',
-  [
-    { querySelector: 'nav.kgs-navbar' },
-    { querySelector: '.kgs-notification' }
-  ]
-)(SearchBoxContainer);
+// withFloatingScrollEventsSubscription(
+//   'top',
+//   [
+//     { querySelector: 'nav.kgs-navbar' },
+//     { querySelector: '.kgs-notification' }
+//   ]
+// )(SearchBoxContainer);
 
 export default SearchBox;

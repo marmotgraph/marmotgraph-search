@@ -131,9 +131,9 @@ const getTags = (groupLabel, isDefaultGroup, category) => {
   // if (!isDefaultGroup && groupLabel) {
   //   tags.push(groupLabel);
   // }
-  if (category) {
-    tags.push(category);
-  }
+    // if (category) {
+    //   tags.push(category);
+    // }
   return tags;
 };
 
