@@ -35,7 +35,8 @@ export class Item extends React.PureComponent {
 
   handleKeyDown = e => {
     const { item, onClick } = this.props;
-    if (e.keyCode === 13 && typeof onClick === 'function') {
+    if ((e.key === 'Enter' || e.key === ' ') && typeof onClick === 'function') {
+      e.preventDefault();
       e.stopPropagation();
       onClick(item);
     }
@@ -58,8 +59,24 @@ export class Item extends React.PureComponent {
 
   render() {
     const { ItemComponent, item } = this.props;
+    const isCheckboxItem = typeof item.checked === 'boolean' && item.label;
+    const interactiveProps = isCheckboxItem
+      ? {
+        role: 'checkbox',
+        'aria-checked': item.checked,
+        'aria-label': item.label,
+      }
+      : {};
+
     return (
-      <div className="kgs-list-item" tabIndex="0" ref={ref => this.ref = ref} onClick={this.handleClick} onKeyDown={this.handleKeyDown} >
+      <div
+        className="kgs-list-item"
+        tabIndex="0"
+        ref={ref => this.ref = ref}
+        onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
+        {...interactiveProps}
+      >
         <ItemComponent item={item} />
       </div>
     );

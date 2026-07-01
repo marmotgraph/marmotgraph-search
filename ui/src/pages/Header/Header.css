@@ -69,7 +69,11 @@
 }
   
 .kgs-navbar.navbar-light .navbar-brand {
-    padding: 25px 0 0 26px;
+    padding: 30px 0 0 26px;
+
+    span {
+        font-size: 24px;
+    }
 }
 
 .kgs-navbar.navbar-light .navbar-toggler {

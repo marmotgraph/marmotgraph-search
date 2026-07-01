@@ -21,30 +21,22 @@
  *
  */
 
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {setCursor} from './searchSlice';
 
-import './Pagination.css';
+import CopyToClipboardButton from '../../../components/CopyToClipboard/CopyToClipboardButton';
 
-const PaginationComponent = ({}) => {
-  const hits = useSelector(state => state.search.hits);
-  const hitCount = useSelector(state => state.search.total ? state.search.total : 0);
+import './SearchShareLink.css';
 
-  const dispatch = useDispatch();
-  const handleClick = () => {
-    dispatch(setCursor(hits.at(-1)["cursor"]));
-  };
-  if(!Array.isArray(hits) || hits.length>=hitCount){
-    return null;
-  }
-  return (
-    <div className="kgs-paging">
-      <button type="button" className="kgs-paging__button" onClick={handleClick}>
-        Show more
-      </button>
-    </div>
-  );
-}
+const SearchShareLink = () => (
+  <CopyToClipboardButton
+    className="kgs-search-share-link"
+    icon={faLink}
+    text="Copy search link"
+    title="Copy search link to clipboard"
+    confirmationText="Link copied"
+    content={window.location.href}
+  />
+);
 
-export default PaginationComponent;
+export default SearchShareLink;

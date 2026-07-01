@@ -35,7 +35,7 @@
   gap: 6px;
   max-width: 100%;
   padding: 2px 8px 2px 6px;
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--badge-accent) 30%, #E2E8EE);
   background: #fff;
   color: var(--color-8, #333);
@@ -51,7 +51,7 @@
   height: 9px;
   border-radius: 50%;
   background-color: var(--badge-accent);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+  /*box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);*/
 }
 
 .kgs-badge__label {

@@ -69,6 +69,10 @@
     }
 }
 
+.kgs-hits > ul > li:last-child {
+    margin-bottom: 0;
+}
+
 @media (min-width: 1450px) {
     .kgs-hits > ul {
         margin: 0 0 25px 0;

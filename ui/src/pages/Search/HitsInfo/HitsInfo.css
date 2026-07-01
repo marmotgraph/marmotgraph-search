@@ -21,9 +21,21 @@
  *
  */
 
+.kgs-search-results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px 16px;
+    margin: 8px 0 10px;
+}
+
+.kgs-search-results-header__info {
+    flex: 1;
+    min-width: 0;
+}
+
 .kgs-hitsInfos {
     display: block;
-    margin: 8px 0 10px;
     font-size: 14px;
     color: var(--color-15);
     line-height: 1.4;
@@ -51,8 +63,11 @@
     font-variant-numeric: tabular-nums;
 }
 
-body[profile="ebrains"] .kgs-hitsInfos {
+body[profile="ebrains"] .kgs-search-results-header {
     margin: 6px 0 8px;
+}
+
+body[profile="ebrains"] .kgs-hitsInfos {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
     font-family: var(--font-plexsans), serif;
@@ -96,7 +111,7 @@ body[profile="ebrains"] .kgs-hitsInfos-viewing .kgs-hitsInfos-highlight {
 }
 
 @media (min-width: 576px) {
-    .kgs-hitsInfos {
+    .kgs-search-results-header {
         margin: 10px 0 12px;
     }
 }

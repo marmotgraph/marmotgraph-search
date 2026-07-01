@@ -21,138 +21,131 @@
  *
  */
 
-import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
-import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useId, useMemo, useState } from 'react';
 
 import { List } from '../List/List';
 
 import './FilteredList.css';
 
-export class FilteredList extends React.Component {
+export const FilteredList = ({
+  label,
+  items,
+  ItemComponent,
+  itemUniqKeyAttribute,
+  onItemClick,
+}) => {
+  const [filter, setFilter] = useState('');
+  const searchId = useId();
+  const listId = useId();
+  const statusId = useId();
 
-  constructor(props) {
-    super(props);
-    this.state = { filter: '', hasFocus: false, selectedItems: [], options: [], focusedOption: null };
-  }
+  const selectedCount = useMemo(
+    () => items.filter(item => item.checked).length,
+    [items]
+  );
 
-  handleInputKeyStrokes = e => {
-    if (e.keyCode === 40) {
-      e.preventDefault();
-      const options = this.state.options;
-      const index = options.indexOf(this.state.focusedOption);
-      const next = (index !== -1 && index < options.length - 1) ? options[index + 1] : options[0];
-      this.setState({focusedOption: next});
-    } else if (e.keyCode === 38) {
-      e.preventDefault();
-      const options = this.state.options;
-      const index = options.indexOf(this.state.focusedOption);
-      const previous = index > 0 ? options[index - 1] : options[options.length - 1];
-      this.setState({focusedOption: previous});
-    } else if (e.keyCode === 27 || e.keyCode === 9) {
-      //escape or tab key -> we want to close the dropdown menu
-      this.closeDropdown();
+  const visibleItems = useMemo(() => {
+    const term = filter.toLowerCase().trim();
+    const filtered = term
+      ? items.filter(item => item.value && item.value.toLowerCase().includes(term))
+      : items;
+
+    if (!term) {
+      return [...filtered].sort((a, b) => Number(b.checked) - Number(a.checked));
+    }
+
+    return filtered;
+  }, [items, filter]);
+
+  const statusMessage = useMemo(() => {
+    const term = filter.trim();
+
+    if (term && visibleItems.length === 0) {
+      return `No ${label.toLowerCase()} match "${filter}".`;
+    }
+
+    if (term) {
+      const countLabel = visibleItems.length === 1 ? 'option' : 'options';
+      return `${visibleItems.length} ${countLabel} shown for "${filter}".`;
+    }
+
+    if (selectedCount > 0) {
+      const countLabel = selectedCount === 1 ? 'filter' : 'filters';
+      return `${selectedCount} ${countLabel} selected.`;
+    }
+
+    return `${items.length} options.`;
+  }, [filter, visibleItems.length, label, selectedCount, items.length]);
+
+  const handleSearchKeyDown = event => {
+    if (event.key === 'Escape') {
+      setFilter('');
+      event.currentTarget.blur();
     }
   };
 
-  handleChangeUserInput = e => {
-    this.setState({ filter: e.target.value });
-  };
-
-  handleFocus = () => {
-    this.listenClickOutHandler();
-    this.setState({ hasFocus: true });
-  };
-
-  handleItemClick = item => {
-    this.props.onItemClick && this.props.onItemClick(item);
-    this.closeDropdown();
-  };
-
-  closeDropdown() {
-    this.unlistenClickOutHandler();
-    this.wrapperRef = null;
-    this.setState({ filter: '', hasFocus: false });
+  if (!Array.isArray(items) || !items.length) {
+    return null;
   }
 
-  clickOutHandler = e => {
-    if (!this.wrapperRef || !this.wrapperRef.contains(e.target)) {
-      this.closeDropdown();
-    }
-  };
-
-  listenClickOutHandler() {
-    window.addEventListener('mouseup', this.clickOutHandler, false);
-    window.addEventListener('touchend', this.clickOutHandler, false);
-    window.addEventListener('keyup', this.clickOutHandler, false);
-  }
-
-  unlistenClickOutHandler() {
-    window.removeEventListener('mouseup', this.clickOutHandler, false);
-    window.removeEventListener('touchend', this.clickOutHandler, false);
-    window.removeEventListener('keyup', this.clickOutHandler, false);
-  }
-
-  componentWillUnmount() {
-    this.unlistenClickOutHandler();
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { items } = nextProps;
-
-    const selectedItems = [];
-    const options = [];
-    items.forEach(e => {
-      if (e.checked) {
-        selectedItems.push(e);
-      } else {
-        options.push(e);
-      }
-    });
-
-    const filter = prevState.filter.toLowerCase().trim();
-    const filteredOptions = filter?options.filter(e => e.value && e.value.toLowerCase().includes(filter)):options;
-    return {
-      filter: prevState.filter,
-      hasFocus: prevState.hasFocus,
-      selectedItems: selectedItems,
-      options: filteredOptions,
-      focusedOption: prevState.focusedOption
-    };
-  }
-
-  render() {
-    const { label, ItemComponent, itemUniqKeyAttribute, onItemClick } = this.props;
-    const { filter, selectedItems, options, focusedOption } = this.state;
-
-    const dropdownOpen = this.wrapperRef && this.wrapperRef.contains(document.activeElement);
-
-    const dropdownStyle = this.inputRef ? { top: this.inputRef.offsetHeight + 'px' } : {};
-
-    return (
-      <div className="kgs-filtered-list" ref={ref => this.wrapperRef = ref}>
-        <div className="kgs-filtered-list_filter" >
-          <input className="kgs-filtered-list_input"
-            ref={ref => this.inputRef = ref} type="text"
-            onKeyDown={this.handleInputKeyStrokes}
-            onChange={this.handleChangeUserInput}
-            onFocus={this.handleFocus}
+  return (
+    <div className="kgs-filtered-list">
+      <div className="kgs-filtered-list__search">
+        <label className="kgs-filtered-list__label" htmlFor={searchId}>
+          Filter {label.toLowerCase()}
+        </label>
+        <div className="kgs-filtered-list__search-field">
+          <input
+            id={searchId}
+            className="kgs-filtered-list__input"
+            type="search"
             value={filter}
-            placeholder={(!dropdownOpen) ? `Filter ${label.toLowerCase()}` : ''} />
-          <FontAwesomeIcon icon={faSearch} className="kgs-filtered-facet_filter_icon" />
-          <FontAwesomeIcon icon={faChevronDown} className="kgs-filtered-facet_filter_dropdown_icon"/>
-          <input style={{ display: 'none' }} type="text" ref={ref => this.hiddenInputRef = ref} />
+            onChange={event => setFilter(event.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            placeholder={`Search ${label.toLowerCase()}…`}
+            aria-controls={listId}
+            aria-describedby={statusId}
+            autoComplete="off"
+            spellCheck={false}
+          />
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="kgs-filtered-list__search-icon"
+            aria-hidden="true"
+          />
         </div>
-        {dropdownOpen && (!!options.length || filter) && (
-          <div className={`kgs-filtered-list_dropdown ${dropdownOpen ? 'is-open' : ''}`} style={dropdownStyle} onKeyDown={this.handleInputKeyStrokes} >
-            <List items={options} currentItem={focusedOption} ItemComponent={ItemComponent} itemUniqKeyAttribute={itemUniqKeyAttribute} onItemClick={this.handleItemClick} />
-          </div>
-        )}
-        <List items={selectedItems} ItemComponent={ItemComponent} itemUniqKeyAttribute={itemUniqKeyAttribute} onItemClick={onItemClick} />
       </div>
-    );
-  }
-}
+
+      <div
+        id={statusId}
+        className="kgs-filtered-list__status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {statusMessage}
+      </div>
+
+      {visibleItems.length > 0 ? (
+        <div
+          id={listId}
+          className="kgs-filtered-list__options"
+          role="group"
+          aria-label={label}
+        >
+          <List
+            items={visibleItems}
+            ItemComponent={ItemComponent}
+            itemUniqKeyAttribute={itemUniqKeyAttribute}
+            onItemClick={onItemClick}
+          />
+        </div>
+      ) : (
+        <p className="kgs-filtered-list__empty">No matching options.</p>
+      )}
+    </div>
+  );
+};
 
 export default FilteredList;

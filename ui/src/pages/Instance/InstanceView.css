@@ -120,6 +120,6 @@ button.kgs-instance-link {
     right: var(--site-margin);
 }
 
-.kgs-instance-container .kgs-footer .kgs-select select {
+.kgs-instance-container .kgs-search-results-footer .kgs-select select {
     background-color: var(--background-color-1);
 }

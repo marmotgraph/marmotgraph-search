@@ -44,8 +44,12 @@ const formatCount = count => {
 };
 
 const FacetCheckbox = ({ item: { label, count, checked, hasAnyChildChecked } }) => (
-  <div className={`kgs-facet-checkbox ${checked ? 'is-active' : ''}  ${hasAnyChildChecked ? 'has-any-child-active' : ''}`}>
-    <input type="checkbox" tabIndex="-1" name={label}/><Icon checked={checked} hasAnyChildChecked={hasAnyChildChecked} />
+  <div
+    className={`kgs-facet-checkbox ${checked ? 'is-active' : ''}  ${hasAnyChildChecked ? 'has-any-child-active' : ''}`}
+    aria-hidden="true"
+  >
+    <input type="checkbox" tabIndex="-1" readOnly checked={checked} aria-hidden="true" />
+    <Icon checked={checked} hasAnyChildChecked={hasAnyChildChecked} />
     <div className="kgs-facet-checkbox__text">{label}</div>
     {count !== undefined && (
       <div className="kgs-facet-checkbox__count">{formatCount(count)}</div>

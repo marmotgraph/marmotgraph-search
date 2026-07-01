@@ -27,18 +27,24 @@
 
 .kgs-field button[role="link"].kgs-field__viewMore-button {
     -webkit-appearance: none;
-    margin: 0 0 0 20px;
+    display: inline-block;
+    margin: 6px 0 0 4px;
     padding: 0;
     border: 0;
-    background-color: transparent;
+    background: transparent;
+    color: var(--link-highlight-color, #2563EB);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
     text-decoration: none;
-    font-size: var(--font-size-smaller);
-    color: var(--link-color-1);
+    cursor: pointer;
 }
 
-.kgs-field button[role="link"].kgs-field__viewMore-button:hover {
-    text-decoration: none;
-    color: var(--link-color-active);
+.kgs-field button[role="link"].kgs-field__viewMore-button:hover,
+.kgs-field button[role="link"].kgs-field__viewMore-button:focus {
+    color: var(--color-37, #1D4ED8);
+    outline: none;
+    text-decoration: underline;
 }
 
 .kgs-field .kgs-field__list > ul > li > .field-value {

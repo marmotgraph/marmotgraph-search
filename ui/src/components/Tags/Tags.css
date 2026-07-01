@@ -28,7 +28,12 @@
      align-items: start;
      gap: 6px;
      padding: 7px 14px;
-     border-top: 1px solid #F0F4F8;
+ }
+
+.kgs-hit__content .kgs-tags {
+    border-top: 0;
+    padding: 10px 0 0;
+    margin-top: 2px;
 }
 
 .kgs-tags .kgs-tag {
@@ -49,6 +54,7 @@
     border-color: #93C5FD;
     color: #1A4E8A;
     text-decoration: none !important;
+}
 
 body[profile="ebrains"] .kgs-tags .kgs-tag {
     background: none;

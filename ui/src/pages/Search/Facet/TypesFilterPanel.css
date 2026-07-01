@@ -21,65 +21,90 @@
  *
  */
 
-
-.kgs-fieldsFilter {
-    width: 100%;
+.kgs-facet--categories {
     flex-shrink: 0;
-    background-color: var(--filters-types-bg, var(--filters-column-bg, var(--background-color-2)));
-    padding: var(--filters-types-padding, 15px);
-    border-radius: var(--filters-types-radius, var(--border-radius-1));
+    border-bottom: 0;
+    background: var(--filters-categories-bg, #F8FAFC);
+    border: var(--filters-categories-border, 1px solid #E2E8F0);
+    border-radius: var(--filters-categories-radius, 8px);
+    box-shadow: var(--filters-categories-shadow, none);
+    overflow: hidden;
 }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-title {
-    margin-bottom: 10px;
-    color: var(--color-15);
-    font-size: var(--font-size-big);
-    font-weight: bold;
-    text-transform: uppercase;
+.kgs-facet--categories .kgs-facet__header {
+    padding: var(--filters-categories-header-padding, 14px 16px);
+    background: transparent;
 }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox {
+.kgs-facet--categories__header-bar {
     display: flex;
-    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-right: 16px;
+}
+
+.kgs-facet--categories__toggle {
+    flex: 1;
+    min-width: 0;
+}
+
+.kgs-facet--categories__header-actions {
+    flex-shrink: 0;
+    padding-right: 0;
+}
+
+.kgs-facet--categories__chevron-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
-    padding: 5px 5px;
-    border-radius: 5px;
-    line-height: 22px;
-    font-weight: 300;
+    color: inherit;
 }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox:hover {
-    background-color: rgb(249, 250, 251);
+.kgs-facet--categories__chevron-button:hover,
+.kgs-facet--categories__chevron-button:focus {
+    outline: none;
 }
 
-.kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active {
-    /*background-color: var(--color-selected);*/
-    background-color: rgb(243, 244, 246);
+.kgs-facet--categories__reset-button {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--filters-panel-reset-color, var(--link-highlight-color, #2563EB));
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__text {
-        flex: auto;
-        color: var(--color-8);
-        font-size: var(--font-size);
-    }
+.kgs-facet--categories__reset-button:hover,
+.kgs-facet--categories__reset-button:focus {
+    color: var(--color-37, #1D4ED8);
+    outline: none;
+    text-decoration: underline;
+}
 
-    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__text {
-        font-weight: bold;
-        font-size: var(--font-size);
-    }
+.kgs-facet--categories .kgs-facet__header:hover,
+.kgs-facet--categories .kgs-facet__header:focus {
+    background: rgba(255, 255, 255, 0.55);
+}
 
-    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox .kgs-fieldsFilter-checkbox__count {
-        display: inline-block;
-        min-width: 36px;
-        max-height: 28px;
-        /*background-color: var(--background-color-1);*/
-        color: var(--color-10);
-        font-size: var(--font-size-small);
-        text-align: center;
-    }
+.kgs-facet--categories .kgs-facet__title {
+    color: var(--filters-categories-title-color, #1E293B);
+    font-size: var(--filters-categories-title-size, 15px);
+    font-weight: var(--filters-categories-title-weight, 700);
+    letter-spacing: -0.01em;
+}
 
-    .kgs-fieldsFilter .kgs-fieldsFilter-checkbox.is-active .kgs-fieldsFilter-checkbox__count {
-        font-weight: bold;
-        font-size: var(--font-size);
-        /*background-color: var(--color-selected);*/
-    }
+body[profile="ebrains"] .kgs-facet--categories .kgs-facet__title {
+    font-family: var(--font-plexsans), serif;
+    font-size: var(--text-base);
+}

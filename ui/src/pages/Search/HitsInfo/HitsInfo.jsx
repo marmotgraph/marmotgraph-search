@@ -27,6 +27,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setQueryString } from '../../../features/search/searchSlice';
 import Matomo from '../../../services/Matomo';
+import SearchShareLink from '../SearchShareLink/SearchShareLink';
 
 import './HitsInfo.css';
 
@@ -98,29 +99,36 @@ const HitsInfo = () => {
   if (isFetching && hitCount === 0) {
     return null;
   }
+
+  let info = null;
+
   if (message) {
-    return (
-      <span className="kgs-hitsInfos">{message}</span>
+    info = <span className="kgs-hitsInfos">{message}</span>;
+  } else if (Object.keys(suggestions).length > 0) {
+    info = (
+      <span className="kgs-hitsInfos">
+        {hitCount === 0
+          ? 'No results were found. '
+          : <Viewing hitCount={hitCount} count={count} />}
+        <br />
+        Did you mean <Suggestions words={suggestions} />?
+      </span>
+    );
+  } else if (hitCount === 0) {
+    info = (
+      <span className="kgs-hitsInfos">No results were found. Please refine your search.</span>
+    );
+  } else {
+    info = (
+      <span className="kgs-hitsInfos"><Viewing hitCount={hitCount} count={count} /></span>
     );
   }
 
-  if (Object.keys(suggestions).length>0) {
-    return (
-      <span className="kgs-hitsInfos">
-        {hitCount === 0?
-          'No results were found. '
-          :
-          <Viewing hitCount={hitCount} count={count} />
-        }<br/>Did you mean <Suggestions words={suggestions} />?</span>
-    );
-  }
-  if (hitCount === 0) {
-    return (
-      <span className="kgs-hitsInfos">No results were found. Please refine your search.</span>
-    );
-  }
   return (
-    <span className="kgs-hitsInfos"><Viewing hitCount={hitCount} count={count} /></span>
+    <div className="kgs-search-results-header">
+      <div className="kgs-search-results-header__info">{info}</div>
+      <SearchShareLink />
+    </div>
   );
 };
 

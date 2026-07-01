@@ -21,67 +21,114 @@
  *
  */
 
-import React from 'react';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import FacetCheckbox from '../../../components/Facet/FacetCheckbox';
+import '../../../components/Facet/Facet.css';
+import { List } from '../../../components/List/List';
 import { toggleCategory, clearCategories } from '../../../features/search/searchSlice';
+
 import './TypesFilterPanel.css';
-
-const formatCount = count => {
-  const value = Number(count);
-  return Number.isFinite(value) ? value.toLocaleString() : count;
-};
-
-const TypeFilter = ({ type }) => {
-
-  const dispatch = useDispatch();
-
-  const handleOnClick = () => {
-    if(type.type === ""){
-      dispatch(clearCategories());
-    }
-    else {
-      dispatch(toggleCategory(type.type));
-    }
-  };
-
-  return (
-    <div
-      className={`kgs-fieldsFilter-checkbox ${type.active ? 'is-active' : ''}`}
-      onClick={handleOnClick}
-      role="checkbox"
-      aria-checked={type.active}
-      tabIndex={0}
-      onKeyDown={event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          handleOnClick();
-        }
-      }}
-    >
-      <div className="kgs-fieldsFilter-checkbox__text">{type.label}</div>
-      <div className="kgs-fieldsFilter-checkbox__count">{formatCount(type.count)}</div>
-    </div>
-  );
-};
 
 const TypesFilterPanel = () => {
 
+  const dispatch = useDispatch();
   const selectedTypes = useSelector(state => state.search.selectedTypes);
-  const types = useSelector(state => state.search.types
-    .map(t => ({
-      ...t,
-      active: (t.type === "" && selectedTypes.length===0) || selectedTypes.includes(t.type)
-    }))
-  );
+  const types = useSelector(state => state.search.types);
+  const selectionCount = selectedTypes.length;
 
+  const [collapsed, setCollapsed] = useState(selectionCount === 0);
+
+  useEffect(() => {
+    if (selectionCount > 0) {
+      setCollapsed(false);
+    }
+  }, [selectionCount]);
+
+  const items = useMemo(() => (
+    types.map(type => ({
+      type: type.type,
+      label: type.label,
+      count: type.count,
+      checked: (type.type === '' && selectedTypes.length === 0) || selectedTypes.includes(type.type),
+    }))
+  ), [types, selectedTypes]);
+
+  const handleTypeClick = useCallback(item => {
+    if (item.type === '') {
+      dispatch(clearCategories());
+    } else {
+      dispatch(toggleCategory(item.type));
+    }
+  }, [dispatch]);
+
+  const handleClearAll = useCallback(event => {
+    event.stopPropagation();
+    dispatch(clearCategories());
+  }, [dispatch]);
+
+  if (!items.length) {
+    return null;
+  }
 
   return (
-    <div className="kgs-fieldsFilter" >
-      <div className="kgs-fieldsFilter-title" >Categories</div>
-      {types.map(type => {
-          return <TypeFilter key={type.type} type={type}/>
-        }
+    <div className={`kgs-facet kgs-facet--categories${collapsed ? ' is-collapsed' : ' is-expanded'}`}>
+      <div className="kgs-facet--categories__header-bar">
+        <button
+          type="button"
+          className="kgs-facet__header kgs-facet--categories__toggle"
+          onClick={() => setCollapsed(current => !current)}
+          aria-expanded={!collapsed}
+          aria-controls="types-filter-options"
+          id="types-filter-heading"
+        >
+          <span className="kgs-facet__title">Categories</span>
+        </button>
+        <div className="kgs-facet__header-actions kgs-facet--categories__header-actions">
+          {selectionCount > 0 && (
+            <button
+              type="button"
+              className="kgs-facet--categories__reset-button"
+              onClick={handleClearAll}
+              aria-label="Clear all categories"
+            >
+              Clear all
+            </button>
+          )}
+          {selectionCount > 0 && (
+            <span className="kgs-facet__badge" aria-label={`${selectionCount} selected`}>
+              {selectionCount}
+            </span>
+          )}
+          <button
+            type="button"
+            className="kgs-facet--categories__chevron-button"
+            onClick={() => setCollapsed(current => !current)}
+            aria-expanded={!collapsed}
+            aria-controls="types-filter-options"
+            aria-label={collapsed ? 'Expand categories' : 'Collapse categories'}
+          >
+            <FontAwesomeIcon icon={faChevronDown} className="kgs-facet__chevron" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+      {!collapsed && (
+        <div
+          id="types-filter-options"
+          className="kgs-facet__body"
+          role="group"
+          aria-labelledby="types-filter-heading"
+        >
+          <List
+            items={items}
+            ItemComponent={FacetCheckbox}
+            itemUniqKeyAttribute="type"
+            onItemClick={handleTypeClick}
+          />
+        </div>
       )}
     </div>
   );

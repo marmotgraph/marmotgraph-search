@@ -1,0 +1,35 @@
+.kgs-search-share-link {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.kgs-search-share-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: var(--link-highlight-color, #2563EB);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.kgs-search-share-link a:hover,
+.kgs-search-share-link a:focus {
+    color: var(--color-37, #1D4ED8);
+    outline: none;
+    text-decoration: underline;
+}
+
+.kgs-search-share-link .kgs-copy-confirmation {
+    right: 0;
+    left: auto;
+    margin-left: 0;
+    width: auto;
+    min-width: 6rem;
+}

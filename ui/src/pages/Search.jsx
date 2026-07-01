@@ -44,6 +44,7 @@ import {
   searchToObj
 } from '../helpers/BrowserHelpers';
 import { getAggregation } from '../helpers/Facets';
+import useFiltersColumnLayout from '../hooks/useFiltersColumnLayout';
 import { withTabKeyNavigation } from '../helpers/withTabKeyNavigation';
 import Matomo from '../services/Matomo';
 import {
@@ -54,7 +55,7 @@ import {
 import Detail from './Search/Detail/Detail';
 import FiltersPanel from './Search/Facet/FiltersPanel';
 import TypesFilterPanel from './Search/Facet/TypesFilterPanel';
-import Footer from './Search/Footer/Footer';
+import SearchResultsFooter from './Search/SearchResultsFooter/SearchResultsFooter';
 import Hits from './Search/Hit/Hits';
 import HitsInfo from './Search/HitsInfo/HitsInfo';
 import SearchFetching from './Search/SearchFetching';
@@ -169,6 +170,7 @@ const SearchBase = () => {
   const initializedRef = useRef(false);
   const locationSearchRef = useRef(null);
   const newLocationSearchRef = useRef(null);
+  const searchLayoutRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -178,6 +180,7 @@ const SearchBase = () => {
   const isActive = useSelector(
     state => !state.instance.instanceId && !state.application.info
   );
+  useFiltersColumnLayout(searchLayoutRef, isActive);
   const isInitialized = useSelector(state => state.search.isInitialized);
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
@@ -337,10 +340,11 @@ const SearchBase = () => {
   return (
     <>
       <div className="kgs-search-container">
-        <div className="kgs-search">
+        <div className="kgs-search" ref={searchLayoutRef}>
           <SearchBox />
           <TermsShortNotice className="kgs-search__terms-short-notice" />
           <div className="kgs-search__panel">
+            <div className="kgs-search__filters-bg" aria-hidden="true" />
             <div className="kgs-search__filters">
               <TypesFilterPanel />
               <FiltersPanel />
@@ -350,9 +354,9 @@ const SearchBase = () => {
               <SelectedFilters />
               <Hits />
               <KnowledgeSpaceLink />
+              <SearchResultsFooter />
             </div>
           </div>
-          <Footer />
         </div>
         <Detail />
       </div>
