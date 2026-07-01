@@ -39,6 +39,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +57,7 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
 
     public static final class DontIndexException extends Exception{}
 
-    public final Target translate(SourceInstance source, DataStage dataStage, String category, Class<?> targetType, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException{
+    public Target translate(SourceInstance source, DataStage dataStage, String category, Class<?> targetType, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException{
         Target t = setup(category, (Source)source, (Class<Target>)targetType, translatorUtils);
         try {
             translate((Source) source, t, dataStage, liveMode, translatorUtils);
@@ -71,7 +72,9 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
         try {
             Target target = null;
             target = targetType.getConstructor().newInstance();
-            target.setType(new Value<>(translatorUtils.getSimpleTypeName().orElse(category)));
+            ArrayList<Value<String>> types = new ArrayList<>();
+            types.add(new Value<>(translatorUtils.getSimpleTypeName().orElse(category)));
+            target.setType(types);
             target.setCategory(translatorUtils.isFirstCitizen() ? new Value<>(category) : new Value<>("Others"));
             target.setMappingKey(category);
             target.setId(IdUtils.getUUID(sourceEntity.getId()));

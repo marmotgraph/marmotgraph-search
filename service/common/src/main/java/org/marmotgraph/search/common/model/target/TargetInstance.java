@@ -53,7 +53,7 @@ public abstract class TargetInstance {
     private List<String> allIdentifiers;
 
     @ElasticSearchInfo(type = "keyword")
-    private Value<String> type;
+    private List<Value<String>> type;
 
     @FieldInfo(ignoreForSearch = true, visible = false)
     private String id;

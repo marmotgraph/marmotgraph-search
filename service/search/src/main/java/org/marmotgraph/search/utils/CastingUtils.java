@@ -24,11 +24,13 @@
 
 package org.marmotgraph.search.utils;
 
+import org.marmotgraph.search.common.model.target.Value;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class CastingUtils {
     public static String getStringField(Map<String, Object> source, String fieldName) {
@@ -103,6 +105,14 @@ public class CastingUtils {
             }
         }
         return null;
+    }
+
+    public static List<String> getStringListField(Map<String, Object> source, String fieldName) {
+        List<Object> listField = getListField(source, fieldName);
+        if (!CollectionUtils.isEmpty(listField)) {
+            return listField.stream().filter(f -> f instanceof Map && ((Map)f).containsKey("value")).map(f -> ((Map<?,?>)f).get("value")).filter(f -> f instanceof String).map(f -> (String)f).toList();
+        }
+        return Collections.emptyList();
     }
 
     public static List<Object> getListField(Map<String, Object> source, String fieldName) {

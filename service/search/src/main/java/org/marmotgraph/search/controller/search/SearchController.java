@@ -377,7 +377,7 @@ public class SearchController extends FacetAggregationUtils {
         }
 
         Map<String, Object> source = doc.getSource();
-        String type = CastingUtils.getStringValueField(source, "type");
+        List<String> type = CastingUtils.getStringListField(source, "type");
         Map<String, Object> res = new HashMap<>();
         res.put("id", source.get("id"));
         res.put("type", type);
@@ -418,7 +418,7 @@ public class SearchController extends FacetAggregationUtils {
             res.put("previews", previews);
         }
 
-        List<String> fieldNames = getDocumentFieldNames(type);
+        List<String> fieldNames = getDocumentFieldNames(type.getFirst());
         res.put("fields", getFields(source, fieldNames));
         return res;
     }
@@ -482,8 +482,8 @@ public class SearchController extends FacetAggregationUtils {
         }
         Map<String, Object> res = new HashMap<>();
         res.put("id", v.getId());
-        if (v.getType() != null && StringUtils.isNotBlank(v.getType().getValue())) {
-            res.put("type", v.getType().getValue());
+        if (v.getType() != null) {
+            res.put("type", v.getType());
         }
         if (v.getCategory() != null && StringUtils.isNotBlank(v.getCategory().getValue())) {
             res.put("category", v.getCategory().getValue());
