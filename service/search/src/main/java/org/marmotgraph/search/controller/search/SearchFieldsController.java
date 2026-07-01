@@ -61,7 +61,7 @@ public class SearchFieldsController {
     @Cacheable(value = "highlight", key = "#type")
     public List<String> getHighlight(String type) {
         if (StringUtils.isNotBlank(type)) {
-            Type targetModel = utils.getTypeTargetClass(type);
+            Type targetModel = utils.getTargetClassForCategory(type);
             if (targetModel != null) {
                 return getFieldsHighlight(targetModel);
             }
@@ -98,10 +98,10 @@ public class SearchFieldsController {
         return null;
     }
 
-    @Cacheable(value = "suggestFields", key = "#type")
-    public List<String> getSuggestionFields(String type) {
+    @Cacheable(value = "suggestFields", key = "#category")
+    public List<String> getSuggestionFields(String category) {
         Map<String, Double> fieldsWithBoost = new HashMap<>();
-        final Class<?> classForType = utils.getClassForType(type);
+        final Class<?> classForType = utils.getClassForType(category);
         if (classForType != null) {
             reflectFields(fieldsWithBoost, classForType, FieldInfo::useForSuggestion);
         }

@@ -27,14 +27,23 @@ package org.marmotgraph.search.common.controller.kg;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.services.KGServiceClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 @Component
-public class KG  {
+public class KG {
     private final KGServiceClient kgServiceClient;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public KG(KGServiceClient kgServiceClient) {
         this.kgServiceClient = kgServiceClient;
@@ -48,18 +57,69 @@ public class KG  {
         return kgServiceClient.executeQueryForInstance(clazz, dataStage, queryId, id, semanticType, asServiceAccount);
     }
 
-    public Set<UUID> getInvitationsFromKG(){
+    public Set<UUID> getInvitationsFromKG() {
         //TODO can we cache this?
         return kgServiceClient.getInvitationsFromKG();
     }
 
-    public void persistBadges(String type, Map<String, Object> badges){
+    public void persistBadges(String type, Map<String, Object> badges) {
         kgServiceClient.persistBadges(type, badges);
     }
 
+    public static class KGTypeInformation implements Serializable {
+        private final List<KGServiceClient.TypeInformationItem> typeInformationItems;
+        private Map<String, KGServiceClient.TypeInformationItem> semanticTypeLookup;
+        private Map<String, KGServiceClient.TypeInformationItem> simpleTypeLookup;
 
-    public List<Map<?,?>> getTypeInformation(DataStage stage){
-        return kgServiceClient.getTypeInformation(stage);
+        public KGTypeInformation(List<KGServiceClient.TypeInformationItem> typeInformationItems) {
+            this.typeInformationItems = typeInformationItems;
+
+        }
+
+        public Optional<String> getSimpleName(String semanticName) {
+            return getTypeInformationBySemanticName(semanticName).map(KGServiceClient.TypeInformationItem::getName);
+        }
+
+        public Optional<String> getSemanticName(String simpleName) {
+            return getTypeInformationBySimpleName(simpleName).map(KGServiceClient.TypeInformationItem::getIdentifier);
+        }
+
+        public Optional<KGServiceClient.TypeInformationItem> getTypeInformationBySemanticName(String semanticName) {
+            if(semanticTypeLookup==null){
+                semanticTypeLookup = typeInformationItems.stream().collect(Collectors.toMap(KGServiceClient.TypeInformationItem::getIdentifier, v->v));
+            }
+            return Optional.ofNullable(semanticTypeLookup.getOrDefault(semanticName, null));
+        }
+
+        public Optional<KGServiceClient.TypeInformationItem> getTypeInformationBySimpleName(String simpleName) {
+            if(simpleTypeLookup==null){
+                simpleTypeLookup = typeInformationItems.stream().collect(Collectors.toMap(KGServiceClient.TypeInformationItem::getName, v->v));
+            }
+            return Optional.ofNullable(simpleTypeLookup.getOrDefault(simpleName, null));
+         }
+    }
+
+
+    @Cacheable(cacheNames = "typeInformation", key = "'info'")
+    public KGTypeInformation getTypeInformation() {
+        logger.info("Fetching type information from KG");
+        return new KGTypeInformation(kgServiceClient.getTypeInformation(DataStage.IN_PROGRESS));
+    }
+
+    @CachePut(cacheNames = "typeInformation", key = "'info'")
+    public KGTypeInformation refreshCache() {
+        List<KGServiceClient.TypeInformationItem> typeInformation = kgServiceClient.getTypeInformation(DataStage.IN_PROGRESS);
+        logger.info("Renew type information cache");
+        return new KGTypeInformation(typeInformation);
+    }
+
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    public void evictTypeInformationCache() {
+        try {
+            refreshCache();
+        } catch (Exception e) {
+            logger.warn("Failed to refresh type information cache. Keeping previous value", e);
+        }
     }
 
 
@@ -86,19 +146,19 @@ public class KG  {
         return Collections.emptyList();
     }
 
-    public void addBookmark(UUID id){
-       kgServiceClient.addBookmark(id);
+    public void addBookmark(UUID id) {
+        kgServiceClient.addBookmark(id);
     }
 
-    public void deleteBookmark(UUID id){
+    public void deleteBookmark(UUID id) {
         kgServiceClient.deleteBookmark(id);
     }
 
-    public List<UUID> getBookmarkIdsFromInstance(UUID id){
+    public List<UUID> getBookmarkIdsFromInstance(UUID id) {
         return kgServiceClient.getBookmarkIdsFromInstance(id);
     }
 
-    public List<UUID> getBookmarkedInstancesOfType(String type){
+    public List<UUID> getBookmarkedInstancesOfType(String type) {
         return kgServiceClient.getBookmarkedInstancesOfType(type);
     }
 }

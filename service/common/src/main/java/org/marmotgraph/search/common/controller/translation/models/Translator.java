@@ -71,11 +71,13 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
         try {
             Target target = null;
             target = targetType.getConstructor().newInstance();
-            target.setType(new Value<>(category));
-            target.setCategory(new Value<>(category));
+            target.setType(new Value<>(translatorUtils.getSimpleTypeName().orElse(category)));
+            target.setCategory(translatorUtils.isFirstCitizen() ? new Value<>(category) : new Value<>("Others"));
+            target.setMappingKey(category);
             target.setId(IdUtils.getUUID(sourceEntity.getId()));
             target.setAllIdentifiers(sourceEntity.getIdentifier());
             target.setIdentifier(Collections.singletonList(target.getId()));
+            target.setSemanticType(new Value<>(translatorUtils.getSemanticType()));
             return target;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);

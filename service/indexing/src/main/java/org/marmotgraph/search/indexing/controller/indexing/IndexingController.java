@@ -131,8 +131,9 @@ public class IndexingController {
         final Map<String, Object> translationContext = translator.populateTranslationContext(esServiceClient, esHelper, dataStage);
         final Integer trendThreshold = metricsController.getTrendThreshold(translatorModel.targetClass(), dataStage);
         final Set<String> existingIdentifiers = referenceResolver.loadAllExistingIdentifiers(dataStage);
-        translationContext.put(TranslatorUtils.TYPE_INFORMATION, kg.getTypeInformation(dataStage));
-        translatorModel.queryIds().forEach(queryId -> {
+        translatorModel.semanticTypes().forEach(semanticType -> {
+            String queryId = translatorModel.queryId(semanticType);
+            translationContext.put(TranslatorUtils.SEMANTIC_TYPE, semanticType);
             Integer lastTotal = null;
             boolean hasMore = true;
             int from = 0;

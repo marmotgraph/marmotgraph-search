@@ -76,10 +76,11 @@ public class TranslationController {
             if(instanceResults.getErrors() ==null){
                 instanceResults.setErrors(new ErrorReport());
             }
+            KG.KGTypeInformation typeInformation = kg.getTypeInformation();
             List<TargetInstance> instances = instanceResults.getData().stream().filter(Objects::nonNull).map(s -> {
                 try {
                     List<String> errors = new ArrayList<>();
-                    final TargetInstance r = translator.translate(s, dataStage, translatorModel.category(), translatorModel.targetClass(), false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper));
+                    final TargetInstance r = translator.translate(s, dataStage, translatorModel.category(), translatorModel.targetClass(), false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper, typeInformation, translatorModel.isFirstCitizen()));
                     if(!CollectionUtils.isEmpty(errors) && r != null) {
                         String id = IdUtils.getUUID(r.getId());
                         if (instanceResults.getErrors().get(id) != null) {
@@ -123,7 +124,7 @@ public class TranslationController {
             return null;
         }
         Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
-        return translator.translate(source, dataStage, translatorModel.category(), translatorModel.targetClass(), true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper));
+        return translator.translate(source, dataStage, translatorModel.category(), translatorModel.targetClass(), true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper, kg.getTypeInformation(), translatorModel.isFirstCitizen()));
     }
 
 

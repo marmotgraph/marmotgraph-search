@@ -24,6 +24,9 @@
 
 package org.marmotgraph.search.common.services;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.configuration.GracefulDeserializationProblemHandler;
 import org.marmotgraph.search.common.model.DataStage;
@@ -45,6 +48,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -310,16 +314,26 @@ public class KGServiceClient {
             return null;
         }
     }
+    @Getter
+    @Setter
+    public static class TypeInformationItem implements Serializable {
+        @JsonProperty("http://schema.org/name")
+        private String name;
+        @JsonProperty("http://schema.org/identifier")
+        private String identifier;
+        @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/color")
+        private String color;
+    }
 
-    public List<Map<?, ?>> getTypeInformation(DataStage dataStage) {
-        Map<?, ?> result = this.serviceAccountWebClient.get().uri(String.format("%s/types?stage=%s&reflect=false&returnTotalResults=false", kgCoreEndpoint, dataStage)).retrieve().bodyToMono(Map.class).block();
-        if (result != null) {
-            Object data = result.get("data");
-            if (data instanceof List) {
-                return (List<Map<?,?>>)data;
-            }
+
+    public static class TypeInformationResult extends ResultsOfKG<TypeInformationItem>{}
+
+    public List<TypeInformationItem> getTypeInformation(DataStage dataStage) {
+        TypeInformationResult result = this.serviceAccountWebClient.get().uri(String.format("%s/types?stage=%s&reflect=false&returnTotalResults=false", kgCoreEndpoint, dataStage)).retrieve().bodyToMono(TypeInformationResult.class).block();
+        if(result != null && result.getData()!=null) {
+            return result.getData();
         }
-        return Collections.emptyList();
+        throw new RuntimeException("Wasn't able to fetch type information from KG");
     }
 
     @SuppressWarnings("java:S3740")

@@ -32,6 +32,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -50,6 +53,7 @@ public class Facet {
     private Boolean isHierarchical = false;
     private Boolean isFilterable = false;
     private String missingTerm = "Others";
+    private boolean keyword = true;
 
     public Facet(String parentPath, String path, String property) {
         this.name = String.format("%s", FacetsUtils.getPath(path, property));
@@ -59,11 +63,22 @@ public class Facet {
     }
 
     public String getField(String path) {
-        return String.format("%s.value.keyword", path);
+        return String.format("%s.value%s", path, keyword ? ".keyword" : "");
     }
 
     public boolean isChild() {
         return StringUtils.isNotBlank(this.path);
+    }
+
+    public Map<String, Object> toSettingsMap(){
+        Map<String, Object> facet = new LinkedHashMap<>();
+        facet.put("name", name);
+        facet.put("label", label);
+        facet.put("type", type.name().toLowerCase());
+        facet.put("isFilterable", isFilterable);
+        facet.put("isHierarchical", isHierarchical);
+        //TODO add other items if needed
+        return facet;
     }
 }
 

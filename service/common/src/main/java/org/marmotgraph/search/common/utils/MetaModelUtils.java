@@ -25,6 +25,8 @@
 package org.marmotgraph.search.common.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.MetaInfo;
@@ -38,16 +40,14 @@ import java.util.*;
 import java.util.function.Consumer;
 
 @Component
+@AllArgsConstructor
 public class MetaModelUtils {
 
     @FieldInfo
     private static Object defaultFieldAnnotations;
 
     private final TranslatorRegistry translatorRegistry;
-
-    public MetaModelUtils(TranslatorRegistry translatorRegistry) {
-        this.translatorRegistry = translatorRegistry;
-    }
+    private final KG kg;
 
     public Class<?> getFileClass(){
         return this.translatorRegistry.getFileClass();
@@ -68,16 +68,18 @@ public class MetaModelUtils {
         }
     }
 
-    public Type getTypeTargetClass(String type) {
-        List<TranslatorModel> match = translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(type)).toList();
-        if (match.isEmpty()) {
-            return null;
-        }
-        return match.getFirst().targetClass();
+    public Type getTargetClassForCategory(String category) {
+        return translatorRegistry.getTranslators().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(category)).findFirst().map(TranslatorModel::targetClass).orElse(null);
     }
 
+    public Type getTargetClassForType(String simpleTypeName){
+        Optional<String> semanticTypeName = kg.getTypeInformation().getSemanticName(simpleTypeName);
+        return semanticTypeName.flatMap(t -> translatorRegistry.getTranslators().stream().filter(translator -> translator.semanticTypes().contains(t)).findAny().map(TranslatorModel::targetClass)).orElse(null);
+    }
+
+
     public void visitTypeFields(String type, Consumer<Field> consumer) {
-        Type targetClass = getTypeTargetClass(type);
+        Type targetClass = getTargetClassForType(type);
         if (targetClass != null) {
             visitTypeFields(targetClass, consumer);
         }

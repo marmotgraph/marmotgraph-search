@@ -74,6 +74,11 @@
         <value-type>java.lang.String</value-type>
     </cache>
 
+    <cache alias="typeInformation" uses-template="permanentNoExpiry">
+        <key-type>java.lang.String</key-type>
+        <value-type>org.marmotgraph.search.common.controller.kg.KG.KGTypeInformation</value-type>
+    </cache>
+
     <cache alias="userInfoCache" uses-template="inmemory">
         <key-type>org.springframework.security.oauth2.core.OAuth2AccessToken</key-type>
         <value-type>java.util.Set</value-type>

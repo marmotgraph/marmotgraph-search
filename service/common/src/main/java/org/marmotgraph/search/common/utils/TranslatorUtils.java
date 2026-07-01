@@ -24,13 +24,14 @@
 
 package org.marmotgraph.search.common.utils;
 
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.model.elasticsearch.Document;
 import org.marmotgraph.search.common.model.target.HasBadges;
 import org.marmotgraph.search.common.model.target.HasTrendingInformation;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.services.ESServiceClient;
-import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -48,6 +49,8 @@ import static org.marmotgraph.search.common.model.target.ISODateValue.ISO_DATE_P
 @Getter
 public class TranslatorUtils {
 
+    public static final String OTHERS_CATEGORY = "Others";
+
     public static final String IS_NEW_BADGE = "isNew";
     public static final String IS_TRENDING_BADGE = "isTrending";
 
@@ -56,30 +59,34 @@ public class TranslatorUtils {
     private final Integer trendingThreshold;
     private final ESHelper esHelper;
 
-    public static final String TYPE_INFORMATION = "typeInformation";
+    public static final String SEMANTIC_TYPE = "semanticType";
     private final Map<String, Object> translationContext;
-
+    private final KG.KGTypeInformation typeInformation;
+    private final boolean firstCitizen;
     private final List<String> errors;
 
 
-    public TranslatorUtils(DOICitationFormatter doiCitationFormatter, ESServiceClient esServiceClient, Integer trendingThreshold, Map<String, Object> translationContext, List<String> errors, ESHelper esHelper) {
+    public TranslatorUtils(DOICitationFormatter doiCitationFormatter, ESServiceClient esServiceClient, Integer trendingThreshold, Map<String, Object> translationContext, List<String> errors, ESHelper esHelper, KG.KGTypeInformation typeInformation, boolean firstCitizen) {
         this.doiCitationFormatter = doiCitationFormatter;
         this.esServiceClient = esServiceClient;
         this.trendingThreshold = trendingThreshold;
         this.translationContext = translationContext;
         this.esHelper = esHelper;
         this.errors = errors != null ? errors : new ArrayList<>();
+        this.typeInformation = typeInformation;
+        this.firstCitizen = firstCitizen;
     }
 
-    public void addTypeBadge(HasBadges target, String type){
-        Map<?, ?> typeInformation = getTypeInformation(type);
-        if(typeInformation!=null){
-            Object typeName = typeInformation.get("http://schema.org/name");
-            Object color = typeInformation.get("https://core.kg.ebrains.eu/vocab/meta/color");
-            if(typeName instanceof String && color instanceof String) {
-                addCustomBadge(target, (String) typeName, (String) color);
+    public void addTypeBadge(HasBadges target, String semanticTypeName){
+        this.typeInformation.getTypeInformationBySemanticName(semanticTypeName).ifPresent(t -> {
+            if(t.getName()!=null && t.getColor()!=null){
+                addCustomBadge(target, t.getName(), t.getColor());
             }
-        }
+        });
+    }
+
+    public Optional<String> getSimpleTypeName(){
+        return this.typeInformation.getSimpleName(getSemanticType());
     }
 
     public void addCustomBadge(HasBadges target, String label, String color){
@@ -90,11 +97,11 @@ public class TranslatorUtils {
     }
 
 
-
-    public Map<?,?> getTypeInformation(String type){
-        List<Map<?,?>> typeInformation = (List<Map<?,?>>)translationContext.get(TYPE_INFORMATION);
-        return typeInformation!=null ? typeInformation.stream().filter(t -> type.equals(t.get("http://schema.org/identifier"))).findFirst().orElse(Collections.emptyMap()) : Collections.emptyMap();
+    public String getSemanticType(){
+        Object semanticType = translationContext.get(SEMANTIC_TYPE);
+        return semanticType instanceof String ? (String) semanticType : null;
     }
+
 
     public <T extends HasBadges & HasTrendingInformation> void defineBadgesAndTrendingState(T target, String issueDate, Date firstRelease, Integer last30DaysViews, List<String> metaBadges) {
         List<String> badges = new ArrayList<>();

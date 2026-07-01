@@ -140,7 +140,7 @@ const updateFacetsFromResults = (facets, isSelectedType, results) => {
       const res = aggs[facet.name];
       if (facet.type === 'list') {
         facet.keywords = (res?.keywords) ? res.keywords : [];
-        facet.others = (res?.others) ? res.others : 0;
+        facet.others = (res?.count>res?.keywords.length) ? res?.count-res?.keywords.length : 0;
         facet.count = res?.count;
       }
       if (facet.type === 'exists') {

@@ -68,6 +68,8 @@ public abstract class TargetInstance {
     @ElasticSearchInfo(type = "keyword")
     private Value<String> category;
 
+    private String mappingKey;
+
     @ElasticSearchInfo(type = "keyword")
     private Value<String> disclaimer;
 
@@ -83,6 +85,9 @@ public abstract class TargetInstance {
     private ISODateValue lastRelease;
 
     private boolean trending = false;
+
+    @ElasticSearchInfo(type = "keyword")
+    private Value<String> semanticType;
 
     private int last30DaysViews;
 

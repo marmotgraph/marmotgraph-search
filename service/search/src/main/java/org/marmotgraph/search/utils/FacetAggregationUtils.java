@@ -26,10 +26,9 @@ package org.marmotgraph.search.utils;
 
 import org.marmotgraph.search.common.model.elasticsearch.*;
 import org.marmotgraph.search.common.model.target.FieldInfo;
-import org.marmotgraph.search.model.FacetValue;
 import org.marmotgraph.search.model.Facet;
+import org.marmotgraph.search.model.FacetValue;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -231,37 +230,33 @@ public class FacetAggregationUtils {
 
     public static Map<String, Object> getTypesAggregation(Map<String, Aggregation> aggregations, List<String> mainCategories) {
         if (CollectionUtils.isEmpty(aggregations) ||
-                !aggregations.containsKey(FacetsUtils.FACET_TYPE) ||
-                aggregations.get(FacetsUtils.FACET_TYPE).getKeywords() == null ||
-                CollectionUtils.isEmpty(aggregations.get(FacetsUtils.FACET_TYPE).getKeywords().getBuckets())
+            !aggregations.containsKey(FacetsUtils.FACET_TYPE) ||
+            aggregations.get(FacetsUtils.FACET_TYPE).getKeywords() == null ||
+            CollectionUtils.isEmpty(aggregations.get(FacetsUtils.FACET_TYPE).getKeywords().getBuckets())
         ) {
             return Collections.emptyMap();
         }
         int overallTotal = 0;
-        int totalOthers = 0;
         Map<String, Object> res = new HashMap<>();
         List<KeywordsBucket> buckets = aggregations.get(FacetsUtils.FACET_TYPE).getKeywords().getBuckets();
         List<String> remainingMainCategories = new ArrayList<>(mainCategories);
+        Map<String, Integer> categoryCount = new HashMap<>();
         for (Bucket bucket : buckets) {
-            remainingMainCategories.remove(bucket.getKey());
-            if(!mainCategories.contains(bucket.getKey()) && StringUtils.hasText(bucket.getKey())) {
-                totalOthers += bucket.getDocCount();
+            int docCount = bucket.getDocCount();
+            String category = bucket.getKey();
+            remainingMainCategories.remove(category);
+            if (!categoryCount.containsKey(category)) {
+                categoryCount.put(category, 0);
             }
-            overallTotal += bucket.getDocCount();
-            if (bucket.getDocCount() > 0) {
-                res.put(bucket.getKey(), Map.of(
-                        "count", bucket.getDocCount()
-                ));
-            }
+            categoryCount.put(category, categoryCount.get(category) + docCount);
+            overallTotal += docCount;
         }
+        categoryCount.forEach((key, value) -> res.put(key, Map.of(
+                "count", value
+        )));
         remainingMainCategories.forEach(c -> {
             res.put(c, Map.of("count", 0));
         });
-        if(totalOthers>0){
-            res.put("others", Map.of(
-                    "count", totalOthers
-            ));
-        }
         res.put("", Map.of(
                 "count", overallTotal
         ));
