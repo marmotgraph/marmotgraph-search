@@ -88,16 +88,16 @@ public abstract class TranslatorBase {
         return null;
     }
 
-    protected List<TargetExternalReference> simpleLink(List<String> urls) {
+    public static List<TargetExternalReference> simpleLink(List<String> urls) {
         if (!CollectionUtils.isEmpty(urls)) {
-            return urls.stream().map(this::link).filter(Objects::nonNull).collect(Collectors.toList());
+            return urls.stream().map(TranslatorBase::link).filter(Objects::nonNull).collect(Collectors.toList());
         }
         return null;
     }
 
-    protected List<TargetExternalReference> link(List<? extends ExternalRef> urls) {
+    public static List<TargetExternalReference> link(List<? extends ExternalRef> urls) {
         if (!CollectionUtils.isEmpty(urls)) {
-            return urls.stream().map(this::link).filter(Objects::nonNull).collect(Collectors.toList());
+            return urls.stream().map(TranslatorBase::link).filter(Objects::nonNull).collect(Collectors.toList());
         }
         return null;
     }
@@ -106,14 +106,14 @@ public abstract class TranslatorBase {
         return CollectionUtils.isEmpty(list) ? null : list;
     }
 
-    protected TargetExternalReference link(String url) {
+    public static TargetExternalReference link(String url) {
         if (StringUtils.isNotBlank(url)) {
             return new TargetExternalReference(url.trim(), url.trim());
         }
         return null;
     }
 
-    protected TargetInternalReference ref(FullNameRef ref) {
+    public static TargetInternalReference ref(FullNameRef ref) {
         if (ref != null) {
             final String uuid = IdUtils.getUUID(ref.getId());
             return new TargetInternalReference(uuid, StringUtils.defaultIfBlank(ref.getFullName(), uuid));
@@ -122,24 +122,24 @@ public abstract class TranslatorBase {
     }
 
 
-    protected TargetInternalReference emptyRef(String ref) {
+    public static TargetInternalReference emptyRef(String ref) {
         return new TargetInternalReference(null, ref);
     }
 
-    protected List<TargetInternalReference> emptyRef(List<String> refs) {
+    public static List<TargetInternalReference> emptyRef(List<String> refs) {
         if (!CollectionUtils.isEmpty(refs)) {
-            return refs.stream().filter(Objects::nonNull).map(this::emptyRef).filter(Objects::nonNull).collect(Collectors.toList());
+            return refs.stream().filter(Objects::nonNull).map(TranslatorBase::emptyRef).filter(Objects::nonNull).collect(Collectors.toList());
         }
         return null;
     }
 
-    protected List<TargetInternalReference> ref(List<? extends FullNameRef> refs) {
+    public static List<TargetInternalReference> ref(List<? extends FullNameRef> refs) {
         return ref(refs, false);
     }
 
-    protected List<TargetInternalReference> ref(List<? extends FullNameRef> refs, boolean sorted) {
+    public static List<TargetInternalReference> ref(List<? extends FullNameRef> refs, boolean sorted) {
         if (!CollectionUtils.isEmpty(refs)) {
-            Stream<TargetInternalReference> targetInternalReferenceStream = refs.stream().map(this::ref).filter(Objects::nonNull);
+            Stream<TargetInternalReference> targetInternalReferenceStream = refs.stream().map(TranslatorBase::ref).filter(Objects::nonNull);
             if (sorted) {
                 targetInternalReferenceStream = targetInternalReferenceStream.sorted();
             }
@@ -148,7 +148,7 @@ public abstract class TranslatorBase {
         return null;
     }
 
-    protected TargetExternalReference link(ExternalRef ref) {
+    public static TargetExternalReference link(ExternalRef ref) {
         if (ref != null && StringUtils.isNotBlank(ref.getUrl())) {
             return new TargetExternalReference(ref.getUrl(), ref.getUrl() != null ? ref.getLabel() : ref.getUrl());
         }
