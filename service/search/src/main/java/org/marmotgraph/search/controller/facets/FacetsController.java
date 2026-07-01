@@ -38,17 +38,18 @@ import java.util.*;
 @Component
 public class FacetsController {
 
-    private static Map<String, Object> createTypeFacet(){
-        Map<String, Object> facet = new LinkedHashMap<>();
-        facet.put("name", "otherTypes");
-        facet.put("label", "Other types");
-        facet.put("type", FieldInfo.Facet.LIST.name().toLowerCase());
-        facet.put("isFilterable", false);
-        facet.put("isHierarchical", false);
-        return facet;
-    }
 
-    public static Map<String, Object> TYPE_FACET = createTypeFacet();
+    private static Facet createOtherFacet() {
+        Facet othersFacet = new Facet("", "", "type");
+        othersFacet.setLabel("Types");
+        othersFacet.setName(TYPE_FACET_NAME);
+        othersFacet.setType(FieldInfo.Facet.LIST);
+        othersFacet.setKeyword(false);
+        return othersFacet;
+    }
+    public static Facet TYPE_FACET = createOtherFacet();
+
+    public static String TYPE_FACET_NAME = "types";
 
     private final MetaModelUtils utils;
 
@@ -56,12 +57,13 @@ public class FacetsController {
         this.utils = utils;
     }
 
-    @Cacheable(value = "facets", unless = "#type == null", key = "#type")
-    public List<Facet> getFacets(String type) {
+    @Cacheable(value = "facets", unless = "#category == null", key = "#category")
+    public List<Facet> getFacets(String category) {
         List<Facet> facets = new ArrayList<>();
-        utils.getTranslatorModels().stream().filter(m -> StringUtils.isBlank(type) || MetaModelUtils.getNameForClass(m.targetClass()).equals(type)).forEach(m -> {
+        facets.add(TYPE_FACET);
+        utils.getTranslatorModels().stream().filter(m -> StringUtils.isBlank(category) || MetaModelUtils.getNameForClass(m.targetClass()).equals(category)).forEach(m -> {
             Class<?> targetModel = m.targetClass();
-            handleChildren(targetModel, type, facets, "", "");
+            handleChildren(targetModel, category, facets, "", "");
         });
         Set<String> names = new HashSet<>();
         facets.forEach(facet -> {
@@ -69,6 +71,7 @@ public class FacetsController {
             names.add(name);
             facet.setName(name);
         });
+
         return facets;
     }
 

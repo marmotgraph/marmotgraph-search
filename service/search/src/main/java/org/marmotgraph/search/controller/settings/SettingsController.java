@@ -24,11 +24,13 @@
 
 package org.marmotgraph.search.controller.settings;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.MetaInfo;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
+import org.marmotgraph.search.common.utils.TranslatorUtils;
 import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
 import org.springframework.cache.annotation.Cacheable;
@@ -41,16 +43,12 @@ import java.util.stream.Collectors;
 
 import static org.marmotgraph.search.utils.FacetsUtils.FACET_BOOKMARKS;
 
+@AllArgsConstructor
 @Component
 public class SettingsController {
 
     private final MetaModelUtils utils;
     private final FacetsController facetsController;
-
-    public SettingsController(MetaModelUtils utils, FacetsController facetsController) {
-        this.utils = utils;
-        this.facetsController = facetsController;
-    }
 
     @Cacheable(value = "typeMappings", unless = "#result == null")
     public Map<String, Object> generateTypeMappings() {
@@ -179,31 +177,31 @@ public class SettingsController {
         }
     }
 
-    @Cacheable(value = "types", unless = "#result == null")
-    public List<Object> generateTypes() {
-        Map<Integer, Object> types = new LinkedHashMap<>();
-        types.put(0, generateType("", "All", false, true));
+    @Cacheable(value = "categories", unless = "#result == null")
+    public List<Object> generateCategories() {
+        Map<Integer, Object> categories = new LinkedHashMap<>();
+        categories.put(0, generateCategory("", "All", false, true));
         for (TranslatorModel model : utils.getTranslatorModels()) {
             Class<?> targetModel = model.targetClass();
-            Map<String, Object> type = generateType(targetModel, MetaModelUtils.getNameForClass(targetModel), true, false);
+            Map<String, Object> type = generateCategory(targetModel, MetaModelUtils.getNameForClass(targetModel), true, false);
             if (type != null) {
-                types.put(types.size(), type);
+                categories.put(categories.size(), type);
             }
             //Also add inner models to the types
             Arrays.stream(targetModel.getDeclaredClasses()).filter(c -> c.getAnnotation(MetaInfo.class) != null)
                     .forEachOrdered(innerClass -> {
-                        Map<String, Object> innerType = generateType(innerClass, String.format("%s.%s", MetaModelUtils.getNameForClass(targetModel), MetaModelUtils.getNameForClass(innerClass)), false, false);
+                        Map<String, Object> innerType = generateCategory(innerClass, String.format("%s.%s", MetaModelUtils.getNameForClass(targetModel), MetaModelUtils.getNameForClass(innerClass)), false, false);
                         if (innerType != null) {
-                            types.put(types.size() + 1, innerType);
+                            categories.put(categories.size() + 1, innerType);
                         }
                     });
         }
-        types.put(types.size(), generateOthers());
-        ArrayList<Map.Entry<Integer, Object>> list = new ArrayList<>(types.entrySet());
-        return list.stream().sorted(new TypeComparator()).map(Map.Entry::getValue).collect(Collectors.toList());
+        categories.put(categories.size(), generateOthers());
+        ArrayList<Map.Entry<Integer, Object>> list = new ArrayList<>(categories.entrySet());
+        return list.stream().sorted(new CategoryComparator()).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    private static class TypeComparator implements Comparator<Map.Entry<Integer, Object>> {
+    private static class CategoryComparator implements Comparator<Map.Entry<Integer, Object>> {
         @Override
         public int compare(Map.Entry<Integer, Object> a, Map.Entry<Integer, Object> b) {
             return a.getKey().compareTo(b.getKey());
@@ -211,23 +209,23 @@ public class SettingsController {
     }
 
 
-    public Map<String, Object> generateType(Class<?> clazz, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
+    public Map<String, Object> generateCategory(Class<?> clazz, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
         MetaInfo metaInfo = clazz.getAnnotation(MetaInfo.class);
         if (metaInfo == null || !metaInfo.searchable()) {
             return null;
         }
         String type = MetaModelUtils.getNameForClass(clazz);
-        return generateType(type, label, includeBookmarkFacet, defaultSelection);
+        return generateCategory(type, label, includeBookmarkFacet, defaultSelection);
     }
 
     public Map<String, Object> generateOthers() {
-        Map<String, Object> others = generateType("others", "Others", false, false);
-        others.put("facets", Collections.singletonList(FacetsController.TYPE_FACET));
+        Map<String, Object> others = generateCategory(TranslatorUtils.OTHERS_CATEGORY, TranslatorUtils.OTHERS_CATEGORY, false, false);
+        others.put("facets", Collections.singletonList(FacetsController.TYPE_FACET.toSettingsMap()));
         return others;
     }
 
 
-    public Map<String, Object> generateType(String type, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
+    public Map<String, Object> generateCategory(String type, String label, boolean includeBookmarkFacet, boolean defaultSelection) {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("type", type);
         result.put("label", label);

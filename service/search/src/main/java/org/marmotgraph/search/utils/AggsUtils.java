@@ -38,7 +38,7 @@ public class AggsUtils {
     public static Map<String, Object> getAggs(List<Facet> facets, Map<String, Object> filters, Map<String, FacetValue> facetValues) {
         Map<String, Object> aggs = new HashMap<>();
         facets.forEach(facet -> setFacet(aggs, facet, filters, facetValues.get(facet.getName())));
-        setTypeFacet(aggs, filters);
+        setCategoryFilter(aggs, filters);
         return aggs;
     }
 
@@ -127,19 +127,19 @@ public class AggsUtils {
         return leafAggs;
     }
 
-    private static void setTypeFacet(Map<String, Object> aggs, Map<String, Object> filters) {
+    private static void setCategoryFilter(Map<String, Object> aggs, Map<String, Object> filters) {
         Object filter = FiltersUtils.getFilter(filters, FacetsUtils.FACET_TYPE);
         aggs.put(FacetsUtils.FACET_TYPE, Map.of(
                 "aggs", Map.of(
                         "keywords", Map.of(
                                 "terms", Map.of(
-                                        "field", "type.value",
+                                        "field", "category.value",
                                         "size", 50
                                 )
                         ),
                         "total", Map.of(
                                 "cardinality", Map.of(
-                                        "field", "type.value"
+                                        "field", "category.value"
                                 )
                         )
                 ),

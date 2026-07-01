@@ -24,7 +24,6 @@
 
 package org.marmotgraph.search.controller.search;
 
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.kg.KG;
@@ -38,6 +37,7 @@ import org.marmotgraph.search.common.model.target.*;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
+import org.marmotgraph.search.common.utils.TranslatorUtils;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
@@ -188,38 +188,44 @@ public class SearchController extends FacetAggregationUtils {
     }
 
 
-    public Map<String, Object> search(String q, List<String> types, int size, Map<String, FacetValue> facetValues, DataStage dataStage, String cursorToken){
-        boolean isFilteredByBookmarks = facetValues != null && facetValues.containsKey(FACET_BOOKMARKS);
+    public Map<String, Object> search(String q, List<String> categories, int size, Map<String, FacetValue> facetValues, DataStage dataStage, String cursorToken) {
+        //Prepare
+        //TODO can we cache this?
         List<String> mainCategories = translatorRegistry.getMainCategories();
-        boolean containsOthers = false;
-        if(CollectionUtils.isEmpty(types)){
-            //No types = all types.
-            types = translatorRegistry.getTranslators().stream().map(TranslatorModel::category).collect(Collectors.toList());
-            containsOthers=true;
+        KG.KGTypeInformation typeInformation = kg.getTypeInformation();
+        List<String> mainSemanticTypes = translatorRegistry.getMainSemanticTypes().stream().map(typeInformation::getSimpleName).filter(Optional::isPresent).map(Optional::get).toList();
+
+        // Sanitize inputs
+        if (CollectionUtils.isEmpty(categories)) {
+            //No categories means "all"
+            categories = mainCategories;
         }
-        else{
-            Optional<String> others = types.stream().filter(t -> t.equals("others")).findAny();
-            if(others.isPresent()) {
-                Stream<String> otherTypes = types.stream().filter(t -> !t.equals("others"));
-                if(facetValues != null && facetValues.get("type") != null && !CollectionUtils.isEmpty(facetValues.get("type").getValues())){
-                    types = Stream.concat(otherTypes, facetValues.get("type").getValues().stream()).toList();
-                }
-                else {
-                    types = Stream.concat(otherTypes, translatorRegistry.getTranslators().stream().map(TranslatorModel::category).filter(c -> !mainCategories.contains(c))).toList();
-                }
-                containsOthers = true;
-            }
-            //Sanitize user input by excluding those which are not defined in translators
-            types = translatorRegistry.getTranslators().stream().map(TranslatorModel::category).filter(types::contains).toList();
-        }
+        boolean isFilteredByBookmarks = facetValues != null && facetValues.containsKey(FACET_BOOKMARKS);
         if (isFilteredByBookmarks) {
             facetValues.remove(FACET_BOOKMARKS);
         }
+        //TODO Sanitize user input by excluding those which are not defined in translators
+
+        List<String> types;
+        Optional<String> otherCategory = categories.stream().filter(t -> t.equals(TranslatorUtils.OTHERS_CATEGORY)).findAny();
+        Stream<String> typesOfSelectedCategories = translatorRegistry.getSemanticTypesByMainCategories(categories).map(typeInformation::getSimpleName).filter(Optional::isPresent).map(Optional::get);
+        List<String> otherTypes = null;
+        if (otherCategory.isPresent()) {
+            if (facetValues != null && facetValues.get(FacetsController.TYPE_FACET_NAME) != null && !CollectionUtils.isEmpty(facetValues.get(FacetsController.TYPE_FACET_NAME).getValues())) {
+                otherTypes = facetValues.get(FacetsController.TYPE_FACET_NAME).getValues();
+            } else {
+                otherTypes = translatorRegistry.getTranslators().stream().map(TranslatorModel::semanticTypes).flatMap(Collection::stream).map(typeInformation::getSimpleName).filter(Optional::isPresent).map(Optional::get).filter(c -> !mainSemanticTypes.contains(c)).toList();
+            }
+            types = Stream.concat(typesOfSelectedCategories, otherTypes.stream()).toList();
+        } else {
+            types = typesOfSelectedCategories.toList();
+        }
+
         int nbOfBookmarks = 0;
         List<UUID> idsToFilter = null;
         List<UUID> bookmarkedIds = null;
         //TODO we currently only allow the bookmark feature on chosen categories for performance reasons (the gathering process of ids on KG is too slow. We can enable it once optimized.
-        if(types.size()==1) {
+        if (categories.size() == 1) {
             bookmarkedIds = getBookmarkedIds(facetValues, types);
             if (!CollectionUtils.isEmpty(bookmarkedIds)) {
                 nbOfBookmarks = bookmarkedIds.size();
@@ -228,77 +234,77 @@ public class SearchController extends FacetAggregationUtils {
                 idsToFilter = bookmarkedIds;
             }
         }
-        Map<String, Object> payload = new HashMap<>();
-        //payload.put("from", 0);
-        payload.put("size", size);
-        if(cursorToken!=null){
-            payload.put("search_after", searchCursor.decode(cursorToken));
+
+
+        Map<String, Object> queryPayload = new HashMap<>();
+
+        //Pagination
+        queryPayload.put("size", size);
+        if (cursorToken != null) {
+            queryPayload.put("search_after", searchCursor.decode(cursorToken));
         }
+
+        //Highlighting
         Map<String, Object> esHighlight = getEsHighlight(types);
         if (esHighlight != null) {
-            payload.put("highlight", esHighlight);
+            queryPayload.put("highlight", esHighlight);
         }
-        if(types.size() == 1) {
-            Type targetClass = utils.getTypeTargetClass(types.getFirst());
+
+        //Sorting
+        if (categories.size() == 1) {
+            Type targetClass = utils.getTargetClassForCategory(categories.getFirst());
             MetaInfo metaInfo = null;
             if (targetClass != null) {
                 metaInfo = ((Class<?>) targetClass).getAnnotation(MetaInfo.class);
             }
-            payload.put("sort", getEsSort(metaInfo, StringUtils.isNotBlank(q)));
-        }
-        else{
-            //If we have multiple types, we force the sorting by relevance
-            payload.put("sort", getEsSort(null, true));
-        }
-        List<Facet> facets = types.stream().map(facetsController::getFacets).flatMap(Collection::stream).distinct().collect(Collectors.toList());
-        Map<String, Object> activeFilters = FiltersUtils.getActiveFilters(facets, types, idsToFilter, facetValues);
-        Object esPostFilter = FiltersUtils.getFilter(activeFilters, null);
-        payload.put("post_filter", esPostFilter);
-        Object esAggs = AggsUtils.getAggs(facets, activeFilters, facetValues);
-        payload.put("aggs", esAggs);
-        List<String> sanitizedQuery = QueryStringUtils.sanitizeQueryString(q);
-        final Object query = getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types);
-        if (query != null) {
-            payload.put("query", query);
-        }
-        String index = esHelper.getIndexesForSearch(dataStage);
-        Result result = esServiceClient.searchDocuments(index, payload);
-        int total = 0;
-        if(result.getHits()!=null){
-            if(result.getHits().getTotal() != null){
-                total = result.getHits().getTotal().getValue();
-            }
-        }
-        Map<String, Object> facetAggregation = getFacetAggregation(facets, result.getAggregations(), facetValues, total != 0);
-        if (total != 0 && nbOfBookmarks != 0) {
-            facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
-        }
-        Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), mainCategories);
-        if(containsOthers){
-            List<?> aggregates = typesAggregation.entrySet().stream().filter(t -> !mainCategories.contains(t.getKey()) && StringUtils.isNotBlank(t.getKey()) && !t.getKey().equals("others")).map(t -> {
-                Object value = t.getValue();
-                if (value instanceof Map<?, ?>) {
-                    Object count = ((Map<?, ?>) value).get("count");
-                    if (count instanceof Integer) {
-                        return Map.of("count", (Integer) count, "value", t.getKey());
-                    }
-                }
-                return null;
-            }).filter(Objects::nonNull).sorted(Comparator.comparingInt(t -> (Integer)((Map<?,?>)t).get("count")).reversed()).toList();
-            facetAggregation.put("otherTypes", Map.of("keywords", aggregates, "others", 0, "count", aggregates.size()));
+            queryPayload.put("sort", getEsSort(metaInfo, StringUtils.isNotBlank(q)));
+        } else {
+            //If we have multiple categories, we force the sorting by relevance
+            queryPayload.put("sort", getEsSort(null, true));
         }
 
-        int totalSelected = types.stream().filter(t -> typesAggregation.get(t) instanceof Map).map(t -> ((Map<?, ?>) typesAggregation.get(t)).get("count")).filter(c -> c instanceof Integer).map(c -> (Integer) c).mapToInt(Integer::intValue).sum();
-        if(totalSelected>0) {
-            total = totalSelected;
+        //Faceted filters
+        List<Facet> facets = categories.stream().map(facetsController::getFacets).flatMap(Collection::stream).distinct().collect(Collectors.toList());
+        Map<String, Object> activeFilters = FiltersUtils.getActiveFilters(facets, categories, idsToFilter, facetValues);
+        Object esPostFilter = FiltersUtils.getFilter(activeFilters, null);
+        queryPayload.put("post_filter", esPostFilter);
+
+
+        Object esAggs = AggsUtils.getAggs(facets, activeFilters, facetValues);
+        queryPayload.put("aggs", esAggs);
+
+        List<String> sanitizedQuery = QueryStringUtils.sanitizeQueryString(q);
+        final Map<String, Object> query = getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types);
+        if (query != null) {
+            queryPayload.put("query", query);
+        }
+        Result result = esServiceClient.searchDocuments(esHelper.getIndexesForSearch(dataStage), queryPayload);
+
+        //This is just the "reported" total - note this is not necessarily the real total because it limits to 10000. We are calculating the "real" total later
+        int reportedTotal = 0;
+        if (result.getHits() != null) {
+            if (result.getHits().getTotal() != null) {
+                reportedTotal = result.getHits().getTotal().getValue();
+            }
+        }
+        Map<String, Object> facetAggregation = getFacetAggregation(facets, result.getAggregations(), facetValues, reportedTotal != 0);
+        if (reportedTotal != 0 && nbOfBookmarks != 0) {
+            facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
+        }
+
+
+        Map<String, Object> typesAggregation = getTypesAggregation(result.getAggregations(), mainCategories);
+        int totalByAggregation = categories.stream().filter(t -> typesAggregation.get(t) instanceof Map).map(t -> ((Map<?, ?>) typesAggregation.get(t)).get("count")).filter(c -> c instanceof Integer).map(c -> (Integer) c).mapToInt(Integer::intValue).sum();
+        if (totalByAggregation > 0) {
+            reportedTotal = totalByAggregation;
         }
         Map<String, Object> response = new HashMap<>();
-        response.put("total", total);
+        response.put("total", reportedTotal);
         List<Map<String, Object>> hits = getHits(result, dataStage, bookmarkedIds);
         response.put("hits", hits);
         response.put("aggregations", facetAggregation);
         response.put("types", typesAggregation);
-        response.put("suggestions", getSuggestions(sanitizedQuery, dataStage, types));
+        response.put("suggestions", getSuggestions(sanitizedQuery, dataStage, categories));
         return response;
     }
 
@@ -322,7 +328,7 @@ public class SearchController extends FacetAggregationUtils {
             hit.put("id", id);
             hit.put("type", h.getType());
             hit.put("group", getGroup(dataStage));
-            hit.put("category", CastingUtils.getStringValueField(source, "category"));
+            hit.put("category", h.getSource().get("mappingKey"));
             hit.put("title", CastingUtils.getStringValueField(source, "title"));
             hit.put("highlightColor", CastingUtils.getStringValueField(source, "highlightColor"));
             List<String> badges = new ArrayList<>();
@@ -345,7 +351,7 @@ public class SearchController extends FacetAggregationUtils {
             hit.put("fields", getFields(source, fieldNames.get(h.getType())));
             return hit;
         }).collect(Collectors.toList());
-            collect.getLast().put("cursor", searchCursor.encode(last.getSort()));
+        collect.getLast().put("cursor", searchCursor.encode(last.getSort()));
         return collect;
     }
 
@@ -376,7 +382,7 @@ public class SearchController extends FacetAggregationUtils {
         res.put("id", source.get("id"));
         res.put("type", type);
         res.put("group", getGroup(dataStage));
-        res.put("category", CastingUtils.getStringValueField(source, "category"));
+        res.put("category", source.get("mappingKey"));
         res.put("title", CastingUtils.getStringValueField(source, "title"));
         res.put("badges", source.get("badges"));
         res.put("highlightColor", CastingUtils.getStringValueField(source, "highlightColor"));
@@ -558,7 +564,6 @@ public class SearchController extends FacetAggregationUtils {
 
     private List<String> getFieldNames(String type, Predicate<FieldInfo> predicate, List<String> except) {
         List<String> fieldNames = new ArrayList<>();
-
         Consumer<Field> collect = field -> {
             FieldInfo info = field.getAnnotation(FieldInfo.class);
             if (info != null && predicate.test(info)) {
@@ -568,7 +573,6 @@ public class SearchController extends FacetAggregationUtils {
                 }
             }
         };
-
         utils.visitTypeFields(type, collect);
         return fieldNames;
     }
@@ -581,48 +585,51 @@ public class SearchController extends FacetAggregationUtils {
         return types.stream().collect(Collectors.toMap(i -> i, t -> getFieldNames(t, FieldInfo::overview, List.of("title"))));
     }
 
-    private Map<String, String> getSuggestions(List<String> sanitizedQuery, DataStage dataStage, List<String> types) {
+    private Map<String, String> getSuggestions(List<String> sanitizedQuery, DataStage dataStage, List<String> categories) {
         Map<String, String> result = new LinkedHashMap<>();
         //TODO optimize to a single ES query
         if (!sanitizedQuery.isEmpty()) {
             final String query = String.join(" ", sanitizedQuery);
-            types.forEach(t -> {
-                String index = esHelper.getSearchableIndex(dataStage, this.utils.getClassForType(t), false);
-                Map<String, Object> payload = new HashMap<>();
-                Map<String, Object> suggest = new HashMap<>();
-                payload.put("suggest", suggest);
-                List<String> fields = searchFieldsController.getSuggestionFields(t);
-                for (String field : fields) {
-                    suggest.put(field, Map.of("text", query, "term", Map.of("field", field)));
-                }
-                final Result elasticSearchFacetsResult = esServiceClient.searchDocuments(index, payload);
-                final Map<String, List<Suggestion>> suggestResult = elasticSearchFacetsResult.getSuggest();
-                Map<String, Set<Suggestion.Option>> suggestionsPerTerm = new HashMap<>();
-                if (suggestResult != null) {
-                    suggestResult.values().stream().flatMap(Collection::stream).forEach(s -> {
-                        final Set<Suggestion.Option> options = suggestionsPerTerm.computeIfAbsent(s.getText(), k -> new HashSet<>());
-                        options.addAll(s.getOptions());
-                    });
-                }
+            categories.forEach(c -> {
+                if(!c.equals(TranslatorUtils.OTHERS_CATEGORY)) {
+                    //TODO how to handle suggestions for "others"?
+                    String index = esHelper.getSearchableIndex(dataStage, this.utils.getClassForType(c), false);
+                    Map<String, Object> payload = new HashMap<>();
+                    Map<String, Object> suggest = new HashMap<>();
+                    payload.put("suggest", suggest);
+                    List<String> fields = searchFieldsController.getSuggestionFields(c);
+                    for (String field : fields) {
+                        suggest.put(field, Map.of("text", query, "term", Map.of("field", field)));
+                    }
+                    final Result elasticSearchFacetsResult = esServiceClient.searchDocuments(index, payload);
+                    final Map<String, List<Suggestion>> suggestResult = elasticSearchFacetsResult.getSuggest();
+                    Map<String, Set<Suggestion.Option>> suggestionsPerTerm = new HashMap<>();
+                    if (suggestResult != null) {
+                        suggestResult.values().stream().flatMap(Collection::stream).forEach(s -> {
+                            final Set<Suggestion.Option> options = suggestionsPerTerm.computeIfAbsent(s.getText(), k -> new HashSet<>());
+                            options.addAll(s.getOptions());
+                        });
+                    }
 
-                Set<String> handledTerms = new HashSet<>();
-                final List<String> unescapedQuery = sanitizedQuery.stream().map(w -> w.replaceAll("\\\\", "").toLowerCase()).collect(Collectors.toList());
-                final String unescapedQ = String.join(" ", unescapedQuery);
-                suggestionsPerTerm.keySet().forEach(k -> {
-                    final Set<Suggestion.Option> options = suggestionsPerTerm.get(k);
-                    final List<Suggestion.Option> sortedOptions = options.stream()
-                            .filter(o -> o != null && o.getText() != null)
-                            .peek(o -> o.setText(o.getText().replaceAll("\\W+\\s?$", "")))
-                            .filter(o -> !unescapedQuery.contains(o.getText()))
-                            .sorted(Comparator.comparing(Suggestion.Option::getText)).collect(Collectors.toList());
-                    final List<Suggestion.Option> limitedOptions = sortedOptions.size() > 5 ? sortedOptions.subList(0, 5) : sortedOptions;
-                    limitedOptions.forEach(o -> {
-                        if (!handledTerms.contains(o.getText())) {
-                            handledTerms.add(o.getText());
-                            result.put(o.getText(), unescapedQ.replaceAll(k, o.getText()));
-                        }
+                    Set<String> handledTerms = new HashSet<>();
+                    final List<String> unescapedQuery = sanitizedQuery.stream().map(w -> w.replaceAll("\\\\", "").toLowerCase()).collect(Collectors.toList());
+                    final String unescapedQ = String.join(" ", unescapedQuery);
+                    suggestionsPerTerm.keySet().forEach(k -> {
+                        final Set<Suggestion.Option> options = suggestionsPerTerm.get(k);
+                        final List<Suggestion.Option> sortedOptions = options.stream()
+                                .filter(o -> o != null && o.getText() != null)
+                                .peek(o -> o.setText(o.getText().replaceAll("\\W+\\s?$", "")))
+                                .filter(o -> !unescapedQuery.contains(o.getText()))
+                                .sorted(Comparator.comparing(Suggestion.Option::getText)).collect(Collectors.toList());
+                        final List<Suggestion.Option> limitedOptions = sortedOptions.size() > 5 ? sortedOptions.subList(0, 5) : sortedOptions;
+                        limitedOptions.forEach(o -> {
+                            if (!handledTerms.contains(o.getText())) {
+                                handledTerms.add(o.getText());
+                                result.put(o.getText(), unescapedQ.replaceAll(k, o.getText()));
+                            }
+                        });
                     });
-                });
+                }
             });
         }
         return result;

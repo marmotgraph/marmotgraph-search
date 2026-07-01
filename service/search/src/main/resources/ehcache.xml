@@ -98,6 +98,11 @@
         <value-type>java.lang.String</value-type>
     </cache>
 
+    <cache alias="typeInformation" uses-template="permanentNoExpiry">
+        <key-type>java.lang.String</key-type>
+        <value-type>org.marmotgraph.search.common.controller.kg.KG.KGTypeInformation</value-type>
+    </cache>
+
     <cache alias="highlight" uses-template="inmemory">
         <key-type>java.lang.String</key-type>
         <value-type>java.util.List</value-type>
@@ -146,7 +151,7 @@
         </resources>
     </cache>
 
-    <cache alias="types" uses-template="inmemory">
+    <cache alias="categories" uses-template="inmemory">
         <key-type>org.springframework.cache.interceptor.SimpleKey</key-type>
         <value-type>java.util.List</value-type>
         <resources>

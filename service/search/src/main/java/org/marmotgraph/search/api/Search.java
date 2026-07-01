@@ -284,14 +284,14 @@ public class Search {
     @PostMapping("/search")
     public ResponseEntity<?> search(
             @RequestParam(required = false, defaultValue = "", name = "q") String q,
-            @RequestParam(required = false, defaultValue = "", name = "type") List<String> types,
+            @RequestParam(required = false, defaultValue = "", name = "type") List<String> categories,
             @RequestParam(required = false, defaultValue = "20", name = "size") int size,
             @RequestParam(name="group") String group,
             @RequestParam(name="cursor", required = false) String cursorToken,
             @RequestBody Map<String, FacetValue> facetValues
     ) {
         try {
-            Map<String, Object> result = searchController.search(q, types, size, facetValues, group.equals("public") ? DataStage.RELEASED : DataStage.IN_PROGRESS, cursorToken);
+            Map<String, Object> result = searchController.search(q, categories, size, facetValues, group.equals("public") ? DataStage.RELEASED : DataStage.IN_PROGRESS, cursorToken);
             return ResponseEntity.ok(result);
         } catch (WebClientResponseException e) {
             return ResponseEntity.status(e.getStatusCode()).build();

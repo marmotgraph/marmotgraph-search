@@ -38,11 +38,9 @@ import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class TranslatorRegistry {
@@ -88,8 +86,15 @@ public class TranslatorRegistry {
     }
 
     public List<String> getMainCategories(){
-        return translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::category).toList();
+        return Stream.concat(translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::category), Stream.of("Others")).toList();
     }
 
+    public List<String> getMainSemanticTypes(){
+        return translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::semanticTypes).flatMap(Collection::stream).toList();
+    }
+
+    public Stream<String> getSemanticTypesByMainCategories(List<String> categories){
+        return translators.stream().filter(TranslatorModel::isFirstCitizen).filter(t -> categories.contains(t.category())).map(TranslatorModel::semanticTypes).flatMap(Collection::stream);
+    }
 
 }

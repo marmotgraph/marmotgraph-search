@@ -89,6 +89,6 @@ public class Settings {
             matomoConfig = new MatomoConfig(matomoUrl, matomoSiteId);
         }
         CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint);
-        return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections,  definitionController.generateTypes(), definitionController.generateTypeMappings());
+        return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections,  definitionController.generateCategories(), definitionController.generateTypeMappings());
     }
 }

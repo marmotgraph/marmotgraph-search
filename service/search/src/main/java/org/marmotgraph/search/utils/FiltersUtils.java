@@ -68,10 +68,10 @@ public class FiltersUtils {
         );
     }
 
-    public static Map<String, Object> getActiveFilters(List<Facet> facets, List<String> types, List<UUID> idsToFiler, Map<String, FacetValue> values) {
-        Map<String, Object> filters = new HashMap<>();
-        addTypeFilter(filters, types);
-        addIdsFilter(filters, idsToFiler);
+    public static Map<String, Object> getActiveFilters(List<Facet> facets, List<String> categories, List<UUID> idsToFilter, Map<String, FacetValue> values) {
+            Map<String, Object> filters = new HashMap<>();
+        addCategoriesFilter(filters, categories);
+        addIdsFilter(filters, idsToFilter);
         facets.forEach(facet -> {
             if (values.containsKey(facet.getName())) {
                 if (facet.getType() == FieldInfo.Facet.LIST) {
@@ -121,10 +121,10 @@ public class FiltersUtils {
         filters.put(facet.getName(), exists);
     }
 
-    private static void addTypeFilter(Map<String, Object> filters, List<String> types) {
+    private static void addCategoriesFilter(Map<String, Object> filters, List<String> categories) {
         Map<String, Object> filter = Map.of(
                 "terms", Map.of(
-                        "type.value", types
+                        "category.value", categories
                 )
         );
         filters.put(FACET_TYPE, filter);
