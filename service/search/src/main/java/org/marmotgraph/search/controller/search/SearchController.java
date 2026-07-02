@@ -635,7 +635,7 @@ public class SearchController extends FacetAggregationUtils {
 
     private Map<String, Object> getEsQuery(String q, List<String> types) {
         Map<String, Object> wrapper = new HashMap<>();
-        wrapper.put("should", Collections.singletonList(Map.of("rank_feature", Map.of("field", "importance"))));
+        wrapper.put("should", Collections.singletonList(Map.of("rank_feature", Map.of("field", "importance", "saturation", Map.of("pivot", 5)))));
         if(StringUtils.isNotBlank(q)) {
             Map<String, Object> queryString = new HashMap<>();
             queryString.put("lenient", true);
