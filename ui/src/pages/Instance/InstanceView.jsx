@@ -206,7 +206,9 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
       <Header title={data?.title} version={version} tags={tags} badges={badges} fields={headerFields} versions={versions} customNavigationComponent={customNavigationComponent} onVersionChange={onVersionChange} highlightColor={data?.highlightColor}/>
       <OutdatedVersionDisclaimer type={type} version={version} versions={versions} overviewVersion={data?.allVersionRef} onVersionChange={onVersionChange} />
       <Tabs tabs={tabs} selectedTab={selectedTab} onTabClick={handleTabClick} />
-      <Disclaimer content={data?.disclaimer} />
+      <div className="kgs-instance__footer">
+        <Disclaimer content={data?.disclaimer} />
+      </div>
       <TermsShortNotice />
       <ImagePopup className="kgs-instance__image_popup" />
     </div>

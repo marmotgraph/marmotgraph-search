@@ -54,6 +54,7 @@ import {
 
 import Detail from './Search/Detail/Detail';
 import FiltersPanel from './Search/Facet/FiltersPanel';
+import SearchMobileFilters from './Search/Facet/SearchMobileFilters';
 import TypesFilterPanel from './Search/Facet/TypesFilterPanel';
 import SearchResultsFooter from './Search/SearchResultsFooter/SearchResultsFooter';
 import Hits from './Search/Hit/Hits';
@@ -349,6 +350,7 @@ const SearchBase = () => {
               <FiltersPanel />
             </div>
             <div className="kgs-search__main">
+              <SearchMobileFilters />
               <HitsInfo />
               <SelectedFilters />
               <Hits />

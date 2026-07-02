@@ -80,22 +80,6 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
 }
 
-.kgs-filtered-list__status {
-    min-height: 1.1em;
-    color: #64748B;
-    font-size: 12px;
-    line-height: 1.3;
-}
-
-.kgs-filtered-list__options {
-    max-height: min(240px, 33vh);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
-    margin: 0 -4px;
-    padding: 0 4px;
-}
-
 .kgs-filtered-list__empty {
     margin: 0;
     padding: 8px 0;
@@ -104,12 +88,3 @@
     line-height: 1.35;
 }
 
-.kgs-filtered-list__options .kgs-list-item:focus {
-    outline: none;
-}
-
-.kgs-filtered-list__options .kgs-list-item:focus-visible .kgs-facet-checkbox {
-    background: #F1F5F9;
-    box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.35);
-    border-radius: 4px;
-}

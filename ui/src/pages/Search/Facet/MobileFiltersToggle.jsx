@@ -21,22 +21,29 @@
  *
  */
 
-.kgs-paginated-list button.kgs-paginated-list__viewMore-button {
-    display: inline-block;
-    margin: 6px 0 0 4px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--link-highlight-color, #2563EB);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-}
+import { faSliders } from '@fortawesome/free-solid-svg-icons/faSliders';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
 
-.kgs-paginated-list button.kgs-paginated-list__viewMore-button:hover,
-.kgs-paginated-list button.kgs-paginated-list__viewMore-button:focus {
-    color: var(--color-37, #1D4ED8);
-    outline: none;
-    text-decoration: underline;
-}
+import './MobileFiltersToggle.css';
+
+const MobileFiltersToggle = ({ activeCount, onOpen }) => (
+  <div className="kgs-mobile-filters-toggle">
+    <button
+      type="button"
+      className="kgs-mobile-filters-toggle__button"
+      onClick={onOpen}
+      aria-haspopup="dialog"
+    >
+      <FontAwesomeIcon icon={faSliders} className="kgs-mobile-filters-toggle__icon" aria-hidden="true" />
+      Filters
+      {activeCount > 0 && (
+        <span className="kgs-mobile-filters-toggle__badge" aria-label={`${activeCount} active filters`}>
+          {activeCount}
+        </span>
+      )}
+    </button>
+  </div>
+);
+
+export default MobileFiltersToggle;

@@ -24,6 +24,13 @@
 .kgs-instance-container {
   padding: 0 var(--site-margin);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.kgs-instance-container > .kgs-instance {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 @media (min-width:1200px) { 

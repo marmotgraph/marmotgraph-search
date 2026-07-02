@@ -94,6 +94,38 @@
     padding: var(--filters-facet-body-padding, 0 16px 14px);
 }
 
+.kgs-facet__scrollable-options {
+    max-height: min(240px, 33vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    margin: 0 -4px;
+    padding: 0 4px;
+}
+
+.kgs-facet__scrollable-options .kgs-list-item:focus {
+    outline: none;
+}
+
+.kgs-facet__scrollable-options .kgs-list-item:focus-visible .kgs-facet-checkbox {
+    background: #F1F5F9;
+    box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.35);
+    border-radius: 4px;
+}
+
+.kgs-facet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kgs-facet__options-status {
+    min-height: 1.1em;
+    color: #64748B;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
 body[profile="ebrains"] .kgs-facet__title {
     font-family: var(--font-plexsans), serif;
 }

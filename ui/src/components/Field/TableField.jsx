@@ -23,8 +23,11 @@
 
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import {faSort} from '@fortawesome/free-solid-svg-icons/faSort';
+import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
+import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Hint } from '../Hint/Hint';
 import './TableField.css';
 import { getKey } from './helpers';
@@ -119,14 +122,135 @@ const filterRows = table => {
     }, []));
 };
 
+const getSortValueFromData = data => {
+  if (data === undefined || data === null) {
+    return '';
+  }
+  if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
+    return String(data);
+  }
+  if (Array.isArray(data)) {
+    return data.map(getSortValueFromData).filter(Boolean).join(' ');
+  }
+  if (typeof data === 'object') {
+    if (data.value !== undefined && data.value !== null && data.value !== '') {
+      return String(data.value);
+    }
+    if (data.url) {
+      return String(data.url);
+    }
+    if (data.reference) {
+      return String(data.reference);
+    }
+  }
+  return '';
+};
+
+const getCellSortValue = cell => getSortValueFromData(cell?.data);
+
+const compareSortValues = (left, right, direction) => {
+  const leftText = String(left ?? '').trim();
+  const rightText = String(right ?? '').trim();
+  const leftNumber = Number(leftText);
+  const rightNumber = Number(rightText);
+  const leftIsNumber = leftText !== '' && !Number.isNaN(leftNumber);
+  const rightIsNumber = rightText !== '' && !Number.isNaN(rightNumber);
+
+  let result;
+  if (leftIsNumber && rightIsNumber) {
+    result = leftNumber - rightNumber;
+  } else {
+    result = leftText.localeCompare(rightText, undefined, { numeric: true, sensitivity: 'base' });
+  }
+
+  return direction === 'desc' ? -result : result;
+};
+
+const partitionRowsIntoGroups = rows => {
+  const groups = [];
+  let currentGroup = null;
+
+  rows.forEach(row => {
+    const level = row[0]?.level;
+    if (level === 1 || level === undefined) {
+      if (currentGroup) {
+        groups.push(currentGroup);
+      }
+      currentGroup = [row];
+    } else if (currentGroup) {
+      currentGroup.push(row);
+    } else {
+      groups.push([row]);
+    }
+  });
+
+  if (currentGroup) {
+    groups.push(currentGroup);
+  }
+
+  return groups;
+};
+
+const sortTableRows = (rows, sortState) => {
+  if (sortState.columnIndex === null || !rows.length) {
+    return rows;
+  }
+
+  const groups = partitionRowsIntoGroups(rows);
+
+  return [...groups]
+    .sort((groupA, groupB) => {
+      const leftCell = groupA[0]?.[sortState.columnIndex];
+      const rightCell = groupB[0]?.[sortState.columnIndex];
+      return compareSortValues(
+        getCellSortValue(leftCell),
+        getCellSortValue(rightCell),
+        sortState.direction
+      );
+    })
+    .flat();
+};
+
+const SortableTableHeader = ({ column, columnIndex, sortState, onSort }) => {
+  const label = column.mapping?.label ?? column.name;
+  const isSorted = sortState.columnIndex === columnIndex;
+  const sortIcon = !isSorted
+    ? faSort
+    : (sortState.direction === 'asc' ? faSortUp : faSortDown);
+
+  const handleClick = () => onSort(columnIndex);
+
+  return (
+    <th
+      scope="col"
+      aria-sort={isSorted ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      <button
+        type="button"
+        className={`kgs-table__sort-button${isSorted ? ' is-sorted' : ''}`}
+        onClick={handleClick}
+        aria-label={`Sort by ${label}${isSorted ? `, ${sortState.direction === 'asc' ? 'ascending' : 'descending'}` : ''}`}
+      >
+        <span className="kgs-table__sort-label">{label}</span>
+        <FontAwesomeIcon icon={sortIcon} className="kgs-table__sort-icon" aria-hidden="true" />
+      </button>
+    </th>
+  );
+};
+
 const TableFieldComponent = ({ list, fieldComponent }) => {
   const initialState = list.reduce((acc, _, index) => {
     acc[index] = true;
     return acc;
   }, {});
   const [collapsedRowIndexes, setCollapsedRowIndexes] = useState(initialState);
+  const [sortState, setSortState] = useState({ columnIndex: null, direction: 'asc' });
 
   const rows = filterRows(normalizeRows(list, collapsedRowIndexes));
+  const sortedRows = useMemo(
+    () => sortTableRows(rows, sortState),
+    [rows, sortState]
+  );
 
   if (!rows.length || !rows[0].length) {
     return null;
@@ -142,17 +266,42 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
     setCollapsedRowIndexes(values);
   };
 
+  const handleSort = columnIndex => {
+    setSortState(current => {
+      if (current.columnIndex === columnIndex) {
+        return {
+          columnIndex,
+          direction: current.direction === 'asc' ? 'desc' : 'asc'
+        };
+      }
+      return { columnIndex, direction: 'asc' };
+    });
+  };
+
   return (
     <table className="table">
       <thead>
         <tr>
-          {rows[0].map((el,id) =>
-            <th key={`${el.name}-${id}`}>{el.mapping.label}</th>
-          )}
+          {rows[0].map((column, columnIndex) => (
+            <SortableTableHeader
+              key={`${column.name}-${columnIndex}`}
+              column={column}
+              columnIndex={columnIndex}
+              sortState={sortState}
+              onSort={handleSort}
+            />
+          ))}
         </tr>
       </thead>
       <tbody>
-        {rows.map((row, index) => <CustomTableRow key={`${index}`} row={row} onCollapseToggle={onCollapseToggle} fieldComponent={fieldComponent} />)}
+        {sortedRows.map((row, index) => (
+          <CustomTableRow
+            key={`${index}`}
+            row={row}
+            onCollapseToggle={onCollapseToggle}
+            fieldComponent={fieldComponent}
+          />
+        ))}
       </tbody>
     </table>
   );

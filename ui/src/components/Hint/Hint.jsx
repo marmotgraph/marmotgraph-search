@@ -30,7 +30,7 @@ import { Tooltip } from 'react-tooltip';
 
 import './Hint.css';
 
-export const Hint = ({ className, value }) => {
+export const Hint = ({ className, value, place = 'right', tooltipClassName = 'kgs-hint-tooltip' }) => {
   if (!value && value !== 0) {
     return null;
   }
@@ -42,16 +42,19 @@ export const Hint = ({ className, value }) => {
         icon={faInfoCircle}
         data-tip
         data-for={hintId}
-        aria-hidden="true"
+        aria-label="More information"
+        role="img"
       />
-      <Tooltip className="kgs-hint-tooltip" anchorSelect={`#${hintId}`} place="right" variant="dark" content={value} />
+      <Tooltip className={tooltipClassName} anchorSelect={`#${hintId}`} place={place} variant="dark" content={value} />
     </span>
   );
 };
 
 Hint.propTypes = {
   className: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  place: PropTypes.string,
+  tooltipClassName: PropTypes.string
 };
 
 export default Hint;

@@ -54,7 +54,7 @@ public class Settings {
     public record KeycloakConfig(String realm, String url, String clientId, boolean authEndpointAvailable) { }
     public record SentryConfig(String dsn, String release, String environment){}
     public record MatomoConfig(String url, String typeMappings) {}
-    public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent, String footerSocial, String editorEndpoint, String notFoundFooter) { }
+    public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent, String footerSocial, String editorEndpoint, String notFoundFooter, String dataIssueReportSlackUrl) { }
     public record Setting(String commit, SentryConfig sentry, KeycloakConfig keycloak, MatomoConfig matomo, Customization.Configuration config, CustomSections custom, List<Object> types, Map<String, Object> typeMappings) { }
 
 
@@ -67,7 +67,8 @@ public class Settings {
             @Value("${sentry.environment}") String sentryEnvironment,
             @Value("${matomo.url}") String matomoUrl,
             @Value("${matomo.siteId}") String matomoSiteId,
-            @Value("${EDITOR_ENDPOINT:}") String editorEndpoint
+            @Value("${EDITOR_ENDPOINT:}") String editorEndpoint,
+            @Value("${DATA_ISSUE_REPORT_SLACK_URL:https://cscs-lugano.slack.com/archives/C077HV02F35}") String dataIssueReportSlackUrl
     ) {
         String finalCommit = null;
         SentryConfig sentryConfig = null;
@@ -88,7 +89,7 @@ public class Settings {
         if (StringUtils.isNotBlank(matomoUrl) && StringUtils.isNotBlank(matomoSiteId)) {
             matomoConfig = new MatomoConfig(matomoUrl, matomoSiteId);
         }
-        CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint, customization.getNotFoundFooter());
+        CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint, customization.getNotFoundFooter(), dataIssueReportSlackUrl);
         return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections,  definitionController.generateCategories(), definitionController.generateTypeMappings());
     }
 }

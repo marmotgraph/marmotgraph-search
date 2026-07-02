@@ -26,6 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useId, useMemo, useState } from 'react';
 
 import { List } from '../List/List';
+import { getOptionsStatusMessage } from '../../helpers/Facets';
 
 import './FilteredList.css';
 
@@ -71,12 +72,7 @@ export const FilteredList = ({
       return `${visibleItems.length} ${countLabel} shown for "${filter}".`;
     }
 
-    if (selectedCount > 0) {
-      const countLabel = selectedCount === 1 ? 'filter' : 'filters';
-      return `${selectedCount} ${countLabel} selected.`;
-    }
-
-    return `${items.length} options.`;
+    return getOptionsStatusMessage(items.length, selectedCount);
   }, [filter, visibleItems.length, label, selectedCount, items.length]);
 
   const handleSearchKeyDown = event => {
@@ -106,7 +102,7 @@ export const FilteredList = ({
             onKeyDown={handleSearchKeyDown}
             placeholder={`Search ${label.toLowerCase()}…`}
             aria-controls={listId}
-            aria-describedby={statusId}
+            aria-describedby={statusMessage ? statusId : undefined}
             autoComplete="off"
             spellCheck={false}
           />
@@ -118,19 +114,21 @@ export const FilteredList = ({
         </div>
       </div>
 
-      <div
-        id={statusId}
-        className="kgs-filtered-list__status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {statusMessage}
-      </div>
+      {statusMessage && (
+        <div
+          id={statusId}
+          className="kgs-facet__options-status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {statusMessage}
+        </div>
+      )}
 
       {visibleItems.length > 0 ? (
         <div
           id={listId}
-          className="kgs-filtered-list__options"
+          className="kgs-filtered-list__options kgs-facet__scrollable-options"
           role="group"
           aria-label={label}
         >

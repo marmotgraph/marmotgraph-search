@@ -81,6 +81,12 @@ body[profile="tefhealth"] .kgs-search__filters .kgs-facet-checkbox.is-active .kg
     min-width: 0;
 }
 
+@media (max-width: 991px) {
+    .kgs-search .kgs-search__filters {
+        display: none;
+    }
+}
+
 body[profile="ebrains"] .kgs-search .kgs-search__main {
     position: relative;   /* Keeps the element in the normal flow */
     top: -30px;

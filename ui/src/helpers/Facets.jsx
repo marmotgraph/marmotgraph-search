@@ -20,8 +20,19 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-const FACET_DEFAULT_SIZE = 10;
+const FACET_DEFAULT_SIZE = 50;
 const FACET_ALL_SIZE = 1000000000;
+const OPTIONS_STATUS_THRESHOLD = 5;
+
+export const getOptionsStatusMessage = (optionCount, selectedCount) => {
+  if (optionCount <= OPTIONS_STATUS_THRESHOLD) {
+    return null;
+  }
+  if (selectedCount > 0) {
+    return `${selectedCount} of ${optionCount} selected.`;
+  }
+  return `${optionCount} options.`;
+};
 
 export const resetFacet = facet => {
   switch (facet.type) {
@@ -95,6 +106,12 @@ export const getSelectedFilters = facets => {
     }
     return acc;
   }, []);
+};
+
+export const getActiveFilterCount = (facets, selectedTypes) => {
+  const facetCount = getSelectedFilters(facets).length;
+  const categoryCount = Array.isArray(selectedTypes) ? selectedTypes.length : 0;
+  return facetCount + categoryCount;
 };
 
 export const getAggregation = facets => {

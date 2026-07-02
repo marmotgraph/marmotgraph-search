@@ -21,52 +21,58 @@
  *
  */
 
-import React from 'react';
+import React, { useId, useMemo } from 'react';
 
+import { getOptionsStatusMessage } from '../../helpers/Facets';
 import { List } from '../List/List';
 
-import './PaginatedList.css';
+export const PaginatedList = ({
+  items,
+  optionCount,
+  ItemComponent,
+  itemUniqKeyAttribute,
+  onItemClick,
+}) => {
+  const statusId = useId();
 
-const viewMoreIncrement = 50;
+  const selectedCount = useMemo(
+    () => items.filter(item => item.checked).length,
+    [items]
+  );
 
-export class PaginatedList extends React.PureComponent {
+  const totalOptions = optionCount ?? items.length;
 
-  handleViewMore = () => {
-    const { onViewChange, size, defaultSize, others } = this.props;
-    let nextSize = defaultSize;
-    if (others > 0) {
-      if (size === defaultSize) {
-        nextSize = viewMoreIncrement;
-      } else {
-        nextSize = size + viewMoreIncrement;
-      }
-    }
-    onViewChange(nextSize);
-  };
+  const statusMessage = useMemo(
+    () => getOptionsStatusMessage(totalOptions, selectedCount),
+    [totalOptions, selectedCount]
+  );
 
-  render() {
-    const { items, ItemComponent, itemUniqKeyAttribute, onItemClick, defaultSize, currentSize, others } = this.props;
-
-    if (!Array.isArray(items) || !items.length) {
-      return null;
-    }
-
-    let viewMoreText = null;
-    if (others > 0) {
-      viewMoreText = others === 1 ? 'Show 1 more' : `Show ${others} more`;
-    } else if (currentSize > defaultSize) {
-      viewMoreText = 'Show less';
-    }
-
-    return (
-      <div className="kgs-paginated-list">
-        <List items={items} ItemComponent={ItemComponent} itemUniqKeyAttribute={itemUniqKeyAttribute} onItemClick={onItemClick} />
-        {viewMoreText && (
-          <button className="kgs-paginated-list__viewMore-button" onClick={this.handleViewMore}>{viewMoreText}</button>
-        )}
-      </div>
-    );
+  if (!Array.isArray(items) || !items.length) {
+    return null;
   }
-}
+
+  return (
+    <div className="kgs-facet-list">
+      {statusMessage && (
+        <div
+          id={statusId}
+          className="kgs-facet__options-status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {statusMessage}
+        </div>
+      )}
+      <div className="kgs-facet__scrollable-options" aria-describedby={statusMessage ? statusId : undefined}>
+        <List
+          items={items}
+          ItemComponent={ItemComponent}
+          itemUniqKeyAttribute={itemUniqKeyAttribute}
+          onItemClick={onItemClick}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default PaginatedList;

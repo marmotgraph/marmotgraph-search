@@ -1,0 +1,187 @@
+/*
+ * Copyright 2018 - 2021 Swiss Federal Institute of Technology Lausanne (EPFL)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This open source software code was developed in part or in whole in the
+ * Human Brain Project, funded from the European Union's Horizon 2020
+ * Framework Programme for Research and Innovation under
+ * Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+ * (Human Brain Project SGA1, SGA2 and SGA3).
+ *
+ */
+
+.kgs-search-filters-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.kgs-search-filters-drawer.is-open {
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.kgs-search-filters-drawer__backdrop {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    cursor: pointer;
+}
+
+.kgs-search-filters-drawer.is-open .kgs-search-filters-drawer__backdrop {
+    opacity: 1;
+}
+
+.kgs-search-filters-drawer__panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: min(400px, 100vw);
+    max-width: 100%;
+    background: #fff;
+    box-shadow: 4px 0 24px rgba(15, 23, 42, 0.18);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+}
+
+.kgs-search-filters-drawer.is-open .kgs-search-filters-drawer__panel {
+    transform: translateX(0);
+}
+
+.kgs-search-filters-drawer__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.kgs-search-filters-drawer__title {
+    margin: 0;
+    color: #1E293B;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.kgs-search-filters-drawer__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #64748B;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.kgs-search-filters-drawer__close:hover,
+.kgs-search-filters-drawer__close:focus {
+    background: #F1F5F9;
+    color: #334155;
+    outline: none;
+}
+
+.kgs-search-filters-drawer__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.kgs-search-filters-drawer__body .kgs-filters {
+    flex: none;
+    overflow: visible;
+}
+
+.kgs-search-filters-drawer__body .kgs-filters__body {
+    overflow: visible;
+}
+
+.kgs-search-filters-drawer__footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+    border-top: 1px solid #E2E8F0;
+    background: #fff;
+}
+
+.kgs-search-filters-drawer__clear,
+.kgs-search-filters-drawer__apply {
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.kgs-search-filters-drawer__clear {
+    flex-shrink: 0;
+    border: 1px solid #CBD5E1;
+    background: #fff;
+    color: #334155;
+}
+
+.kgs-search-filters-drawer__clear:hover,
+.kgs-search-filters-drawer__clear:focus {
+    border-color: #94A3B8;
+    background: #F8FAFC;
+    outline: none;
+}
+
+.kgs-search-filters-drawer__apply {
+    flex: 1 1 auto;
+    border: 0;
+    background: var(--color-selected, #2563EB);
+    color: #fff;
+}
+
+.kgs-search-filters-drawer__apply:hover,
+.kgs-search-filters-drawer__apply:focus {
+    background: var(--color-37, #1D4ED8);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35);
+}
+
+@media (min-width: 992px) {
+    .kgs-search-filters-drawer {
+        display: none;
+    }
+}

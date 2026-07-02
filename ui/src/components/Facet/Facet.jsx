@@ -33,7 +33,7 @@ import Tree from '../Tree/Tree';
 import FacetCheckbox from './FacetCheckbox';
 import './Facet.css';
 
-const Facet = ({ facet, onChange, onViewChange }) => {
+const Facet = ({ facet, onChange }) => {
   const selectionCount = getFacetSelectionCount(facet);
   const [collapsed, setCollapsed] = useState(selectionCount === 0);
 
@@ -112,13 +112,10 @@ const Facet = ({ facet, onChange, onViewChange }) => {
         Component = list.length?PaginatedList:null;
         parameters = {
           items: list,
+          optionCount: facet.count ?? list.length,
           ItemComponent: FacetCheckbox,
           itemUniqKeyAttribute: 'value',
           onItemClick: item => onChange(facet.name, !item.checked, item.value),
-          onViewChange: size => onViewChange(facet.name, size),
-          size: facet.size,
-          defaultSize: facet.defaultSize,
-          others: facet.others
         };
       }
     }
@@ -147,6 +144,7 @@ const Facet = ({ facet, onChange, onViewChange }) => {
   }
 
   const facetTitle = facet.title ?? facet.label;
+  const useScrollableOptions = facet.type === 'list' && facet.isHierarchical;
 
   return (
     <div className={`kgs-facet${collapsed ? ' is-collapsed' : ' is-expanded'}`}>
@@ -166,7 +164,13 @@ const Facet = ({ facet, onChange, onViewChange }) => {
       </button>
       {!collapsed && (
         <div className="kgs-facet__body">
-          <Component {...parameters} />
+          {useScrollableOptions ? (
+            <div className="kgs-facet__scrollable-options">
+              <Component {...parameters} />
+            </div>
+          ) : (
+            <Component {...parameters} />
+          )}
         </div>
       )}
     </div>

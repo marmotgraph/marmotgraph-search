@@ -27,11 +27,11 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Facet from '../../../components/Facet/Facet';
-import { setFacet, setFacetSize, resetFacets, selectFacets } from '../../../features/search/searchSlice';
+import { setFacet, resetFacets, selectFacets } from '../../../features/search/searchSlice';
 import useAuth from '../../../hooks/useAuth';
 
 import './FiltersPanel.css';
-const FiltersPanel = () => {
+const FiltersPanel = ({ showHeader = true }) => {
 
   const { isAuthenticated } = useAuth();
 
@@ -48,13 +48,6 @@ const FiltersPanel = () => {
     }));
   };
 
-  const handleOnViewChange = (name, size) => {
-    dispatch(setFacetSize({
-      name: name,
-      size: size
-    }));
-  };
-
   const handleOnReset = () => {
     dispatch(resetFacets());
   };
@@ -65,22 +58,23 @@ const FiltersPanel = () => {
 
   return (
     <div className="kgs-filters">
-      <div className="kgs-filters__header">
-        <div className="kgs-filters__title">
-          <FontAwesomeIcon icon={faSliders} className="kgs-filters__icon" aria-hidden="true" />
-          Filters
+      {showHeader && (
+        <div className="kgs-filters__header">
+          <div className="kgs-filters__title">
+            <FontAwesomeIcon icon={faSliders} className="kgs-filters__icon" aria-hidden="true" />
+            Filters
+          </div>
+          <button type="button" className="kgs-filters__reset-button" onClick={handleOnReset}>
+            Clear all
+          </button>
         </div>
-        <button type="button" className="kgs-filters__reset-button" onClick={handleOnReset}>
-          Clear all
-        </button>
-      </div>
+      )}
       <div className="kgs-filters__body">
         {facets.map(facet => (
           <Facet
             key={facet.name}
             facet={facet}
             onChange={handleOnChange}
-            onViewChange={handleOnViewChange}
           />
         ))}
       </div>

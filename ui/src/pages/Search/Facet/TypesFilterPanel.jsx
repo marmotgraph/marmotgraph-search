@@ -40,7 +40,7 @@ const TypesFilterPanel = () => {
   const types = useSelector(state => state.search.types);
   const selectionCount = selectedTypes.length;
 
-  const [collapsed, setCollapsed] = useState(selectionCount === 0);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (selectionCount > 0) {
@@ -122,12 +122,14 @@ const TypesFilterPanel = () => {
           role="group"
           aria-labelledby="types-filter-heading"
         >
-          <List
-            items={items}
-            ItemComponent={FacetCheckbox}
-            itemUniqKeyAttribute="type"
-            onItemClick={handleTypeClick}
-          />
+          <div className="kgs-facet__scrollable-options">
+            <List
+              items={items}
+              ItemComponent={FacetCheckbox}
+              itemUniqKeyAttribute="type"
+              onItemClick={handleTypeClick}
+            />
+          </div>
         </div>
       )}
     </div>
