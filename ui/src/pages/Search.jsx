@@ -21,36 +21,28 @@
  *
  */
 
-import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, {useEffect, useRef} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 import BgError from '../components/BgError/BgError';
-import TermsShortNotice from '../features/TermsShortNotice';
-import { setGroup } from '../features/groups/groupsSlice';
-import { syncHistory } from '../features/instance/instanceSlice';
+import {setGroup} from '../features/groups/groupsSlice';
+import {syncHistory} from '../features/instance/instanceSlice';
 import KnowledgeSpaceLink from '../features/search/KnowledgeSpaceLink';
 import SearchBox from '../features/search/SearchBox';
 import {
   initializeSearch,
-  syncSearchParameters,
-  setSearchResults,
   selectFacets,
+  setSearchResults,
+  syncSearchParameters,
   typesToQueryParam
 } from '../features/search/searchSlice';
-import {
-  getUpdatedQuery,
-  getLocationSearchFromQuery,
-  searchToObj
-} from '../helpers/BrowserHelpers';
-import { getAggregation } from '../helpers/Facets';
+import {getLocationSearchFromQuery, getUpdatedQuery, searchToObj} from '../helpers/BrowserHelpers';
+import {getAggregation} from '../helpers/Facets';
 import useFiltersColumnLayout from '../hooks/useFiltersColumnLayout';
-import { withTabKeyNavigation } from '../helpers/withTabKeyNavigation';
+import {withTabKeyNavigation} from '../helpers/withTabKeyNavigation';
 import Matomo from '../services/Matomo';
-import {
-  useGetSearchQuery,
-  getError, useGetSearchNewQuery,
-} from '../services/api';
+import {getError, useGetSearchNewQuery,} from '../services/api';
 
 import Detail from './Search/Detail/Detail';
 import FiltersPanel from './Search/Facet/FiltersPanel';
@@ -66,45 +58,45 @@ import './Search.css';
 
 const calculateFacetList = facets => facets.reduce((acc, facet) => {
   switch (facet.type) {
-  case 'list':
-    if (facet.isHierarchical) {
-      facet.keywords.forEach(keyword => {
-        keyword.children &&
-              Array.isArray(keyword.children.keywords) &&
-              keyword.children.keywords.forEach(child => {
-                acc.push({
-                  name: facet.name,
-                  value: child.value,
-                  checked: Array.isArray(facet.value)
-                    ? facet.value.includes(child.value)
-                    : false,
-                  many: true
-                });
-              });
-      });
-    } else {
-      facet.keywords.forEach(keyword => {
-        acc.push({
-          name: facet.name,
-          value: keyword.value,
-          checked: Array.isArray(facet.value)
-            ? facet.value.includes(keyword.value)
-            : false,
-          many: true
+    case 'list':
+      if (facet.isHierarchical) {
+        facet.keywords.forEach(keyword => {
+          keyword.children &&
+          Array.isArray(keyword.children.keywords) &&
+          keyword.children.keywords.forEach(child => {
+            acc.push({
+              name: facet.name,
+              value: child.value,
+              checked: Array.isArray(facet.value)
+                ? facet.value.includes(child.value)
+                : false,
+              many: true
+            });
+          });
         });
+      } else {
+        facet.keywords.forEach(keyword => {
+          acc.push({
+            name: facet.name,
+            value: keyword.value,
+            checked: Array.isArray(facet.value)
+              ? facet.value.includes(keyword.value)
+              : false,
+            many: true
+          });
+        });
+      }
+      break;
+    case 'exists':
+      acc.push({
+        name: facet.name,
+        value: !!facet.value,
+        checked: !!facet.value,
+        many: false
       });
-    }
-    break;
-  case 'exists':
-    acc.push({
-      name: facet.name,
-      value: !!facet.value,
-      checked: !!facet.value,
-      many: false
-    });
-    break;
-  default:
-    break;
+      break;
+    default:
+      break;
   }
   return acc;
 }, []);
@@ -139,7 +131,7 @@ const getIdFromUrl = () => {
 
 const getSearchParametersFromUrl = () => {
   const params = getUrlParmeters();
-  const searchParams = { ...params };
+  const searchParams = {...params};
   delete searchParams.group;
   return searchParams;
 };
@@ -237,7 +229,7 @@ const SearchBase = () => {
     //isSuccess,
     isError,
     refetch
-  } = useGetSearchNewQuery(searchNewParams, { skip: !isInitialized });
+  } = useGetSearchNewQuery(searchNewParams, {skip: !isInitialized});
 
   useEffect(() => {
     if (!initializedRef.current) {
@@ -326,42 +318,41 @@ const SearchBase = () => {
     }
   }, [data, isInitialized, isUpToDate, dispatch]);
 
+  let innerSection;
   if (isError) {
-    return (
-      <div className="kgs-search-container">
+    innerSection =
+      <div className="kgs-search__main">
         <BgError
           message={getError(error)}
           onRetryClick={refetch}
           retryVariant="primary"
-        />
-      </div>
-    );
+        /></div>;
+  } else {
+    innerSection = <div className="kgs-search__main"><SearchMobileFilters/>
+      <HitsInfo/>
+      <SelectedFilters/>
+      <Hits/>
+      <KnowledgeSpaceLink/>
+      <SearchResultsFooter/></div>
   }
 
   return (
     <>
       <div className="kgs-search-container">
         <div className="kgs-search" ref={searchLayoutRef}>
-          <SearchBox />
+          <SearchBox/>
           <div className="kgs-search__panel">
-            <div className="kgs-search__filters-bg" aria-hidden="true" />
+            <div className="kgs-search__filters-bg" aria-hidden="true"/>
             <div className="kgs-search__filters">
-              <TypesFilterPanel />
-              <FiltersPanel />
+              <TypesFilterPanel/>
+              <FiltersPanel/>
             </div>
-            <div className="kgs-search__main">
-              <SearchMobileFilters />
-              <HitsInfo />
-              <SelectedFilters />
-              <Hits />
-              <KnowledgeSpaceLink />
-              <SearchResultsFooter />
-            </div>
+              {innerSection}
           </div>
         </div>
-        <Detail />
+        <Detail/>
       </div>
-      <SearchFetching />
+      <SearchFetching/>
     </>
   );
 };

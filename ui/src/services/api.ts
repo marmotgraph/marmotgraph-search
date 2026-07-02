@@ -297,8 +297,11 @@ export const getError = (error: FetchBaseQueryError|SerializedError|string|undef
   } else if ('status' in error) {
     const code = Number(error.status);
     if (!isNaN(code) && errorStatusText[code]) {
+      if(code == 400){
+        return "Your query can not be processed"
+      }
       technicalError = `${error.status} ${errorStatusText[code]}`;
-    } else {
+    } else{
       technicalError = error.status as string;
     }
   }
