@@ -24,18 +24,31 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './Footer.css';
 
+const hasFooterContent = html => {
+  if (!html?.trim()) {
+    return false;
+  }
+  if (/<(?:img|svg|video|iframe|picture)\b/i.test(html)) {
+    return true;
+  }
+  const text = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').trim();
+  return text.length > 0;
+};
+
 const Footer = ({ commit, configuration, custom, theme }) => (
     <footer className="site-footer">
       <div className="footer__header">
         <div className="footer__primary">
           <a href={configuration.home} aria-label="Homepage" title="Homepage"
                                               className="logo nuxt-link-exact-active nuxt-link-active"> <img
-                  src={`/api/assets/img/${theme === 'dark' ? configuration.logoDark : configuration.logo}`}
+                  alt="logo" src={`/api/assets/img/${theme === 'dark' ? configuration.logoDark : configuration.logo}`}
                   height="100"/>
           </a>
         </div>
       </div>
-      <div className="footer__content" dangerouslySetInnerHTML={{__html: custom.footerContent}}></div>
+      {hasFooterContent(custom?.footerContent) && (
+        <div className="footer__content" dangerouslySetInnerHTML={{__html: custom.footerContent}}></div>
+      )}
       <hr className="full-width"/>
       <div className="footer__end">
         <div className="footer__copyright">
