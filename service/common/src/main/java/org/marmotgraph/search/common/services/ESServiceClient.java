@@ -44,6 +44,7 @@ import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,6 +67,8 @@ public class ESServiceClient {
 
     private final String elasticSearchEndpoint;
 
+    private final ObjectMapper objectMapper;
+
     private static String metricsQuery(int size) {
         return "{\n" +
                 "  \"fields\": [\n" +
@@ -79,9 +82,10 @@ public class ESServiceClient {
                 "}";
     }
 
-    public ESServiceClient(WebClient webClient, @Value("${es.endpoint}") String elasticSearchEndpoint) {
+    public ESServiceClient(WebClient webClient, @Value("${es.endpoint}") String elasticSearchEndpoint, ObjectMapper objectMapper) {
         this.webClient = webClient;
         this.elasticSearchEndpoint = elasticSearchEndpoint;
+        this.objectMapper = objectMapper;
     }
 
     private String getQuery(String id) {
@@ -462,6 +466,9 @@ public class ESServiceClient {
     }
 
     public Result searchDocuments(String index, Map<String, Object> payload) {
+        if(logger.isInfoEnabled()){
+            logger.info(objectMapper.writeValueAsString(payload));
+        }
         return searchDocuments(index, null, BodyInserters.fromValue(payload));
     }
 

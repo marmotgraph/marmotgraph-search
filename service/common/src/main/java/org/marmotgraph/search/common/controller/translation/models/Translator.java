@@ -59,6 +59,9 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
 
     public Target translate(SourceInstance source, DataStage dataStage, String category, Class<?> targetType, boolean liveMode, TranslatorUtils translatorUtils) throws TranslationException{
         Target t = setup(category, (Source)source, (Class<Target>)targetType, translatorUtils);
+        if(translatorUtils.isFirstCitizen()){
+            t.setImportance(10);
+        }
         try {
             translate((Source) source, t, dataStage, liveMode, translatorUtils);
             return t;

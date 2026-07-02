@@ -91,6 +91,9 @@ public abstract class TargetInstance {
 
     private int last30DaysViews;
 
+    @ElasticSearchInfo(type = "rank_feature")
+    private int importance=1;
+
     public abstract Value<String> getTitle();
 
     public abstract void setTitle(Value<String> title);

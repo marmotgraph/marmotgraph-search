@@ -274,10 +274,7 @@ public class SearchController extends FacetAggregationUtils {
         queryPayload.put("aggs", esAggs);
 
         List<String> sanitizedQuery = QueryStringUtils.sanitizeQueryString(q);
-        final Map<String, Object> query = getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types);
-        if (query != null) {
-            queryPayload.put("query", query);
-        }
+        queryPayload.put("query", getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types));
         Result result = esServiceClient.searchDocuments(esHelper.getIndexesForSearch(dataStage), queryPayload);
 
         //This is just the "reported" total - note this is not necessarily the real total because it limits to 10000. We are calculating the "real" total later
@@ -637,18 +634,20 @@ public class SearchController extends FacetAggregationUtils {
 
 
     private Map<String, Object> getEsQuery(String q, List<String> types) {
-        if (StringUtils.isBlank(q)) {
-            return null;
+        Map<String, Object> wrapper = new HashMap<>();
+        wrapper.put("should", Collections.singletonList(Map.of("rank_feature", Map.of("field", "importance"))));
+        if(StringUtils.isNotBlank(q)) {
+            Map<String, Object> queryString = new HashMap<>();
+            queryString.put("lenient", true);
+            queryString.put("analyze_wildcard", true);
+            queryString.put("query", q);
+            List<String> fields = types.stream().map(searchFieldsController::getEsQueryFields).flatMap(Collection::stream).distinct().toList();
+            if (!CollectionUtils.isEmpty(fields)) {
+                queryString.put("fields", fields);
+            }
+            wrapper.put("must", Collections.singletonList(Map.of("query_string", queryString)));
         }
-        Map<String, Object> queryString = new HashMap<>();
-        queryString.put("lenient", true);
-        queryString.put("analyze_wildcard", true);
-        queryString.put("query", q);
-        List<String> fields = types.stream().map(searchFieldsController::getEsQueryFields).flatMap(Collection::stream).distinct().toList();
-        if (!CollectionUtils.isEmpty(fields)) {
-            queryString.put("fields", fields);
-        }
-        return Map.of("query_string", queryString);
+        return Map.of("bool", wrapper);
     }
 
     private Map<String, Object> getEsHighlight(List<String> types) {
