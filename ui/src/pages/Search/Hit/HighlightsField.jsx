@@ -33,7 +33,10 @@ const HighlightsField = ({ fields, mapping }) => {
   Object.keys(fields).forEach(field => {
     let shortKey = field.replace(/^(.*?)\..*$/g, '$1'); //NOSONAR
     const content = formatHitForHighlight(fields[field].join(', '));
-    valueTag.push(<p key={shortKey}>{mapping.fields[shortKey].label}: <span dangerouslySetInnerHTML={{ __html: content }} /></p>);
+    if(shortKey in mapping.fields && mapping.fields[shortKey] !== undefined) {
+      valueTag.push(<p key={shortKey}>{mapping.fields[shortKey].label}: <span
+        dangerouslySetInnerHTML={{__html: content}}/></p>);
+    }
   });
 
   return (
