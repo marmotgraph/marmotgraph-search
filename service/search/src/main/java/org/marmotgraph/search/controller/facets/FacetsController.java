@@ -44,6 +44,7 @@ public class FacetsController {
         othersFacet.setLabel("Types");
         othersFacet.setName(TYPE_FACET_NAME);
         othersFacet.setType(FieldInfo.Facet.LIST);
+        othersFacet.setIsFilterable(true);
         othersFacet.setKeyword(false);
         return othersFacet;
     }
