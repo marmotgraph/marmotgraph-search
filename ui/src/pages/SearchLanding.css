@@ -24,7 +24,6 @@
 .kgs-search-landing {
     display: flex;
     flex: 1;
-    align-items: center;
     justify-content: center;
     min-height: calc(100vh - 200px);
     padding: 24px var(--site-margin);

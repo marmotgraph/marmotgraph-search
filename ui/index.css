@@ -265,7 +265,7 @@ main {
     font-weight: 400;
     font-family: var(--font-stack) sans-serif;
     position: relative;
-    min-height: 100vh;
+    min-height: 70vh;
     background: var(--background-color-2);
     border-bottom: 1px solid var(--border-color-1);
     z-index: 100;
