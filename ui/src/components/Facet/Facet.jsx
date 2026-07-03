@@ -35,7 +35,9 @@ import './Facet.css';
 
 const Facet = ({ facet, onChange }) => {
   const selectionCount = getFacetSelectionCount(facet);
-  const [collapsed, setCollapsed] = useState(selectionCount === 0);
+  const facetTitle = facet.title ?? facet.label;
+  const startsExpanded = facet.name === 'types' || facetTitle === 'Types';
+  const [collapsed, setCollapsed] = useState(startsExpanded ? false : selectionCount === 0);
 
   useEffect(() => {
     if (selectionCount > 0) {
@@ -143,7 +145,6 @@ const Facet = ({ facet, onChange }) => {
     return null;
   }
 
-  const facetTitle = facet.title ?? facet.label;
   const useScrollableOptions = facet.type === 'list' && facet.isHierarchical;
 
   return (
