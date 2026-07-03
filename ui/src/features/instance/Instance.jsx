@@ -31,7 +31,7 @@ import useAuth from '../../hooks/useAuth';
 import Matomo from '../../services/Matomo';
 import { useGetInstanceQuery, useGetPreviewQuery, getError } from '../../services/api';
 import { selectIsCurated } from '../groups/groupsSlice';
-import { setInstance, reset } from './instanceSlice';
+import { setInstance, reset, requestInstance } from './instanceSlice';
 
 
 const Instance = ({ isPreview, isSearch, path }) => {
@@ -64,7 +64,15 @@ const Instance = ({ isPreview, isSearch, path }) => {
   }, [id, group, defaultGroup, path, isSearch, isSearchInitialized]);
 
   const handleOnCancelClick = () => {
-    if (!isSearch && instanceData?.id && instanceData.id !== id) {
+    if (isSearch) {
+      if (instanceData?.id && instanceData.id !== id) {
+        dispatch(requestInstance({ instanceId: instanceData.id }));
+      } else {
+        dispatch(reset());
+      }
+      return;
+    }
+    if (instanceData?.id && instanceData.id !== id) {
       navigate(-1);
     } else {
       if (!group) {
@@ -101,7 +109,7 @@ const Instance = ({ isPreview, isSearch, path }) => {
 
   if (isError) {
     let message = getError(error);
-    if (error.status == 404) {
+    if (error.status === 404) {
       if (isSearch || isPreview || isCurated) {
         message = 'The page you requested was not found.';
       } else {
@@ -111,10 +119,12 @@ const Instance = ({ isPreview, isSearch, path }) => {
       }
     }
 
-    let cancelLabel = (isSearch || (instanceData?.id && instanceData.id !== id))?'Cancel':'Back to search';
+    const dismissLabel = (isSearch || (instanceData?.id && instanceData.id !== id))
+      ? 'Close'
+      : 'Back to search';
 
     return (
-      <ErrorPanel message={message} cancelLabel={cancelLabel} onCancelClick={handleOnCancelClick}  onRetryClick={refetch} retryVariant="primary" />
+      <ErrorPanel message={message} cancelLabel={dismissLabel} onCancelClick={handleOnCancelClick} onRetryClick={refetch} retryVariant="primary" />
     );
   }
 

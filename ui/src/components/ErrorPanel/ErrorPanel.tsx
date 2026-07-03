@@ -22,7 +22,7 @@
  */
 
 import DOMPurify from 'dompurify';
-import React from 'react';
+import React, { useId } from 'react';
 import showdown from 'showdown';
 
 const converter = new showdown.Converter();
@@ -39,19 +39,50 @@ interface ErrorPanelProps {
   onRetryClick?: () => void;
 }
 
-const ErrorPanel = ({ message, onCancelClick, onRetryClick, cancelVariant, retryVariant, cancelLabel='Cancel', retryLabel='Retry' }: ErrorPanelProps) => {
+const ErrorPanel = ({
+  message,
+  onCancelClick,
+  onRetryClick,
+  cancelVariant,
+  retryVariant,
+  cancelLabel = 'Close',
+  retryLabel = 'Retry',
+}: ErrorPanelProps) => {
+  const messageId = useId();
   const html = DOMPurify.sanitize(converter.makeHtml(message));
+
   return (
     <div className="kgs-error-container">
-      <div className="kgs-error-panel">
-        <span className="kgs-error-message" dangerouslySetInnerHTML={{__html:html}} />
+      <div
+        className="kgs-error-panel"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby={messageId}
+      >
+        <span
+          id={messageId}
+          className="kgs-error-message"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
         {(!!onCancelClick || !!onRetryClick) && (
           <div className="kgs-error-navigation">
             {!!onCancelClick && (
-              <button className={`${cancelVariant?cancelVariant:''}`} onClick={onCancelClick}>{cancelLabel}</button>
+              <button
+                type="button"
+                className={`${cancelVariant ? cancelVariant : ''}`}
+                onClick={onCancelClick}
+              >
+                {cancelLabel}
+              </button>
             )}
             {!!onRetryClick && (
-              <button className={`${retryVariant?retryVariant:''}`} onClick={onRetryClick}>{retryLabel}</button>
+              <button
+                type="button"
+                className={`${retryVariant ? retryVariant : ''}`}
+                onClick={onRetryClick}
+              >
+                {retryLabel}
+              </button>
             )}
           </div>
         )}

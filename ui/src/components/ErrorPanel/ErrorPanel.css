@@ -35,7 +35,7 @@
 .kgs-error-panel {
     position: absolute;
     width: 360px;
-    margin-top: calc(40% - 60px);
+    margin-top: calc(30% - 60px);
     margin-left: calc(50% - 180px);
     padding: 20px;
     border-radius: 4px;
@@ -65,7 +65,7 @@
 
 .kgs-error-navigation button {
     display: inline-block;
-    margin: 15px 20px 0px 20px;
+    margin: 15px 20px 0 20px;
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
