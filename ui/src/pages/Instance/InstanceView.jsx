@@ -146,7 +146,7 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
   const type = data?.type;
   const category = data?.category;
   const fields = data?.fields;
-  const mapping =  useSelector(state => selectTypeMapping(state, category));
+  const mapping =  useSelector(state => selectTypeMapping(state, fields?.mappingKey ? fields?.mappingKey : category));
 
   const hasNoData = !fields;
   const hasUnknownData = !mapping;

@@ -53,7 +53,7 @@ public class Settings {
 
     public record KeycloakConfig(String realm, String url, String clientId, boolean authEndpointAvailable) { }
     public record SentryConfig(String dsn, String release, String environment){}
-    public record MatomoConfig(String url, String typeMappings) {}
+    public record MatomoConfig(String url, String siteId) {}
     public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent, String footerSocial, String editorEndpoint, String notFoundFooter, String dataIssueReportSlackUrl) { }
     public record Setting(String commit, SentryConfig sentry, KeycloakConfig keycloak, MatomoConfig matomo, Customization.Configuration config, CustomSections custom, List<Object> types, Map<String, Object> typeMappings) { }
 

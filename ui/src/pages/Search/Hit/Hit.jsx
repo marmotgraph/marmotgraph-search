@@ -141,7 +141,7 @@ export const Hit = ({ data }) => {
   const type = data?.type;
   const category = data?.category;
   const hasNoData = !data?.fields;
-  const mapping = useSelector(state => selectTypeMapping(state, category));
+  const mapping = useSelector(state => selectTypeMapping(state, data?.fields?.mappingKey ? data?.fields?.mappingKey : category));
   const hasUnknownData = !mapping;
   const title = getTitle(data?.title, data?.highlight);
   const fields = getFields(data?.fields, data?.highlight, mapping);

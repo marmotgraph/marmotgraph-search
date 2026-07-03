@@ -52,7 +52,7 @@ const initialState = {
     },
     matomo: {
       url: null,
-      typeMappings: null
+      siteId: null
     },
     config: {
       home: null,
