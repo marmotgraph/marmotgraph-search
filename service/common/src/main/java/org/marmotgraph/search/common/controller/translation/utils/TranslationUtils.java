@@ -24,16 +24,17 @@
 
 package org.marmotgraph.search.common.controller.translation.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.marmotgraph.search.common.controller.translation.models.Stats;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.model.target.TargetInternalReference;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
@@ -62,13 +63,13 @@ public class TranslationUtils {
 
 
     private static void collectAllNonStaticNonTransientFields(Class<?> clazz, Set<Field> collector) {
-        if (clazz.getCanonicalName().startsWith("eu.ebrains.kg")) {
-            final Field[] declaredFields = clazz.getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                if (!Modifier.isTransient(declaredField.getModifiers()) && !Modifier.isStatic(declaredField.getModifiers())) {
-                    collector.add(declaredField);
-                }
+        final Field[] declaredFields = clazz.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            if (!Modifier.isTransient(declaredField.getModifiers()) && !Modifier.isStatic(declaredField.getModifiers())) {
+                collector.add(declaredField);
             }
+        }
+        if(clazz!=Object.class) {
             collectAllNonStaticNonTransientFields(clazz.getSuperclass(), collector);
         }
     }
@@ -94,8 +95,8 @@ public class TranslationUtils {
                         collectAllTargetInternalReferences(value, collector);
                     }
                 }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InaccessibleObjectException | IllegalAccessException e) {
+                // ignore field
             }
         });
 

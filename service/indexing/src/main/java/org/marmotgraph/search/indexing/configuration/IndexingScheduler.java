@@ -79,6 +79,8 @@ public class IndexingScheduler {
         result.setErrorsByTarget(translatorRegistry.getTranslators().stream().filter(m -> m.autoRelease() == isAutorelease).map(m ->
         {
             indexingController.recreateIndex(stage, m.targetClass(), m.autoRelease(), false, false); //Ensures the creation of the index if it doesn't exist yet
+            indexingController.populateIndex(m, stage, false);
+            //We populate the index twice immediately to make sure we have the two-pass (resolving links properly)
             return indexingController.populateIndex(m, stage, false);
         }).filter(Objects::nonNull).toList());
         ZonedDateTime end = ZonedDateTime.now(ZoneOffset.UTC);
