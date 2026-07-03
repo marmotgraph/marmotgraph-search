@@ -1,0 +1,185 @@
+/*
+ * Copyright 2018 - 2021 Swiss Federal Institute of Technology Lausanne (EPFL)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This open source software code was developed in part or in whole in the
+ * Human Brain Project, funded from the European Union's Horizon 2020
+ * Framework Programme for Research and Innovation under
+ * Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+ * (Human Brain Project SGA1, SGA2 and SGA3).
+ *
+ */
+
+.kgs-instance-breadcrumbs {
+    position: relative;
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.kgs-instance-breadcrumbs__list {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+}
+
+.kgs-instance-breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.kgs-instance-breadcrumbs__item--ellipsis {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.kgs-instance-breadcrumbs__item--current {
+    flex-shrink: 0;
+}
+
+.kgs-instance-breadcrumbs__link {
+    margin: 0;
+    padding: 5px 0;
+    border: 0;
+    background: transparent;
+    color: var(--link-color-1, #2563EB);
+    font-size: inherit;
+    font-weight: 500;
+    line-height: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.kgs-instance-breadcrumbs__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.kgs-instance-breadcrumbs__dot {
+    --breadcrumb-accent: #64748B;
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--breadcrumb-accent);
+}
+
+.kgs-instance-breadcrumbs__text {
+    white-space: nowrap;
+}
+
+.kgs-instance-breadcrumbs__link:hover,
+.kgs-instance-breadcrumbs__link:focus {
+    color: var(--link-color-active, #1D4ED8);
+    outline: none;
+}
+
+.kgs-instance-breadcrumbs__link:hover .kgs-instance-breadcrumbs__text,
+.kgs-instance-breadcrumbs__link:focus .kgs-instance-breadcrumbs__text {
+    text-decoration: underline;
+}
+
+.kgs-instance-breadcrumbs__separator {
+    margin: 0 5px;
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 400;
+    flex-shrink: 0;
+}
+
+.kgs-instance-breadcrumbs__current {
+    padding: 5px 0;
+    line-height: inherit;
+    cursor: default;
+}
+
+.kgs-instance-breadcrumbs__text.is-current {
+    color: #64748B;
+    font-weight: 400;
+}
+
+.kgs-instance-breadcrumbs__ellipsis {
+    min-width: 26px;
+    margin: 0;
+    padding: 3px 7px;
+    border: 1px solid var(--border-color-6, #E2E8F0);
+    border-radius: 6px;
+    background: var(--background-color-2, #fff);
+    color: #64748B;
+    font-size: inherit;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.kgs-instance-breadcrumbs__ellipsis:hover,
+.kgs-instance-breadcrumbs__ellipsis:focus {
+    border-color: var(--link-color-1, #2563EB);
+    color: var(--link-color-1, #2563EB);
+    outline: none;
+}
+
+.kgs-instance-breadcrumbs__menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 1600;
+    min-width: 220px;
+    max-width: min(320px, calc(100vw - 24px));
+    margin: 0;
+    padding: 6px 0;
+    list-style: none;
+    border: 1px solid var(--border-color-6, #E2E8F0);
+    border-radius: 8px;
+    background: var(--background-color-2, #fff);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.kgs-instance-breadcrumbs__menu-item {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 7px 12px;
+    border: 0;
+    background: transparent;
+    color: var(--link-color-1, #2563EB);
+    font-size: inherit;
+    font-weight: 500;
+    line-height: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.kgs-instance-breadcrumbs__menu-item:hover,
+.kgs-instance-breadcrumbs__menu-item:focus {
+    background: var(--background-color-1, #F8FAFC);
+    color: var(--link-color-active, #1D4ED8);
+    outline: none;
+}
+
+.kgs-instance-container > .kgs-instance-breadcrumbs {
+    margin: 12px 0 8px;
+}
+
+.kgs-carousel__header .kgs-instance-breadcrumbs {
+    flex: 1;
+    min-width: 0;
+    margin: 5px 10px 0 5px;
+    overflow: visible;
+}

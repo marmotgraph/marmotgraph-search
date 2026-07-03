@@ -29,17 +29,23 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useMemo } from 'react';
 
 import { isMobile } from '../../helpers/BrowserHelpers';
+import InstanceBreadcrumbs, { breadcrumbNavigationShape } from '../InstanceBreadcrumbs';
 
 import './Carousel.css';
 
-const getNavigation = (item, showPrevious, onClose, onBack, navigationComponent) => {
+const getNavigation = (item, showPrevious, onClose, onBack, navigationComponent, breadcrumbNavigation) => {
   const NavigationComponent = navigationComponent;
+  const { breadcrumbs, onBreadcrumbClick } = breadcrumbNavigation ?? {};
+  const hasBreadcrumbs = breadcrumbs && breadcrumbs.length > 1;
   const Navigation = () => (
     <div className="kgs-carousel__header">
-      {item.isActive && showPrevious && (
+      {item.isActive && showPrevious && !hasBreadcrumbs && (
         <button className="kgs-carousel__previous-button" onClick={onBack}>
           <FontAwesomeIcon icon={faChevronLeft} /> Previous
         </button>
+      )}
+      {item.isActive && hasBreadcrumbs && (
+        <InstanceBreadcrumbs breadcrumbs={breadcrumbs} onBreadcrumbClick={onBreadcrumbClick} />
       )}
       <div className="kgs-carousel__navigation">
         {item.isActive && item.data && NavigationComponent && (
@@ -57,9 +63,9 @@ const getNavigation = (item, showPrevious, onClose, onBack, navigationComponent)
   return Navigation;
 };
 
-const CarouselItem = ({ item, showPrevious, onClose, onBack, itemComponent, navigationComponent }) => {
+const CarouselItem = ({ item, showPrevious, onClose, onBack, itemComponent, navigationComponent, breadcrumbNavigation }) => {
   const ItemComponent = itemComponent;
-  const NavigationComponent = getNavigation(item, showPrevious, onClose, onBack, navigationComponent);
+  const NavigationComponent = getNavigation(item, showPrevious, onClose, onBack, navigationComponent, breadcrumbNavigation);
   return (
     <div className={`kgs-carousel__item position${item.position}`}>
       <div className="kgs-carousel__content">
@@ -73,7 +79,7 @@ const CarouselItem = ({ item, showPrevious, onClose, onBack, itemComponent, navi
 
 const nbOfItems = 5;
 
-const Carousel = ({ className, data, onBack, onClose, itemComponent, navigationComponent }) => {
+const Carousel = ({ className, data, onBack, onClose, itemComponent, navigationComponent, breadcrumbNavigation }) => {
   const wrapperRef = useRef();
 
   useEffect(() => {
@@ -119,7 +125,16 @@ const Carousel = ({ className, data, onBack, onClose, itemComponent, navigationC
     <div className={`kgs-carousel ${className??''}`} onClick={handleOnClose}>
       <div className="kgs-carousel__panel" ref={wrapperRef}>
         {items.map(item => (
-          <CarouselItem key={item.id} item={item} showPrevious={showPrevious} onBack={onBack} onClose={onClose} itemComponent={itemComponent} navigationComponent={navigationComponent} />
+          <CarouselItem
+            key={item.id}
+            item={item}
+            showPrevious={showPrevious}
+            onBack={onBack}
+            onClose={onClose}
+            itemComponent={itemComponent}
+            navigationComponent={navigationComponent}
+            breadcrumbNavigation={breadcrumbNavigation}
+          />
         ))}
       </div>
     </div>
@@ -141,7 +156,8 @@ Carousel.propTypes = {
     PropTypes.element,
     PropTypes.func,
     PropTypes.object
-  ])
+  ]),
+  breadcrumbNavigation: breadcrumbNavigationShape
 };
 
 export default Carousel;

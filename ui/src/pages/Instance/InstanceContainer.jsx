@@ -25,13 +25,13 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { InstanceBreadcrumbsNav } from '../../components/InstanceBreadcrumbs';
 import Notification from '../../components/Notification/Notification';
-import PreviousInstanceLinkButton from '../../components/PreviousInstanceLinkButton/PreviousInstanceLinkButton';
 import Watermark from '../../components/Watermark/Watermark';
 
 import { setGroup } from '../../features/groups/groupsSlice';
 import Instance from '../../features/instance/Instance';
-import { requestInstance, syncHistory, selectPreviousInstance } from '../../features/instance/instanceSlice';
+import { requestInstance, syncHistory } from '../../features/instance/instanceSlice';
 
 import { getUpdatedQuery, getLocationSearchFromQuery, searchToObj } from '../../helpers/BrowserHelpers';
 
@@ -52,7 +52,6 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
   const meta = useSelector(state => state.instance.meta);
   const title = useSelector(state => state.instance.title);
   const configuration = useSelector(state => state.application.config);
-  const previousInstance = useSelector(state => selectPreviousInstance(state));
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
 
@@ -108,9 +107,7 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
         <Notification text={warning} />
         {data && (
           <>
-            {previousInstance && (
-              <PreviousInstanceLinkButton title={previousInstance.title} />
-            )}
+            <InstanceBreadcrumbsNav />
             <InstanceView data={data} path={path} isSearch={false} />
           </>
         )}

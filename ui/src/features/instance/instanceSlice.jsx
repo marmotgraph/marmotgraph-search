@@ -82,7 +82,8 @@ const instanceSlice = createSlice({
           state.history.push({
             id: state.data.id,
             title: state.title,
-            tab: state.tab // only tab is kept in history, context is reset
+            tab: state.tab, // only tab is kept in history, context is reset
+            badges: state.data.badges
           });
         }
         state.data = data;

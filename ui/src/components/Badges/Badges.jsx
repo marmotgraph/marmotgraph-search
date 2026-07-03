@@ -30,7 +30,7 @@ const BadgesEnum = [
   { name: 'isTrending', title: 'Top trending', color: '#20C997' }
 ];
 
-const normalizeColor = color => {
+export const normalizeColor = color => {
   if (!color) {
     return '#64748B';
   }
@@ -40,6 +40,29 @@ const normalizeColor = color => {
   }
   return trimmed;
 };
+
+const parseTypeBadge = badge => {
+  const parts = badge.split(';');
+  if (parts.length > 1 && parts[1]?.trim()) {
+    const title = parts[0].trim();
+    return {
+      name: title,
+      title,
+      color: parts[1].trim()
+    };
+  }
+  return null;
+};
+
+export const getTypeBadgeColor = badges => {
+  if (!Array.isArray(badges)) {
+    return null;
+  }
+  const typeBadge = badges.map(parseTypeBadge).find(Boolean);
+  return typeBadge?.color ?? null;
+};
+
+export const getTypeBadgeAccentColor = badges => normalizeColor(getTypeBadgeColor(badges));
 
 const Badge = ({ name, title, color }) => (
   <span

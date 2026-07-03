@@ -30,42 +30,37 @@ import { reset } from '../../../features/instance/instanceSlice';
 
 import InstanceView from '../../Instance/InstanceView';
 
-const Carousel = React.lazy(() => import('../../../components/Carousel/Carousel'));
+const SearchInstanceCarousel = React.lazy(() => import('./SearchInstanceCarousel'));
 
 import './DetailView.css';
 
-const itemComponent = ({ data, customNavigationComponent }) => <InstanceView data={data} path="/instances/" isSearch={true} customNavigationComponent={customNavigationComponent} />;
+const itemComponent = ({ data, customNavigationComponent }) => (
+  <InstanceView data={data} path="/instances/" isSearch={true} customNavigationComponent={customNavigationComponent} />
+);
 
 const DetailView = () => {
-
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-
   const current = useSelector(state => state.instance.data);
-  const history = useSelector(state => state.instance.history);
 
   const handleOnBack = () => navigate(-1);
+  const handleOnClose = () => dispatch(reset());
 
-  const handleOnClose = () => {
-    dispatch(reset());
-  };
-
-  if (current) {
-
-    const data = [
-      ...history.map(() => null),
-      current
-    ];
-
-    return (
-      <Suspense fallback={<FetchingPanel message="Loading resource..." />}>
-        <Carousel className="kgs-detailView" data={data} itemComponent={itemComponent} navigationComponent={ActionsButtons} onBack={handleOnBack} onClose={handleOnClose} />
-      </Suspense>
-    );
+  if (!current) {
+    return null;
   }
 
-  return null;
+  return (
+    <Suspense fallback={<FetchingPanel message="Loading resource..." />}>
+      <SearchInstanceCarousel
+        className="kgs-detailView"
+        itemComponent={itemComponent}
+        navigationComponent={ActionsButtons}
+        onBack={handleOnBack}
+        onClose={handleOnClose}
+      />
+    </Suspense>
+  );
 };
 
 export default DetailView;
