@@ -27,7 +27,7 @@ import {faSort} from '@fortawesome/free-solid-svg-icons/faSort';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
 import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Hint } from '../Hint/Hint';
 import './TableField.css';
 import { getKey } from './helpers';
@@ -245,12 +245,49 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
   }, {});
   const [collapsedRowIndexes, setCollapsedRowIndexes] = useState(initialState);
   const [sortState, setSortState] = useState({ columnIndex: null, direction: 'asc' });
+  const [showScrollHint, setShowScrollHint] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
 
   const rows = filterRows(normalizeRows(list, collapsedRowIndexes));
   const sortedRows = useMemo(
     () => sortTableRows(rows, sortState),
     [rows, sortState]
   );
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    const hasOverflow = el.scrollWidth > el.clientWidth + 1;
+    const atStart = el.scrollLeft < 8;
+    setShowScrollHint(hasOverflow && atStart);
+    setIsScrolled(el.scrollLeft > 0);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      return undefined;
+    }
+
+    updateScrollState();
+
+    const observer = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(updateScrollState)
+      : null;
+    observer?.observe(el);
+
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    window.addEventListener('resize', updateScrollState);
+
+    return () => {
+      observer?.disconnect();
+      el.removeEventListener('scroll', updateScrollState);
+      window.removeEventListener('resize', updateScrollState);
+    };
+  }, [sortedRows, updateScrollState]);
 
   if (!rows.length || !rows[0].length) {
     return null;
@@ -279,31 +316,43 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
   };
 
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          {rows[0].map((column, columnIndex) => (
-            <SortableTableHeader
-              key={`${column.name}-${columnIndex}`}
-              column={column}
-              columnIndex={columnIndex}
-              sortState={sortState}
-              onSort={handleSort}
+    <div className="kgs-table-wrap">
+      {showScrollHint && (
+        <p className="kgs-table-scroll-hint" aria-hidden="true">
+          Swipe to see more →
+        </p>
+      )}
+      <div
+        ref={scrollRef}
+        className={`kgs-table-scroll${isScrolled ? ' is-scrolled' : ''}`}
+      >
+        <table className="table">
+        <thead>
+          <tr>
+            {rows[0].map((column, columnIndex) => (
+              <SortableTableHeader
+                key={`${column.name}-${columnIndex}`}
+                column={column}
+                columnIndex={columnIndex}
+                sortState={sortState}
+                onSort={handleSort}
+              />
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {sortedRows.map((row, index) => (
+            <CustomTableRow
+              key={`${index}`}
+              row={row}
+              onCollapseToggle={onCollapseToggle}
+              fieldComponent={fieldComponent}
             />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {sortedRows.map((row, index) => (
-          <CustomTableRow
-            key={`${index}`}
-            row={row}
-            onCollapseToggle={onCollapseToggle}
-            fieldComponent={fieldComponent}
-          />
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+      </div>
+    </div>
   );
 };
 
