@@ -22,7 +22,7 @@
  */
 import {createSlice} from '@reduxjs/toolkit';
 
-import {constructFacet, resetFacet} from '../../helpers/Facets';
+import {constructFacet, FACET_ALL_SIZE, isFacetSearchable, resetFacet} from '../../helpers/Facets';
 import {api} from '../../services/api';
 
 export const typesToQueryParam = selectedTypes => (
@@ -142,6 +142,9 @@ const updateFacetsFromResults = (facets, isSelectedType, results) => {
         facet.keywords = (res?.keywords) ? res.keywords : [];
         facet.others = (res?.count>res?.keywords.length) ? res?.count-res?.keywords.length : 0;
         facet.count = res?.count;
+        if (isFacetSearchable(facet)) {
+          facet.size = FACET_ALL_SIZE;
+        }
       }
       if (facet.type === 'exists') {
         facet.count = res ? res.count : null; //null value to hide the facet, undefined to hide the count

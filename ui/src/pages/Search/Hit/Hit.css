@@ -150,4 +150,7 @@ body[profile="ebrains"] .kgs-hit[data-type] .kgs-field__title {
     background-color: var(--color-highlight);
     font-style: italic;
     color: var(--color-34);
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 5px;
 }

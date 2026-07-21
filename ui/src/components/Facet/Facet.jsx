@@ -25,7 +25,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 
-import { getFacetSelectionCount } from '../../helpers/Facets';
+import { getFacetSelectionCount, isFacetSearchable } from '../../helpers/Facets';
 import { FilteredList } from '../FilteredList/FilteredList';
 import { Item } from '../List/List';
 import { PaginatedList } from '../PaginatedList/PaginatedList';
@@ -101,8 +101,9 @@ const Facet = ({ facet, onChange }) => {
         count: keyword.count,
         checked: Array.isArray(facet.value) ? facet.value.includes(keyword.value) : false,
       }));
-      if (facet.isFilterable) {
-        Component = list.length?FilteredList:null;
+      const optionCount = facet.count ?? list.length;
+      if (isFacetSearchable(facet, optionCount)) {
+        Component = list.length ? FilteredList : null;
         parameters = {
           label: facet.label,
           items: list,
@@ -111,10 +112,10 @@ const Facet = ({ facet, onChange }) => {
           onItemClick: item => onChange(facet.name, !item.checked, item.value),
         };
       } else {
-        Component = list.length?PaginatedList:null;
+        Component = list.length ? PaginatedList : null;
         parameters = {
           items: list,
-          optionCount: facet.count ?? list.length,
+          optionCount,
           ItemComponent: FacetCheckbox,
           itemUniqKeyAttribute: 'value',
           onItemClick: item => onChange(facet.name, !item.checked, item.value),

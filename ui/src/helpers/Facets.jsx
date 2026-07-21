@@ -21,8 +21,17 @@
  *
  */
 const FACET_DEFAULT_SIZE = 50;
-const FACET_ALL_SIZE = 1000000000;
+export const FACET_ALL_SIZE = 1000000000;
 const OPTIONS_STATUS_THRESHOLD = 5;
+export const SEARCHABLE_OPTIONS_THRESHOLD = 6;
+
+export const getFacetOptionCount = facet => facet.count ?? facet.keywords?.length ?? 0;
+
+export const isFacetSearchable = (facet, optionCount = getFacetOptionCount(facet)) => (
+  facet.type === 'list'
+  && !facet.isHierarchical
+  && optionCount > SEARCHABLE_OPTIONS_THRESHOLD
+);
 
 export const getOptionsStatusMessage = (optionCount, selectedCount) => {
   if (optionCount <= OPTIONS_STATUS_THRESHOLD) {
@@ -38,7 +47,9 @@ export const resetFacet = facet => {
   switch (facet.type) {
   case 'list':
     facet.value = null;
-    facet.size = (facet.isHierarchical || facet.isFilterable)?FACET_ALL_SIZE:FACET_DEFAULT_SIZE;
+    facet.size = (facet.isHierarchical || facet.isFilterable || isFacetSearchable(facet))
+      ? FACET_ALL_SIZE
+      : FACET_DEFAULT_SIZE;
     break;
   case 'exists':
   default:

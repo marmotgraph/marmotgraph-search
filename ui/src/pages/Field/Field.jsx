@@ -141,6 +141,8 @@ const getFieldProps = (
         label = singleGroupedLinksLabel;
       }
 
+      labelCounter = Array.isArray(singleGroupedLinks) ? singleGroupedLinks.length : null;
+
       valueProps = {
         items: singleGroupedLinks,
         mapping: mapping,
@@ -278,9 +280,7 @@ const getFieldProps = (
     if (Array.isArray(data)) {
       // List
 
-      if (mapping.layout === 'group') {
-        labelCounter = data.length;
-      }
+      labelCounter = data.length;
 
       valueProps = {
         items: data,

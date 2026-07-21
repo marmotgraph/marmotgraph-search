@@ -20,22 +20,48 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import FieldsPanel from '../../../components/Field/FieldsPanel';
 import { ImagePreviews } from '../../../features/image/ImagePreviews';
+import { Select } from '../../../components/Select/Select';
 import './Tabs.css';
 import './Overview.css';
 import { setTab } from '../../../features/instance/instanceSlice';
 import { Field } from '../../Field/Field';
 
+const MOBILE_DROPDOWN_TAB_THRESHOLD = 3;
+
 const Tab = ({tab, active, onClick}) => {
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (!active || !buttonRef.current) {
+      return;
+    }
+    const button = buttonRef.current;
+    const list = button.parentElement;
+    if (!list || list.scrollWidth <= list.clientWidth) {
+      return;
+    }
+    const target = button.offsetLeft - (list.clientWidth / 2) + (button.clientWidth / 2);
+    list.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [active]);
 
   const handleClick = () => onClick(tab.name);
 
   const className = `kgs-tabs__button ${active?'is-active':''}`;
   return (
-    <button type="button" className={className} onClick={handleClick}>{tab.name?tab.name:''}</button>
+    <button
+      ref={buttonRef}
+      type="button"
+      role="tab"
+      aria-selected={active}
+      className={className}
+      onClick={handleClick}
+    >
+      {tab.name?tab.name:''}
+    </button>
   );
 };
 
@@ -77,18 +103,35 @@ const Tabs = ({tabs, selectedTab, onTabClick }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
+  const useMobileDropdown = hasContent && tabs.length > MOBILE_DROPDOWN_TAB_THRESHOLD;
+  const dropdownOptions = useMemo(
+    () => (hasContent ? tabs.map(t => ({ label: t.name, value: t.name })) : []),
+    [hasContent, tabs]
+  );
+
   if (!hasContent) {
     return null;
   }
 
   return (
     <>
-      <div className="kgs-tabs__buttons">
-        {tabs.map(t => (
-          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={onTabClick} />
-        ))}
+      <div className={`kgs-tabs__buttons${useMobileDropdown ? ' kgs-tabs__buttons--many' : ''}`}>
+        <div className="kgs-tabs__button-list" role="tablist" aria-label="Instance sections">
+          {tabs.map(t => (
+            <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={onTabClick} />
+          ))}
+        </div>
+        {useMobileDropdown && (
+          <Select
+            className="kgs-tabs__dropdown"
+            label="Section"
+            value={activeTab.name}
+            list={dropdownOptions}
+            onChange={onTabClick}
+          />
+        )}
       </div>
-      <div className="kgs-tabs__content">
+      <div className="kgs-tabs__content" role="tabpanel">
         <TabsView tab={activeTab}/>
       </div>
     </>

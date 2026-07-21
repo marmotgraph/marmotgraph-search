@@ -36,7 +36,6 @@ body[profile="tefhealth"] .footer__menu{
     padding: 40px var(--site-margin) 0;
     display: grid;
     grid-template-columns: 1fr min(1400px, 100%) 1fr;
-    font-size: 14px;
     font-size: var(--font-size-small);
     color: var(--light-text);
 }
@@ -142,7 +141,7 @@ body[profile="tefhealth"] .footer__menu{
 }
 
 .powered-by img {
-    height: 3em;
+    height: 2em;
     width: auto;
 }
 
