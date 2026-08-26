@@ -43,10 +43,13 @@ import org.marmotgraph.search.controller.facets.FacetsController;
 import org.marmotgraph.search.model.Facet;
 import org.marmotgraph.search.model.FacetValue;
 import org.marmotgraph.search.utils.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -62,7 +65,8 @@ import static org.marmotgraph.search.utils.FacetsUtils.FACET_BOOKMARKS;
 @Component
 @SuppressWarnings("java:S1452") // we keep the generics intentionally
 public class SearchController extends FacetAggregationUtils {
-    ;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final SearchCursor searchCursor;
     private final ESServiceClient esServiceClient;
     private final FacetsController facetsController;
@@ -70,6 +74,8 @@ public class SearchController extends FacetAggregationUtils {
     private final MetaModelUtils utils;
     private final ESHelper esHelper;
     private final KG kg;
+    private final ObjectMapper objectMapper;
+    private final QueryTranslator queryTranslator;
 
     private final static String TOTAL = "total";
     private final TranslatorRegistry translatorRegistry;
@@ -188,8 +194,10 @@ public class SearchController extends FacetAggregationUtils {
     }
 
 
+
     public Map<String, Object> search(String q, List<String> categories, int size, Map<String, FacetValue> facetValues, DataStage dataStage, String cursorToken) {
         //Prepare
+
         //TODO can we cache this?
         List<String> mainCategories = translatorRegistry.getMainCategories();
         KG.KGTypeInformation typeInformation = kg.getTypeInformation();
@@ -220,6 +228,8 @@ public class SearchController extends FacetAggregationUtils {
         } else {
             types = typesOfSelectedCategories.toList();
         }
+
+        Map<String, Object> payload = queryTranslator.translate(q, types);
 
         int nbOfBookmarks = 0;
         List<UUID> idsToFilter = null;
@@ -274,7 +284,12 @@ public class SearchController extends FacetAggregationUtils {
         queryPayload.put("aggs", esAggs);
 
         List<String> sanitizedQuery = QueryStringUtils.sanitizeQueryString(q);
-        queryPayload.put("query", getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types));
+        Map<String, Object> esQuery = getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types);
+        logger.debug(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload));
+
+        logger.debug(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(esQuery));
+        //queryPayload.put("query", esQuery);
+        queryPayload.put("query", payload);
         Result result = esServiceClient.searchDocuments(esHelper.getIndexesForSearch(dataStage), queryPayload);
 
         //This is just the "reported" total - note this is not necessarily the real total because it limits to 10000. We are calculating the "real" total later

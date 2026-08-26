@@ -8,7 +8,9 @@ import org.marmotgraph.search.indexing.controller.indexing.IndexingController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -91,23 +93,23 @@ public class IndexingScheduler {
     }
 
 
-    @Scheduled(fixedDelayString = "${indexing.inprogress:3600000}")
-    public void scheduleInProgressIndexing(){
-        scheduledIndexing(IndexingMode.IN_PROGRESS, inProgressInterval);
-    }
+//    @Scheduled(fixedDelayString = "${indexing.inprogress:3600000}")
+//    public void scheduleInProgressIndexing(){
+//        scheduledIndexing(IndexingMode.IN_PROGRESS, inProgressInterval);
+//    }
 
-    @Scheduled(fixedDelayString = "${indexing.released:3600000}")
-    public void scheduleReleasedIndexing(){
-        scheduledIndexing(IndexingMode.RELEASED, releasedInterval);
-    }
+//    @Scheduled(fixedDelayString = "${indexing.released:3600000}")
+//    public void scheduleReleasedIndexing(){
+//        scheduledIndexing(IndexingMode.RELEASED, releasedInterval);
+//    }
 
-    @Scheduled(fixedDelayString = "${indexing.inprogress-autorelease:86400000}")
-    public void scheduleInProgressAutoReleaseIndexing(){
-        scheduledIndexing(IndexingMode.IN_PROGRESS_AUTORELEASE, inProgressAutoReleaseInterval);
-    }
-
-    @Scheduled(fixedDelayString = "${indexing.released-autorelease:86400000}")
-    public void scheduleReleasedAutoReleaseIndexing(){
-        scheduledIndexing(IndexingMode.RELEASED_AUTORELEASE, releasedAutoReleaseInterval);
-    }
+//    @Scheduled(fixedDelayString = "${indexing.inprogress-autorelease:86400000}")
+//    public void scheduleInProgressAutoReleaseIndexing(){
+//        scheduledIndexing(IndexingMode.IN_PROGRESS_AUTORELEASE, inProgressAutoReleaseInterval);
+//    }
+//
+//    @Scheduled(fixedDelayString = "${indexing.released-autorelease:86400000}")
+//    public void scheduleReleasedAutoReleaseIndexing(){
+//        scheduledIndexing(IndexingMode.RELEASED_AUTORELEASE, releasedAutoReleaseInterval);
+//    }
 }

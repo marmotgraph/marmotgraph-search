@@ -34,7 +34,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.marmotgraph.search.common.customization.Customization;
 import org.marmotgraph.search.common.security.JwtUserInfoConverter;
-import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;

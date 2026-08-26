@@ -32,6 +32,7 @@ import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -106,7 +107,7 @@ public class QueryGenerator {
     }
 
     private List<MarmotGraphQuery.Property> evaluateStructure(Class<?> clazz, String defaultPropertyNamespace, String defaultTypeNamespace){
-        return getAllFields(clazz).stream().map(field -> {
+        return getAllFields(clazz).stream().filter(f -> !Modifier.isTransient(f.getModifiers())).map(field -> {
             if(!MergedAnnotations.from(field, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(Query.Ignore.class).isPresent()) {
                 MarmotGraphQuery.Property property = new MarmotGraphQuery.Property();
                 property.setPropertyName(String.format("query:%s", field.getName()));

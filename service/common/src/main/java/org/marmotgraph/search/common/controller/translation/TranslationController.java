@@ -72,7 +72,7 @@ public class TranslationController {
             result.setSize(size);
         } else {
             Stats stats = getStats(instanceResults, from);
-            logger.info("Queried {} {} ({})", stats.getPageSize(), translatorModel.sourceClass().getSimpleName(), stats.getInfo());
+            logger.info("Queried {} {} ({})", stats.getPageSize(), translatorModel.sourceClass().getCanonicalName(), stats.getInfo());
             if(instanceResults.getErrors() ==null){
                 instanceResults.setErrors(new ErrorReport());
             }
