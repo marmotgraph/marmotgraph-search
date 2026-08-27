@@ -8,6 +8,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 @AllArgsConstructor
@@ -43,8 +44,8 @@ public class QueryTranslator {
      *
      * @throws QueryTranslationException if the input cannot be parsed as a boolean query
      */
-    public Map<String, Object> translate(String userInput, List<String> types) {
-        final List<String> textFields = types.stream().map(searchFieldsController::getEsQueryFields).flatMap(Collection::stream).distinct().toList();
+    public Map<String, Object> translate(String userInput, List<Type> targetTypes) {
+        final List<String> textFields = targetTypes.stream().map(searchFieldsController::getEsQueryFields).flatMap(Collection::stream).distinct().toList();
 
         if (userInput == null || userInput.isBlank()) {
             return matchAll();

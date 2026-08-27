@@ -59,6 +59,9 @@ public class Document {
     public String getType(){
         if(source!=null){
             Object type = source.get("type");
+            if(type instanceof List){
+                type = ((List<?>)type).getFirst();
+            }
             if(type instanceof Map){
                 Object value = ((Map<?,?>)type).get("value");
                 if(value instanceof String){

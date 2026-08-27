@@ -37,6 +37,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,15 +87,19 @@ public class TranslatorRegistry {
     }
 
     public List<String> getMainCategories(){
-        return Stream.concat(translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::category), Stream.of("Others")).toList();
+        return Stream.concat(getTranslatorsForCategories(Optional.empty()).map(TranslatorModel::category), Stream.of("Others")).toList();
     }
 
     public List<String> getMainSemanticTypes(){
-        return translators.stream().filter(TranslatorModel::isFirstCitizen).map(TranslatorModel::semanticTypes).flatMap(Collection::stream).toList();
+        return getTranslatorsForCategories(Optional.empty()).map(TranslatorModel::semanticTypes).flatMap(Collection::stream).toList();
     }
 
-    public Stream<String> getSemanticTypesByMainCategories(List<String> categories){
-        return translators.stream().filter(TranslatorModel::isFirstCitizen).filter(t -> categories.contains(t.category())).map(TranslatorModel::semanticTypes).flatMap(Collection::stream);
+    public List<TranslatorModel> getTranslatorsForCategories(List<String> categories){
+        return getTranslatorsForCategories(Optional.of(categories)).toList();
+    }
+
+    private Stream<TranslatorModel> getTranslatorsForCategories(Optional<List<String>> categories){
+        return translators.stream().filter(TranslatorModel::isFirstCitizen).filter(t -> categories.isEmpty() || categories.get().contains(t.category()));
     }
 
 }

@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.controller.search;
 
+import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.Value;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
@@ -58,18 +59,8 @@ public class SearchFieldsController {
     }
 
 
-    @Cacheable(value = "highlight", key = "#type")
-    public List<String> getHighlight(String type) {
-        if (StringUtils.isNotBlank(type)) {
-            Type targetModel = utils.getTargetClassForCategory(type);
-            if (targetModel != null) {
-                return getFieldsHighlight(targetModel);
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    private List<String> getFieldsHighlight(Type type) {
+    //@Cacheable(value = "highlight", key = "#type")
+    public List<String> getFieldsHighlight(Type type) {
         List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(type);
         return allFields.stream().map(f -> {
             try {
@@ -101,39 +92,29 @@ public class SearchFieldsController {
     @Cacheable(value = "suggestFields", key = "#category")
     public List<String> getSuggestionFields(String category) {
         Map<String, Double> fieldsWithBoost = new HashMap<>();
-        final Class<?> classForType = utils.getClassForType(category);
+        final Type classForType = utils.getClassForType(category);
         if (classForType != null) {
-            reflectFields(fieldsWithBoost, classForType, FieldInfo::useForSuggestion);
+            reflectFields(classForType, FieldInfo::useForSuggestion);
         }
         return fieldsWithBoost.keySet().stream().sorted().collect(Collectors.toList());
     }
 
-    @Cacheable(value = "queryFields", key = "#type")
-    public List<String> getEsQueryFields(String type) {
-        Map<String, Double> fieldsWithBoost = new HashMap<>();
-        Class<?> targetModelForType = null;
-        for (int i = 0; i < utils.getTranslatorModels().size(); i++) {
-            Class<?> targetModel = utils.getTranslatorModels().get(i).targetClass();
-            String targetModelName = MetaModelUtils.getNameForClass(targetModel);
-            if (StringUtils.isNotBlank(type) && targetModelName.equals(type)) {
-                targetModelForType = targetModel;
-            } else {
-                reflectFields(fieldsWithBoost, targetModel, null);
-            }
-        }
-        //selected type fields override others
-        if (targetModelForType != null) {
-            reflectFields(fieldsWithBoost, targetModelForType, null);
-        }
-        return fieldsWithBoost.entrySet().stream().map(e -> {
+
+    public Optional<TranslatorModel> getTranslatorModelByName(String humanReadableName){
+        return utils.getTranslatorModels().stream().filter(m -> MetaModelUtils.getNameForClass(m.targetClass()).equals(humanReadableName)).findAny();
+    }
+
+    public List<String> getEsQueryFields(Type type) {
+        return reflectFields(type, null).entrySet().stream().map(e -> {
             String field = e.getKey();
-            double boost = e.getValue() == null ? 1.0 : (double) e.getValue();
+            double boost = e.getValue() == null ? 1.0 : e.getValue();
             return String.format("%s^%d", field, (int) boost);
         }).sorted().collect(Collectors.toList());
     }
 
-    private void reflectFields(Map<String, Double> boosts, Class<?> clazz, Predicate<FieldInfo> filter) {
-        List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(clazz);
+    private Map<String, Double> reflectFields(Type type, Predicate<FieldInfo> filter) {
+        Map<String, Double> boosts = new HashMap<>();
+        List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(type);
         allFields.forEach(f -> {
             try {
                 reflectFields(boosts, f, "", filter);
@@ -141,6 +122,7 @@ public class SearchFieldsController {
                 throw new RuntimeException(e);
             }
         });
+        return boosts;
     }
 
     private void reflectFields(Map<String, Double> fieldsWithBoost, MetaModelUtils.FieldWithGenericTypeInfo f, String parentPath, Predicate<FieldInfo> filter) throws ClassNotFoundException {
