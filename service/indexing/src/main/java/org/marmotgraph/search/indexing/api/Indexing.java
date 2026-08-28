@@ -57,19 +57,19 @@ public class Indexing {
 
     @PostMapping("/doiCitations")
     @UserRoles.MustBeAdmin
-    public void refreshDOICitation(@RequestParam("doi") String doi, @RequestParam(value = "style", defaultValue = "apa") String style, @RequestParam(value = "contentType", defaultValue = "text/x-bibliography") String contentType){
+    public void refreshDOICitation(@RequestParam("doi") String doi, @RequestParam(value = "style", defaultValue = "apa") String style, @RequestParam(value = "contentType", defaultValue = "text/x-bibliography") String contentType) {
         this.doiCitationFormatter.refreshDOICitation(doi, style, contentType);
     }
 
     @UserRoles.MustBeAdmin
     @PostMapping("/evictDoiCitations")
-    public void evictDoiCitations(Authentication token){
+    public void evictDoiCitations(Authentication token) {
         this.doiCitationFormatter.evictAll();
     }
 
     @UserRoles.MustBeAdmin
     @PostMapping
-    @Operation(summary="Full replacement")
+    @Operation(summary = "Full replacement")
     public ResponseEntity<ErrorReportResult> fullReplacement(@RequestParam("databaseScope") DataStage dataStage) {
         try {
             indexingController.recreateIdentifiersIndex(dataStage);
@@ -91,19 +91,24 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @PostMapping("categories/{category}")
-    @Operation(summary="Full replacement by type")
+    @Operation(summary = "Full replacement by type")
     public ResponseEntity<ErrorReportResult> fullReplacementByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().parallelStream().filter(m -> m.category().equalsIgnoreCase(category)).map(m -> {
-                //In full replacement mode, we first create a temporary index
-                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
-                //Which we're then going to populate.
-                final ErrorReportResult.ErrorReportResultByTargetType errorsByTargetType =  indexingController.populateIndex(m, dataStage, true);
-                //Eventually, we're reindexing the temporary index to the real one
-                indexingController.reindexTemporaryToReal(dataStage, m.targetClass(), m.autoRelease());
-                return errorsByTargetType;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
-            return handleErrorReportResult(errorsByTarget);
+            List<TranslatorModel> translatorModels = findTranslatorModels(category, false);
+            if (translatorModels.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            } else {
+                List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorModels.stream().map(m -> {
+                    //In full replacement mode, we first create a temporary index
+                    indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), true);
+                    //Which we're then going to populate.
+                    final ErrorReportResult.ErrorReportResultByTargetType errorsByTargetType = indexingController.populateIndex(m, dataStage, true);
+                    //Eventually, we're reindexing the temporary index to the real one
+                    indexingController.reindexTemporaryToReal(dataStage, m.targetClass(), m.autoRelease());
+                    return errorsByTargetType;
+                }).toList();
+                return handleErrorReportResult(errorsByTarget);
+            }
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful indexing", e);
             return ResponseEntity.status(e.getStatusCode()).build();
@@ -112,7 +117,7 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @PostMapping("/autorelease")
-    @Operation(summary="full replacement auto release")
+    @Operation(summary = "full replacement auto release")
     public ResponseEntity<ErrorReportResult> fullReplacementAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
         try {
             final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> {
@@ -130,7 +135,7 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @PutMapping
-    @Operation(summary="incremental update")
+    @Operation(summary = "incremental update")
     public ResponseEntity<ErrorReportResult> incrementalUpdate(@RequestParam("databaseScope") DataStage dataStage) {
         try {
 //            ErrorReport rep = new ErrorReport();
@@ -150,13 +155,12 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @GetMapping
-    @Operation(summary="error reports")
+    @Operation(summary = "error reports")
     public ResponseEntity<ErrorReportResult> getErrorReport(@RequestParam("databaseScope") DataStage dataStage, @RequestParam(value = "autorelease", defaultValue = "false") boolean autorelease) {
         IndexingScheduler.IndexingMode indexingMode;
-        if(dataStage == DataStage.IN_PROGRESS){
+        if (dataStage == DataStage.IN_PROGRESS) {
             indexingMode = autorelease ? IndexingScheduler.IndexingMode.IN_PROGRESS_AUTORELEASE : IndexingScheduler.IndexingMode.IN_PROGRESS;
-        }
-        else{
+        } else {
             indexingMode = autorelease ? IndexingScheduler.IndexingMode.RELEASED_AUTORELEASE : IndexingScheduler.IndexingMode.RELEASED;
         }
         ErrorReportResult result = indexingScheduler.getErrorReports().get(indexingMode);
@@ -165,24 +169,41 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @PutMapping("categories/{category}")
-    @Operation(summary="incremental update by type")
+    @Operation(summary = "incremental update by type")
     public ResponseEntity<ErrorReportResult> incrementalUpdateByType(@RequestParam("databaseScope") DataStage dataStage, @PathVariable("category") String category) {
         try {
-            Optional<TranslatorModel> translatorModel = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease() && m.category().toLowerCase().equals(category.toLowerCase())).findFirst();
-            if(translatorModel.isEmpty()){
+            List<TranslatorModel> translatorModels = findTranslatorModels(category, false);
+            if (translatorModels.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
-            ErrorReportResult.ErrorReportResultByTargetType errorReport = indexingController.populateIndex(translatorModel.get(), dataStage, false);
-            return handleErrorReportResult(Collections.singletonList(errorReport));
+            List<ErrorReportResult.ErrorReportResultByTargetType> errorReport = translatorModels.stream().map(m -> indexingController.populateIndex(m, dataStage, false)).toList();
+            return handleErrorReportResult(errorReport);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental indexing", e);
             return ResponseEntity.status(e.getStatusCode()).build();
         }
     }
 
+    private List<TranslatorModel> findTranslatorModels(String category, boolean autorelease) {
+        List<TranslatorModel> translatorModel = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease() && m.category().equalsIgnoreCase(category)).toList();
+        if (translatorModel.isEmpty()) {
+            translatorModel = translatorRegistry.getTranslators().stream().filter(m -> {
+                if (autorelease == m.autoRelease()) {
+                    return m.semanticTypes().stream().map(s -> {
+                        String[] split = s.split("/");
+                        return split[split.length - 1].toLowerCase();
+                    }).toList().contains(category.toLowerCase());
+                }
+                return false;
+            }).toList();
+        }
+        return translatorModel;
+    }
+
+
     @UserRoles.MustBeAdmin
     @PutMapping("/autorelease")
-    @Operation(summary="incremental auto release")
+    @Operation(summary = "incremental auto release")
     public ResponseEntity<ErrorReportResult> incrementalUpdateAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
         try {
             final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
@@ -195,14 +216,14 @@ public class Indexing {
 
     @UserRoles.MustBeAdmin
     @PutMapping(value = "/resources/{id}")
-    @Operation(description="Add/update the JSON resource with the given id")
+    @Operation(description = "Add/update the JSON resource with the given id")
     public void addResource(@PathVariable("id") String id, @RequestBody Map<String, Object> payload) {
         indexingController.addResource(id, payload);
     }
 
     @UserRoles.MustBeAdmin
     @DeleteMapping(value = "/resources/{id}")
-    @Operation(description="Remove the JSON resource with the given id")
+    @Operation(description = "Remove the JSON resource with the given id")
     public void deleteResource(@PathVariable("id") String id) {
         indexingController.deleteResource(id);
     }

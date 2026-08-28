@@ -64,9 +64,9 @@ public class TranslatorUtils {
     private final KG.KGTypeInformation typeInformation;
     private final boolean firstCitizen;
     private final List<String> errors;
+    private final List<String> singletonCategoryTypes;
 
-
-    public TranslatorUtils(DOICitationFormatter doiCitationFormatter, ESServiceClient esServiceClient, Integer trendingThreshold, Map<String, Object> translationContext, List<String> errors, ESHelper esHelper, KG.KGTypeInformation typeInformation, boolean firstCitizen) {
+    public TranslatorUtils(DOICitationFormatter doiCitationFormatter, ESServiceClient esServiceClient, Integer trendingThreshold, Map<String, Object> translationContext, List<String> errors, ESHelper esHelper, KG.KGTypeInformation typeInformation, boolean firstCitizen, List<String> singletonCategoryTypes) {
         this.doiCitationFormatter = doiCitationFormatter;
         this.esServiceClient = esServiceClient;
         this.trendingThreshold = trendingThreshold;
@@ -75,12 +75,13 @@ public class TranslatorUtils {
         this.errors = errors != null ? errors : new ArrayList<>();
         this.typeInformation = typeInformation;
         this.firstCitizen = firstCitizen;
+        this.singletonCategoryTypes = singletonCategoryTypes;
     }
 
-    public void addTypeBadge(HasBadges target, String semanticTypeName){
+    public void addTypeBadge(HasBadges target, String semanticTypeName, String category){
         this.typeInformation.getTypeInformationBySemanticName(semanticTypeName).ifPresent(t -> {
             if(t.getName()!=null && t.getColor()!=null){
-                addCustomBadge(target, t.getName(), t.getColor());
+                addCustomBadge(target, singletonCategoryTypes.contains(semanticTypeName) ? category : t.getName(), t.getColor());
             }
         });
     }

@@ -37,7 +37,6 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +77,7 @@ public class TranslatorRegistry {
                 MergedAnnotation<Translator.Instance> translatorAnnotation = MergedAnnotations.from(t.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(Translator.Instance.class);
 
                 return new TranslatorModel((Class<? extends SourceInstance>) source, (Class<? extends TargetInstance>) target, t, translatorAnnotation.getBoolean("autoRelease"), queryAnnotation.getInt("bulkSize"), translatorAnnotation.getBoolean("addToSitemap"), normalizedSemanticTypes, metaInfoAnnotation.getString("name"), translatorAnnotation.getInt("orderNumber"));
-            }).sorted(Comparator.comparing(TranslatorModel::category)).toList();
+            }).sorted(Comparator.comparing(c -> c.category().replaceAll("[^A-Za-z0-9 ]", ""))).toList();
         }
     }
 
@@ -90,16 +89,17 @@ public class TranslatorRegistry {
         return Stream.concat(getTranslatorsForCategories(Optional.empty()).map(TranslatorModel::category), Stream.of("Others")).toList();
     }
 
-    public List<String> getMainSemanticTypes(){
-        return getTranslatorsForCategories(Optional.empty()).map(TranslatorModel::semanticTypes).flatMap(Collection::stream).toList();
-    }
-
     public List<TranslatorModel> getTranslatorsForCategories(List<String> categories){
         return getTranslatorsForCategories(Optional.of(categories)).toList();
     }
 
     private Stream<TranslatorModel> getTranslatorsForCategories(Optional<List<String>> categories){
         return translators.stream().filter(TranslatorModel::isFirstCitizen).filter(t -> categories.isEmpty() || categories.get().contains(t.category()));
+    }
+
+    public List<String> getSingletonCategoryTypes(){
+        Map<String, List<TranslatorModel>> translatorsByCategory = translators.stream().filter(TranslatorModel::isFirstCitizen).collect(Collectors.groupingBy(TranslatorModel::category));
+        return translatorsByCategory.values().stream().map(translatorModels -> translatorModels.stream().map(TranslatorModel::semanticTypes).flatMap(Collection::stream).distinct().toList()).filter(l -> l.size() == 1).map(List::getFirst).toList();
     }
 
 }

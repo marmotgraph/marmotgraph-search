@@ -24,11 +24,11 @@
 
 package org.marmotgraph.search.controller.search;
 
+import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
 import org.marmotgraph.search.common.model.target.FieldInfo;
 import org.marmotgraph.search.common.model.target.Value;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 

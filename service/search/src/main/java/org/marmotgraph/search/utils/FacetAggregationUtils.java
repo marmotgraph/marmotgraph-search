@@ -172,7 +172,7 @@ public class FacetAggregationUtils {
         return agg.getKeywords().getBuckets().stream().mapToInt(bucket -> (bucket.getReverse() != null) ? bucket.getReverse().getDocCount() : 0).sum();
     }
 
-    public static Map<String, Object> getFacetAggregation(List<Facet> facets, Map<String, Aggregation> aggregations, Map<String, FacetValue> facetValues, boolean hasResults) {
+    public static Map<String, Object> getFacetAggregation(List<Facet> facets, Map<String, Aggregation> aggregations, Map<String, FacetValue> facetValues, List<String> singletonCategoryTypes, boolean hasResults) {
         if (CollectionUtils.isEmpty(aggregations)) {
             return Collections.emptyMap();
         }
@@ -182,6 +182,12 @@ public class FacetAggregationUtils {
 
                 Aggregation agg = aggregations.get(facet.getName());
                 if (facet.getType() == FieldInfo.Facet.LIST) {
+                    if(facet.getName().equals("types")){
+                        // We remove those types which are already reflected in a single-type category to avoid confusion
+                        List<KeywordsBucket> toBeRemoved = agg.getKeywords().getBuckets().stream().filter(b -> singletonCategoryTypes.contains(b.getKey())).toList();
+                        agg.getKeywords().getBuckets().removeAll(toBeRemoved);
+                        agg.getTotal().setValue(agg.getKeywords().getBuckets().size());
+                    }
                     FacetValue facetValue = facetValues.get(facet.getName());
                     if (facet.isChild()) {
                         if (facet.getIsHierarchical()) {

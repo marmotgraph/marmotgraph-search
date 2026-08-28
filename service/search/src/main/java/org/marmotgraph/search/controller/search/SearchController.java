@@ -293,7 +293,8 @@ public class SearchController extends FacetAggregationUtils {
                 reportedTotal = result.getHits().getTotal().getValue();
             }
         }
-        Map<String, Object> facetAggregation = getFacetAggregation(facets, result.getAggregations(), facetValues, reportedTotal != 0);
+        KG.KGTypeInformation typeInformation = kg.getTypeInformation();
+        Map<String, Object> facetAggregation = getFacetAggregation(facets, result.getAggregations(), facetValues, translatorRegistry.getSingletonCategoryTypes().stream().map(typeInformation::getSimpleName).filter(Optional::isPresent).map(Optional::get).toList(), reportedTotal != 0);
         if (reportedTotal != 0 && nbOfBookmarks != 0) {
             facetAggregation.put(FACET_BOOKMARKS, Collections.emptyMap()); //Bookmarks is not a real facet
         }
@@ -309,7 +310,6 @@ public class SearchController extends FacetAggregationUtils {
         List<Map<String, Object>> hits = getHits(result, dataStage, bookmarkedIds);
         response.put("hits", hits);
         response.put("aggregations", facetAggregation);
-        response.put("types", typesAggregation);
         response.put("types", typesAggregation);
         //TODO reenable suggestions
         //response.put("suggestions", getSuggestions(sanitizedQuery, dataStage, categories));

@@ -41,6 +41,7 @@ import org.marmotgraph.search.common.utils.ESHelper;
 import org.marmotgraph.search.common.utils.IdUtils;
 import org.marmotgraph.search.common.utils.TranslationException;
 import org.marmotgraph.search.common.utils.TranslatorUtils;
+import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,7 @@ public class TranslationController {
     private final DOICitationFormatter doiCitationFormatter;
     private final ESServiceClient esServiceClient;
     private final ESHelper esHelper;
+    private final TranslatorRegistry translatorRegistry;
 
     public TargetInstancesResult translateToTargetInstances(KG kg, TranslatorModel translatorModel, String queryId, DataStage dataStage, int from, int size, Integer trendingThreshold, Map<String, Object> translationContext) {
         Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
@@ -80,7 +82,7 @@ public class TranslationController {
             List<TargetInstance> instances = instanceResults.getData().stream().filter(Objects::nonNull).map(s -> {
                 try {
                     List<String> errors = new ArrayList<>();
-                    final TargetInstance r = translator.translate(s, dataStage, translatorModel.category(), translatorModel.targetClass(), false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper, typeInformation, translatorModel.isFirstCitizen()));
+                    final TargetInstance r = translator.translate(s, dataStage, translatorModel.category(), translatorModel.targetClass(), false, new TranslatorUtils(doiCitationFormatter, esServiceClient, trendingThreshold, translationContext, errors, esHelper, typeInformation, translatorModel.isFirstCitizen(), translatorRegistry.getSingletonCategoryTypes()));
                     if(!CollectionUtils.isEmpty(errors) && r != null) {
                         String id = IdUtils.getUUID(r.getId());
                         if (instanceResults.getErrors().get(id) != null) {
@@ -124,7 +126,7 @@ public class TranslationController {
             return null;
         }
         Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
-        return translator.translate(source, dataStage, translatorModel.category(), translatorModel.targetClass(), true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper, kg.getTypeInformation(), translatorModel.isFirstCitizen()));
+        return translator.translate(source, dataStage, translatorModel.category(), translatorModel.targetClass(), true, new TranslatorUtils(doiCitationFormatter, esServiceClient, null, Collections.emptyMap(), null, esHelper, kg.getTypeInformation(), translatorModel.isFirstCitizen(), translatorRegistry.getSingletonCategoryTypes()));
     }
 
 
