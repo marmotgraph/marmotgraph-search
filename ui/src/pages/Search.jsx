@@ -27,7 +27,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 
 import BgError from '../components/BgError/BgError';
 import {setGroup} from '../features/groups/groupsSlice';
-import {syncHistory} from '../features/instance/instanceSlice';
+import {requestInstance, syncHistory} from '../features/instance/instanceSlice';
 import KnowledgeSpaceLink from '../features/search/KnowledgeSpaceLink';
 import SearchBox from '../features/search/SearchBox';
 import {
@@ -235,7 +235,11 @@ const SearchBase = () => {
     if (!initializedRef.current) {
       initializedRef.current = true;
       const params = getSearchParametersFromUrl();
+      const instanceId =  getIdFromUrl();
       dispatch(initializeSearch(params));
+      if(instanceId){
+        dispatch(requestInstance({instanceId: instanceId}));
+      }
     }
     const popstateHandler = () => {
       const id = getIdFromUrl();

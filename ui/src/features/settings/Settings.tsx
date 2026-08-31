@@ -35,6 +35,7 @@ import {setCommit, setConfig, setCustom} from '../application/applicationSlice';
 import {setInitialGroup, setUseGroups} from '../groups/groupsSlice';
 import type AuthAdapter from '../../services/AuthAdapter';
 import type { ReactNode } from 'react';
+import {setInstance} from '../instance/instanceSlice';
 interface SettingsProps {
   authAdapter: AuthAdapter;
   children?: ReactNode;
@@ -76,10 +77,12 @@ const Settings = ({ authAdapter, children}: SettingsProps) => {
       const noSilentSSO = (searchToObj() as { [key: string]: string })['noSilentSSO'];
 
       setIsNoSilentSSO(window.location.host.startsWith('localhost') || (noSilentSSO === 'true' && !isLive && !group));
-      const instance = !hasAuthSession && location.pathname === '/' && !location.hash.startsWith('#error') && location.hash.substring(1);
+      const instance = !hasAuthSession && location.hash !== '' && !location.hash.startsWith('#error') && location.hash.substring(1);
       if (instance) {
-        const url = `/instances/${instance}${hasGroup ? ('?group=' + group) : ''}`;
-        navigate(url, {replace: true});
+        dispatch(setInstance({data: instance}));
+
+        // const url = `/instances/${instance}${hasGroup ? ('?group=' + group) : ''}`;
+        // navigate(url, {replace: true});
       }
 
       const authMode = hasAuthSession || isLive || hasGroup || settings?.config.inProgressOnly;
