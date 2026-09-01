@@ -41,7 +41,7 @@ const Footer = ({ commit, configuration, custom, theme }) => (
         <div className="footer__primary">
           <a href={configuration.home} aria-label="Homepage" title="Homepage"
                                               className="logo nuxt-link-exact-active nuxt-link-active"> <img
-                  alt="logo" src={`/api/assets/img/${theme === 'dark' ? configuration.logoDark : configuration.logo}`}
+                  alt="logo" src={`/api/assets/img/${configuration.logoDark}`}
                   height="100"/>
           </a>
         </div>
@@ -54,7 +54,7 @@ const Footer = ({ commit, configuration, custom, theme }) => (
         <div className="footer__copyright">
           &copy;{configuration.copyrightSince !== new Date().getFullYear().toString() && configuration.copyrightSince + '-'}{new Date().getFullYear()}&nbsp;{configuration.copyright}
         </div>
-        <div className="powered-by">Powered by <a href="https://marmotgraph.org"><img src="assets/img/marmotgraph_bright.png"  alt="MarmotGraph"/></a></div>
+        <div className="powered-by">Powered by <a href="https://marmotgraph.org"><img src="assets/img/marmotgraph_logo_grey.svg"  alt="MarmotGraph"/></a></div>
         <div className="commit">
           {commit && <span>build: <i>{commit}</i></span>}
         </div>
