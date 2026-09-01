@@ -317,8 +317,8 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
 
   return (
     <div className="kgs-table-wrap">
-      {showScrollHint && (
-        <p className="kgs-table-scroll-hint" aria-hidden="true">
+      {(showScrollHint || isScrolled) && (
+        <p className="kgs-table-scroll-hint" style={{visibility: isScrolled ? "hidden" : "visible"}} aria-hidden="true">
           Swipe to see more →
         </p>
       )}
