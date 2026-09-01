@@ -272,17 +272,8 @@ public class SearchController extends FacetAggregationUtils {
         Object esPostFilter = FiltersUtils.getFilter(activeFilters, null);
         queryPayload.put("post_filter", esPostFilter);
 
-
         Object esAggs = AggsUtils.getAggs(facets, activeFilters, facetValues);
         queryPayload.put("aggs", esAggs);
-
-        //TODO remove
-//        List<String> sanitizedQuery = QueryStringUtils.sanitizeQueryString(q);
-//        Map<String, Object> esQuery = getEsQuery(QueryStringUtils.prepareQuery(sanitizedQuery), types);
-//        logger.debug(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload));
-//
-//        logger.debug(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(esQuery));
-        //queryPayload.put("query", esQuery);
         queryPayload.put("query", payload);
         Result result = esServiceClient.searchDocuments(esHelper.getIndexesForSearch(dataStage), queryPayload);
 

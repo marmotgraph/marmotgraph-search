@@ -46,6 +46,7 @@ public class MarmotGraphQuery {
         private String singleValue;
         private List<Property> structure;
         private Boolean required;
+        private Boolean ensureOrder;
     }
 
     @Getter

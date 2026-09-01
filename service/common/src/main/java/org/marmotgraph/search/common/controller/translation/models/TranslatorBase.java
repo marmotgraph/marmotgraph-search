@@ -25,7 +25,7 @@
 package org.marmotgraph.search.common.controller.translation.models;
 
 import org.marmotgraph.search.common.model.source.ExternalRef;
-import org.marmotgraph.search.common.model.source.FullNameRef;
+import org.marmotgraph.search.common.model.source.DisplayNameRef;
 import org.marmotgraph.search.common.model.target.*;
 import org.marmotgraph.search.common.utils.IdUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,37 +33,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class TranslatorBase {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * @deprecated Use Value.of directly.
+     */
+    @Deprecated
     public static Value<Integer> value(Integer v) {
-        if (v != null) {
-            return new Value<>(v);
-        }
-        return null;
+        return Value.of(v);
     }
 
     public static Value<Boolean> value(Boolean v) {
-        if (v != null) {
-            return new Value<>(v);
-        }
-        return null;
+        return Value.of(v);
     }
 
     public static Value<String> value(String v) {
         if (StringUtils.isNotBlank(v)) {
-            return new Value<>(v.trim());
+           return Value.of(v.strip());
         }
         return null;
     }
-
 
     public static ISODateValue value(Date date) {
         if (date != null) {
@@ -71,7 +65,6 @@ public abstract class TranslatorBase {
         } else {
             return null;
         }
-
     }
 
     protected <T> List<Children<T>> children(List<T> values) {
@@ -113,31 +106,19 @@ public abstract class TranslatorBase {
         return null;
     }
 
-    public static TargetInternalReference ref(FullNameRef ref) {
+    public static TargetInternalReference ref(DisplayNameRef ref) {
         if (ref != null) {
             final String uuid = IdUtils.getUUID(ref.getId());
-            return new TargetInternalReference(uuid, StringUtils.defaultIfBlank(ref.getFullName(), uuid));
+            return new TargetInternalReference(uuid, StringUtils.defaultIfBlank(ref.getDisplayName(), uuid).strip());
         }
         return null;
     }
 
-
-    public static TargetInternalReference emptyRef(String ref) {
-        return new TargetInternalReference(null, ref);
-    }
-
-    public static List<TargetInternalReference> emptyRef(List<String> refs) {
-        if (!CollectionUtils.isEmpty(refs)) {
-            return refs.stream().filter(Objects::nonNull).map(TranslatorBase::emptyRef).filter(Objects::nonNull).collect(Collectors.toList());
-        }
-        return null;
-    }
-
-    public static List<TargetInternalReference> ref(List<? extends FullNameRef> refs) {
+    public static List<TargetInternalReference> ref(List<? extends DisplayNameRef> refs) {
         return ref(refs, false);
     }
 
-    public static List<TargetInternalReference> ref(List<? extends FullNameRef> refs, boolean sorted) {
+    public static List<TargetInternalReference> ref(List<? extends DisplayNameRef> refs, boolean sorted) {
         if (!CollectionUtils.isEmpty(refs)) {
             Stream<TargetInternalReference> targetInternalReferenceStream = refs.stream().map(TranslatorBase::ref).filter(Objects::nonNull);
             if (sorted) {
@@ -154,25 +135,4 @@ public abstract class TranslatorBase {
         }
         return null;
     }
-
-    public <T> List<T> createList(T... items) {
-        List<T> l = new ArrayList<>();
-        for (T item : items) {
-            if (item != null) {
-                l.add(item);
-            }
-        }
-        return l;
-    }
-
-    protected String createURL(String partialURL){
-        if(partialURL==null){
-            return null;
-        }
-        if(partialURL.startsWith("http")){
-            return partialURL;
-        }
-        return "https://"+partialURL;
-    }
-
 }

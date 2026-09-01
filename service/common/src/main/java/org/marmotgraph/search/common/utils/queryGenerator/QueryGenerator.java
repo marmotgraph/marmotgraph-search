@@ -118,6 +118,10 @@ public class QueryGenerator {
                     if(required.isPresent() && required.get()) {
                         property.setRequired(true);
                     }
+                    Optional<Boolean> ensureOrder = annotation.getValue("ensureOrder", Boolean.class);
+                    if(ensureOrder.isPresent() && ensureOrder.get()) {
+                        property.setEnsureOrder(true);
+                    }
                 }
                 Type fieldType = field.getGenericType();
                 Type basicType = fieldType;

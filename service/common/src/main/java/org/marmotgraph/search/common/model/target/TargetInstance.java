@@ -98,4 +98,20 @@ public abstract class TargetInstance {
 
     public abstract void setTitle(Value<String> title);
 
+
+    public enum Importance{
+        HIGH(10),
+        MEDIUM(5),
+        LOW(1);
+
+        private final int boost;
+        Importance(int boost){
+            this.boost = boost;
+        }
+    }
+
+    @JsonIgnore
+    public void setImportance(Importance importance){;
+        this.importance = importance.boost;
+    }
 }

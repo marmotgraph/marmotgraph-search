@@ -59,4 +59,11 @@ public class Value<T extends Comparable<T>> implements Comparable<Value<T>>{
         return value.compareTo(otherValue);
     }
 
+    public static <T extends Comparable<T>> Value<T> of(T value){
+        if (value != null) {
+            return new Value<>(value);
+        }
+        return null;
+    }
+
 }

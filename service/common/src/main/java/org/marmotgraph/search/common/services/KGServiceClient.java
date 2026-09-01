@@ -47,6 +47,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -112,14 +113,16 @@ public class KGServiceClient {
     private final String serviceClientId;
     private final AppConfig appConfig;
     private final QueryGenerator queryGenerator;
+    private final ObjectMapper objectMapper;
 
-    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig, QueryGenerator queryGenerator) {
+    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig, QueryGenerator queryGenerator, ObjectMapper objectMapper) {
         this.kgCoreEndpoint = kgCoreEndpoint;
         this.serviceAccountWebClient = serviceAccountWebClient;
         this.userWebClient = userWebClient;
         this.serviceClientId = serviceClientId;
         this.appConfig = appConfig;
         this.queryGenerator = queryGenerator;
+        this.objectMapper = objectMapper;
     }
 
     @Cacheable(value = "authEndpoint", unless = "#result == null")

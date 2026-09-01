@@ -30,6 +30,7 @@ import org.marmotgraph.search.common.controller.kg.KG;
 import org.marmotgraph.search.common.model.elasticsearch.Document;
 import org.marmotgraph.search.common.model.target.HasBadges;
 import org.marmotgraph.search.common.model.target.HasTrendingInformation;
+import org.marmotgraph.search.common.model.target.TargetInstance;
 import org.marmotgraph.search.common.services.DOICitationFormatter;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.springframework.http.HttpStatus;
@@ -78,10 +79,10 @@ public class TranslatorUtils {
         this.singletonCategoryTypes = singletonCategoryTypes;
     }
 
-    public void addTypeBadge(HasBadges target, String semanticTypeName, String category){
+    public <T extends TargetInstance & HasBadges> void addTypeBadge(T target, String semanticTypeName){
         this.typeInformation.getTypeInformationBySemanticName(semanticTypeName).ifPresent(t -> {
             if(t.getName()!=null && t.getColor()!=null){
-                addCustomBadge(target, singletonCategoryTypes.contains(semanticTypeName) ? category : t.getName(), t.getColor());
+                addCustomBadge(target, singletonCategoryTypes.contains(semanticTypeName) ? target.getCategory().getValue() : t.getName(), t.getColor());
             }
         });
     }

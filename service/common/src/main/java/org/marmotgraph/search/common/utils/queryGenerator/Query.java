@@ -31,7 +31,6 @@ public @interface Query {
 
         boolean required() default false;
 
-        //TODO interpret for ensurance of order
         boolean ensureOrder() default false;
     }
 
