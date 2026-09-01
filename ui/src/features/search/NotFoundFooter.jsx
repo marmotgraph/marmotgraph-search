@@ -24,9 +24,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import './KnowledgeSpaceLink.css';
+import './NotFoundFooter.css';
+import DOMPurify from 'dompurify';
 
-const KnowledgeSpaceLink = () => {
+const NotFoundFooter = () => {
 
   const page = useSelector(state => state.search.page);
   const queryString = useSelector(state => state.search.queryString);
@@ -38,11 +39,17 @@ const KnowledgeSpaceLink = () => {
   if(!show || notFoundFooter === "") {
     return null;
   }
+  const html = notFoundFooter.replace("{{QUERY}}", encodeURIComponent(queryString))
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['a'],
+    ALLOWED_ATTR: ['href', 'target', 'rel'],
+    ALLOWED_URI_REGEXP: /^https?:\/\//i, // belt-and-suspenders: only allow http(s) links
+  });
+
   return (
-    <div className="kgs-search__knowledge-space">
-      {notFoundFooter}
+    <div className="kgs-search__not-found-footer" dangerouslySetInnerHTML={{ __html: clean }}>
     </div>
   );
 };
 
-export default KnowledgeSpaceLink;
+export default NotFoundFooter;

@@ -21,10 +21,6 @@
  *
  */
 
-.kgs-search__knowledge-space {
+.kgs-search__not-found-footer {
   color: var(--color-8);
-}
-
-.kgs-search__knowledge-space a{
-  color: var(--link-color-1);
 }

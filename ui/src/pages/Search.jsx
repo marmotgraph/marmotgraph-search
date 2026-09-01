@@ -28,7 +28,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import BgError from '../components/BgError/BgError';
 import {setGroup} from '../features/groups/groupsSlice';
 import {requestInstance, syncHistory} from '../features/instance/instanceSlice';
-import KnowledgeSpaceLink from '../features/search/KnowledgeSpaceLink';
+import NotFoundFooter from '../features/search/NotFoundFooter';
 import SearchBox from '../features/search/SearchBox';
 import {
   initializeSearch,
@@ -336,7 +336,7 @@ const SearchBase = () => {
       <HitsInfo/>
       <SelectedFilters/>
       <Hits/>
-      <KnowledgeSpaceLink/>
+      <NotFoundFooter/>
       <SearchResultsFooter/></div>
   }
 
