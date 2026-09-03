@@ -32,7 +32,11 @@ import HitBadges from './HitBadges';
 
 
 import './Hit.css';
+import showdown from 'showdown';
+import remend from 'remend';
+import DOMPurify from 'dompurify';
 
+const converter = new showdown.Converter();
 const markdownEscapedChars = {
   '&#92;': '\\',
   '&#x2F;': '/',
@@ -69,24 +73,25 @@ const getTitle = (text, highlight) => {
 const getDescriptionField = (data, highlight, mapping) => {
 
   let fieldData = data;
-
   const value = data && data.value;
   let modifiedValue = value;
 
   if (highlight && highlight['description.value'] && highlight['description.value'].length > 0) {
-    modifiedValue = replaceMarkdownEscapedChars(highlight['description.value'][0]);
-    modifiedValue += '...';
-  } else if (value && value.length > 220) {
-    modifiedValue = value.substring(0, 217) + '...';
+    modifiedValue = highlight['description.value'][0].replaceAll("<em>", "<em class=\"kgs-hit-highlight\">");
+    modifiedValue += " ... ";
   }
-
-  if (modifiedValue !== value) {
+  else if (value && value.length > 600) {
+    modifiedValue = value.substring(0, 597) + '...';
+  }
+  const htmlValue = DOMPurify.sanitize(converter.makeHtml(remend(modifiedValue)), {
+    ALLOWED_TAGS: [ 'p', 'br', 'em', 'h1', 'h2']
+  });
+  if (htmlValue !== value) {
     fieldData = {
       ...data,
-      value: modifiedValue
+      value: htmlValue
     };
   }
-
   return {
     name: 'description',
     data: fieldData,

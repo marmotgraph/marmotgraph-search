@@ -29,6 +29,7 @@
     word-break: break-word;
 }
 
+
 .kgs-hit .kgs-hit__body {
     width: 100%;
 }
@@ -41,6 +42,25 @@
 .kgs-hit .kgs-hit__body.has-previewImage.has-badges .kgs-hit__preview {
     margin-top: 8px;
 }
+
+.kgs-hit .kgs-hit__body .kgs-hit__content .kgs-field__description * {
+    font-size: 1em!important;
+    font-weight: normal!important;
+    font-style: normal!important;
+}
+
+.kgs-hit .kgs-hit__body .kgs-hit__content .kgs-field__description h2 {
+    font-size: 1.1em!important;
+    font-style: italic!important;
+
+
+}
+
+.kgs-hit .kgs-hit__body .kgs-hit__content .kgs-field__description .field-value{
+    white-space: normal;
+}
+
+
 
 
 
