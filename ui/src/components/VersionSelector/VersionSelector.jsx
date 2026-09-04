@@ -58,7 +58,7 @@ export const VersionSelector = () => {
   const getVersions = (latestVersion, versions) => {
     const result = (Array.isArray(versions) ? versions : [])
       .map(v => ({
-        label: v.value && latestVersion && v.reference === latestVersion.reference ? v.value + " - latest" : v.value ?? 'Current',
+        label: v.value && latestVersion && v.value === latestVersion.value ? v.value + " - latest" : v.value ?? 'Current',
         value: v.reference
       }));
     return result.length > 1 ? result : [];
