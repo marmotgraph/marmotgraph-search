@@ -21,11 +21,16 @@
  *
  */
 
-import React from 'react';
+import React, {useContext} from 'react';
 
 import { Select } from '../Select/Select';
 
 import './VersionSelector.css';
+import {requestInstance} from '../../features/instance/instanceSlice';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import OutdatedVersionDisclaimer from '../OutdatedVersionDisclaimer';
+import {useInstance} from '../../contexts/InstanceContext';
 
 const getVersionValue = (versions, version) => {
   if (!Array.isArray(versions)) {
@@ -38,17 +43,60 @@ const getVersionValue = (versions, version) => {
   return null;
 };
 
-export const VersionSelector = ({ version, versions, onChange }) => {
-  if (!Array.isArray(versions) || !versions.length) {
+
+
+export const VersionSelector = () => {
+  const { isSearch, path } = useInstance();
+  const navigate = useNavigate();
+  const data = useSelector(state => state.instance.data);
+  const selectedTab = useSelector(state => state.instance.tab);
+  const dispatch = useDispatch();
+  const group = useSelector(state => state.groups.group);
+  const defaultGroup = useSelector(state => state.groups.defaultGroup);
+  const category = data?.category;
+
+  const getVersions = (latestVersion, versions) => {
+    const result = (Array.isArray(versions) ? versions : [])
+      .map(v => ({
+        label: v.value && latestVersion && v.reference === latestVersion.reference ? v.value + " - latest" : v.value ?? 'Current',
+        value: v.reference
+      }));
+    return result.length > 1 ? result : [];
+  };
+
+  const onVersionChange = version => {
+    const context = {
+      tab: selectedTab
+    };
+    if(isSearch) {
+      dispatch(requestInstance({
+        instanceId: version,
+        context: context
+      }));
+    } else {
+      navigate(`${path}${version}${(group && group !== defaultGroup)?('?group=' + group ):''}`, { state: context});
+    }
+  };
+  const latestVersion = data?.versions?.length>0 ? data?.versions[0] : null;
+  const version = data?.version??'Current';
+  const versions = getVersions(latestVersion, data?.versions);
+
+  if(!versions?.length){
+    return null;
+  }
+  if (!Array.isArray(versions)) {
     if(!version || typeof version !== 'string' || version === 'Current') {
       return null;
     }
     return version;
   }
   const value = getVersionValue(versions, version);
+  let outdated = !latestVersion || latestVersion.reference !== data?.id;
   return (
     <div className="kgs-version_selector">
-      <Select value={value} list={versions} onChange={onChange} />
+       <OutdatedVersionDisclaimer latestVersion={latestVersion} type={category} isOutdated={outdated} />
+       <Select value={value} list={versions} onChange={onVersionChange} />
+
     </div>
   );
 };

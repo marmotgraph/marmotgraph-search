@@ -21,13 +21,11 @@
  *
  */
 
-import React from 'react';
+import React, {useMemo} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import BgError from '../../components/BgError/BgError';
 import Disclaimer from '../../components/Disclaimer/Disclaimer';
-import OutdatedVersionDisclaimer from '../../components/OutdatedVersionDisclaimer';
 import TermsShortNotice from '../../features/TermsShortNotice';
 import { selectIsDefaultGroup, selectGroupLabel } from '../../features/groups/groupsSlice';
 import ImagePopup from '../../features/image/ImagePopup';
@@ -36,9 +34,10 @@ import Matomo from '../../services/Matomo';
 
 import Header from './Header/Header';
 import Tabs from './Tabs/Tabs';
-
+import { createContext } from 'react';
 import './InstanceView.css';
 import './Fields.css';
+import {InstanceContext} from '../../contexts/InstanceContext';
 
 const getField = (type, name, data, mapping) => {
   if (name === 'type') {
@@ -120,11 +119,6 @@ const getFieldsByTabs = (type, data, typeMapping, previews) => {
   return Object.values(tabs);
 };
 
-const getVersions = versions => (Array.isArray(versions)?versions:[])
-  .map(v => ({
-    label: v.value??'Current',
-    value: v.reference
-  }));
 
 const getTags = (groupLabel, isDefaultGroup, category) => {
   const tags = [];
@@ -137,50 +131,24 @@ const getTags = (groupLabel, isDefaultGroup, category) => {
   return tags;
 };
 
-const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
 
-  const navigate = useNavigate();
-
+const InstanceView = ({ data, isSearch, path, customNavigationComponent }) => {
   const dispatch = useDispatch();
-
   const type = data?.type;
   const category = data?.category;
   const fields = data?.fields;
   const mapping =  useSelector(state => selectTypeMapping(state, fields?.mappingKey ? fields?.mappingKey : category));
-
   const hasNoData = !fields;
   const hasUnknownData = !mapping;
-
   const group = useSelector(state => state.groups.group);
-  const defaultGroup = useSelector(state => state.groups.defaultGroup);
   const isDefaultGroup = useSelector(state => selectIsDefaultGroup(state));
   const groupLabel = useSelector(state => selectGroupLabel(state, group));
-
   const headerFields = getHeaderFields(type, fields, mapping);
-
   const selectedTab = useSelector(state => state.instance.tab);
   const tabs = getFieldsByTabs(type, data?.fields, mapping, data?.previews);
-
-  const version = data?.version??'Current';
-  const versions = getVersions(data?.versions);
-
   const tags = getTags(groupLabel, isDefaultGroup, data?.category);
-
   const badges = data?.badges;
 
-  const onVersionChange = version => {
-    const context = {
-      tab: selectedTab
-    };
-    if(isSearch) {
-      dispatch(requestInstance({
-        instanceId: version,
-        context: context
-      }));
-    } else {
-      navigate(`${path}${version}${(group && group !== defaultGroup)?('?group=' + group ):''}`, { state: context});
-    }
-  };
 
   const handleTabClick = tab => {
     if(tab !== selectedTab) {
@@ -200,11 +168,11 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
       <BgError message="This type of data is currently not supported." />
     );
   }
-
+  const instanceConfig = { isSearch: isSearch, path: path };
   return (
+    <InstanceContext.Provider value={instanceConfig}>
     <div className="kgs-instance" data-type={type}>
-      <Header title={data?.title} version={version} tags={tags} badges={badges} fields={headerFields} versions={versions} customNavigationComponent={customNavigationComponent} onVersionChange={onVersionChange} highlightColor={data?.highlightColor}/>
-      <OutdatedVersionDisclaimer type={type} version={version} versions={versions} overviewVersion={data?.allVersionRef} onVersionChange={onVersionChange} />
+      <Header title={data?.title} tags={tags} badges={badges} fields={headerFields} customNavigationComponent={customNavigationComponent} highlightColor={data?.highlightColor} category={category} />
       <Tabs tabs={tabs} selectedTab={selectedTab} onTabClick={handleTabClick} />
       <div className="kgs-instance__footer">
         <Disclaimer content={data?.disclaimer} />
@@ -212,6 +180,7 @@ const InstanceView = ({ data, path, isSearch, customNavigationComponent }) => {
       <TermsShortNotice />
       <ImagePopup className="kgs-instance__image_popup" />
     </div>
+    </InstanceContext.Provider>
   );
 };
 

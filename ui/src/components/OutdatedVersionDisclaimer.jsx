@@ -21,24 +21,11 @@
  *
  */
 
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons/faInfoCircle';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import Hint from './Hint/Hint';
 
-const OutdatedVersionDisclaimer = ({ type, overviewVersion, latestVersion, isOutdated, onVersionChange }) => (
-  <div className="kgs-outdated-version-disclaimer" >
-    {isOutdated && overviewVersion && (
-      <div className="alert alert-secondary" role="alert">
-        <FontAwesomeIcon icon={faInfoCircle} />&nbsp;This is not the newest version of this {type.toLowerCase()}.
-        <button className="kgs-instance-link" onClick={() => onVersionChange(latestVersion.value)}>
-          &nbsp;Visit {latestVersion.label}
-        </button> for the latest version or
-        <button className="kgs-instance-link" onClick={() => onVersionChange(overviewVersion.reference)}>
-          &nbsp;get an overview of all available versions
-        </button>.
-      </div>
-    )}
-  </div>
+const OutdatedVersionDisclaimer = ({ type, latestVersion, isOutdated}) => (
+  isOutdated ? <Hint className={'kg-outdated-version'} value={`This is not the newest version of this ${type.toLowerCase()}. Visit ${latestVersion.value} or get an overview of all versions.`}/> : null
 );
 
 export default OutdatedVersionDisclaimer;

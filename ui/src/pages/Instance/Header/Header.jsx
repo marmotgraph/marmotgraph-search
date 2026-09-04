@@ -24,34 +24,32 @@
 import React from 'react';
 
 import FieldsPanel from '../../../components/Field/FieldsPanel';
-import { VersionSelector } from '../../../components/VersionSelector/VersionSelector';
 import ActionsButtons from '../../../features/ActionsButtons';
-import { Field, Title } from '../../Field/Field';
+import {Field, Title} from '../../Field/Field';
 import TagsAndBadges from './TagsAndBadges';
 
 import './Header.css';
-import Badges from '../../../components/Badges/Badges';
 
-const DefaultNavigation = ({ tags, badges }) => (
+const DefaultNavigation = ({ tags, badges, isSearch, path }) => (
   <div className="kgs-instance__header_navigation">
     <div className="kgs-instance__header_navigation_left">
       <TagsAndBadges tags={tags} badges={badges} />
     </div>
-    <ActionsButtons />
+    <ActionsButtons isSearch={isSearch} path={path} />
   </div>
 );
 
 const getDefaultNavigation = (tags, badges) => {
   const Navigation = () => (
-    <DefaultNavigation tags={tags} badges={badges} />
+    <DefaultNavigation tags={tags} badges={badges} version={version} versions={versions} onVersionChange={onVersionChange}/>
   );
   Navigation.displayName = 'Navigation';
   return Navigation;
 };
 
-const Header = ({title, version, tags, badges, fields, versions, customNavigationComponent, onVersionChange, highlightColor}) => {
+const Header = ({title, tags, badges, fields, customNavigationComponent, highlightColor, isSearch, path}) => {
 
-  const Navigation = customNavigationComponent?customNavigationComponent:getDefaultNavigation(tags, badges);
+  const Navigation = customNavigationComponent?customNavigationComponent:getDefaultNavigation(tags, badges, isSearch, path);
   const style = {}
   if(highlightColor !== undefined){
     style['borderLeft'] = "10px solid "+highlightColor;
@@ -66,7 +64,6 @@ const Header = ({title, version, tags, badges, fields, versions, customNavigatio
         )}
         <div className="kgs-instance__header_title">
           <Title text={title} />
-          <VersionSelector version={version} versions={versions} onChange={onVersionChange} />
         </div>
         <FieldsPanel fields={fields} fieldComponent={Field} />
       </div>

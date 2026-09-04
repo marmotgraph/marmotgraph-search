@@ -27,6 +27,7 @@ import { useLocation } from 'react-router-dom';
 import ShareButtons from '../components/ShareButtons/ShareButtons';
 
 import './ActionsButtons.css';
+import {VersionSelector} from '../components/VersionSelector/VersionSelector';
 
 const getUrlToShare = (location, instanceId, group, defaultGroup) => {
   if ((location.pathname === '/' || location.pathname === '/search') && instanceId) {
@@ -42,12 +43,12 @@ const ActionsButtons = () => {
   const instanceId = useSelector(state => state.instance.instanceId);
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
-
   const url = getUrlToShare(location, instanceId, group, defaultGroup);
 
   if (instanceId) {
     return (
       <span className="kgs-actions-buttons">
+        <VersionSelector />
         <ShareButtons url={url} instanceId={instanceId} />
       </span>
     );

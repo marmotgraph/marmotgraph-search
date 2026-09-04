@@ -25,10 +25,12 @@
     display: inline-block;
     width: auto;
     margin-left: 5px;
+    white-space: nowrap;
+    margin-right: 1em;
 }
 
 .kgs-version_selector .kgs-select {
-    transform: translateY(-3px);
+    /*transform: translateY(-3px);*/
 }
 
 .kgs-version_selector .kgs-select select {
@@ -40,8 +42,14 @@
     padding-bottom: 4px;
     min-width: unset;
     color: var(--color-36);
+    padding-inline: 1em;
 }
 
 .kgs-version_selector .kgs-select:after {
     border-top-color: var(--color-36);
+}
+
+.kgs-version_selector .kg-outdated-version {
+    position:relative;
+    right: -0.5em;
 }
