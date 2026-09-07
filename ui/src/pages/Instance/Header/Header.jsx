@@ -30,18 +30,18 @@ import TagsAndBadges from './TagsAndBadges';
 
 import './Header.css';
 
-const DefaultNavigation = ({ tags, badges, isSearch, path }) => (
+const DefaultNavigation = ({ tags, badges }) => (
   <div className="kgs-instance__header_navigation">
     <div className="kgs-instance__header_navigation_left">
       <TagsAndBadges tags={tags} badges={badges} />
     </div>
-    <ActionsButtons isSearch={isSearch} path={path} />
+    <ActionsButtons />
   </div>
 );
 
 const getDefaultNavigation = (tags, badges) => {
   const Navigation = () => (
-    <DefaultNavigation tags={tags} badges={badges} version={version} versions={versions} onVersionChange={onVersionChange}/>
+    <DefaultNavigation tags={tags} badges={badges}/>
   );
   Navigation.displayName = 'Navigation';
   return Navigation;
