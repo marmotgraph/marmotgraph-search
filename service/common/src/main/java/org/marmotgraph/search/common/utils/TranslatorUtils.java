@@ -185,7 +185,7 @@ public class TranslatorUtils {
                         <b>KG Query Builder</b>
                         With the <a href="https://query.kg.ebrains.eu" target="_blank">KG Query Builder</a>, you can design your own query to retrieve metadata for this instance and those of the same type conveniently via UI without the requirement of learning a graph query language (see the <a href="https://docs.kg.ebrains.eu/9b511d36d7608eafc94ea43c918f16b6/tutorials.html" target="_blank">tutorial</a>). You can also save the query and use it with the REST-API and the KG Core SDKs (see below). 
                         
-                        <a href="https://query.kg.ebrains.eu/queries?type=%s&instanceId=%s" class="btn btn-secondary" style="color:#fff" target="_blank">Build a query for this instance</a>
+                        <a href="https://query.kg.ebrains.eu/queries?type=%s&instanceId=%s" class="btn btn-secondary build-query" style="color:#fff" target="_blank">Build a query for this instance</a>
                         
                         
                         <b>KG REST-API</b>

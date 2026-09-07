@@ -35,8 +35,10 @@ const Citation = ({title, citation, doi, bibtex}) => {
     <div className="kgs-citation">
       {citation ?
         <pre>
-          <span dangerouslySetInnerHTML={{ __html: html }} />
-          <CopyToClipboardButton icon={faClipboard} title="Copy citation" confirmationText="Citation copied" content={html} />
+          <div className="kgs-citation__content">
+            <span dangerouslySetInnerHTML={{ __html: html }} />
+            <CopyToClipboardButton icon={faClipboard} title="Copy citation" confirmationText="Citation copied" content={html} />
+          </div>
           {bibtex && <a className="kgs-citation-download" href={bibtex} download={`${doi}.bib`}><FontAwesomeIcon icon={faDownload} /> Download as bibtex</a>}
         </pre>
         :
