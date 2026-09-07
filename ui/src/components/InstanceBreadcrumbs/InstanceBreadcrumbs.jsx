@@ -119,6 +119,7 @@ const BreadcrumbEllipsisMenu = ({ items, onBreadcrumbClick }) => {
 
   const handleItemClick = (index, crumb) => {
     closeMenu();
+    log.debug(crumb);
     onBreadcrumbClick?.(index, crumb);
   };
 

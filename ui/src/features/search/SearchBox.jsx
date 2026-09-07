@@ -33,8 +33,9 @@ import { setInfo } from '../application/applicationSlice';
 import { setQueryString } from './searchSlice';
 
 import './SearchBox.css';
+import {useNavigate} from 'react-router-dom';
 
-const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }) => {
+const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating, callback}) => {
   const configuration = useSelector(state => state.application.config);
   const textInput = useRef();
   const [value, setValue] = useState(queryString);
@@ -129,7 +130,7 @@ const SearchBoxBaseComponent = ({ queryString, onQueryStringChange, isFloating }
 
 };
 
-const SearchBoxComponent = ({ queryString, isFloating, relatedElements, onQueryStringChange }) => (
+const SearchBoxComponent = ({ queryString, isFloating, relatedElements, onQueryStringChange}) => (
     <SearchBoxBaseComponent isFloating={isFloating} queryString={queryString} relatedElements={relatedElements} onQueryStringChange={onQueryStringChange} />
 );
 
@@ -139,9 +140,12 @@ const SearchBox = connect(
     relatedElements: props.relatedElements,
     queryString: state.search.queryString
   }),
-  dispatch => ({
+  (dispatch, props) => ({
     onQueryStringChange: value => {
       dispatch(setQueryString(value));
+      if(props.callback) {
+        props.callback(value);
+      }
     }
   })
 )(SearchBoxComponent);

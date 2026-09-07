@@ -31,7 +31,7 @@ const Tags = ({ tags }) => {
   }
   return (
     <div className="kgs-tags">
-      {tags.data.map(tag => (
+      {tags.data.filter((value, index, array) => array.indexOf(value) === index).map(tag => (
         <span key={tag} className={'kgs-tag'}>{tag}</span>
       ))}
       {tags.total > tags.size && <span className="kgs-tag-ellipsis" >...</span>}

@@ -2,12 +2,13 @@ import {faBars} from '@fortawesome/free-solid-svg-icons/faBars';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import SignIn from '../../features/auth/SignIn';
 import AuthEndpointAvailabilityBanner from '../../components/AuthEndpointAvailabilityBanner/AuthEndpointAvailabilityBanner';
 import { reset } from '../../features/instance/instanceSlice';
 
 import './Header.css';
+import SearchBox from '../../features/search/SearchBox';
 
 const Header = () => {
 
@@ -17,16 +18,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const configuration = useSelector(state => state.application.config);
   const theme = useSelector(state => state.application.theme);
-  const group = useSelector(state => state.groups.group);
-  const defaultGroup = useSelector(state => state.groups.defaultGroup);
-
-
-  const handleSearchClick = () => {
-    dispatch(reset());
-    navigate(`/${group !== defaultGroup?('?group=' + group):''}`);
-  };
-
-  const showSearchLink  = location.pathname.startsWith('/instances');
+  const [searchParams] = useSearchParams();
+  const showSearchLink  = location.pathname.includes('/instances/');
 
   return (
     <div>
@@ -44,7 +37,12 @@ const Header = () => {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
-            {showSearchLink && <li className="nav-item"><button role="link" className="mobile-link" onClick={handleSearchClick}>Search</button></li>}
+            {showSearchLink && <SearchBox  callback={v=>{
+              dispatch(reset());
+              const newParams = new URLSearchParams(searchParams);
+              newParams.set('q', v);
+              navigate(`../search?${newParams.toString()}`);
+            }} />}
             {configuration.navbarItems}
             <SignIn Tag="li" className="nav-item" />
           </ul>
