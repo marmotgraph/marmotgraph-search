@@ -26,6 +26,7 @@
     min-width: 0;
     font-size: 13px;
     line-height: 1.4;
+    overflow: hidden;
 }
 
 .kgs-instance-breadcrumbs__list {

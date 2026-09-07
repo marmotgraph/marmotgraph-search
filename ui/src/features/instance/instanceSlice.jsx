@@ -28,9 +28,6 @@ import { api } from '../../services/api';
 const getTitle = data => {
   if (data?.id) {
     if (data?.title) {
-      if (data?.version) {
-        return `${data.title} ${data.version}`;
-      }
       return `${data.title}`;
     }
     if (data?.type) {

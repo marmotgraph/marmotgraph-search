@@ -29,17 +29,18 @@ import {Field, Title} from '../../Field/Field';
 import TagsAndBadges from './TagsAndBadges';
 
 import './Header.css';
+import {InstanceBreadcrumbsNav} from '../../../components/InstanceBreadcrumbs';
 
-const DefaultNavigation = ({ tags, badges }) => (
+const DefaultNavigation = ({tags, badges}) => (
   <div className="kgs-instance__header_navigation">
-    <div className="kgs-instance__header_navigation_left">
-      <TagsAndBadges tags={tags} badges={badges} />
+    <InstanceBreadcrumbsNav/>
+    <div className="kgs-carousel__navigation">
+        <ActionsButtons/>
+      </div>
     </div>
-    <ActionsButtons />
-  </div>
-);
+    );
 
-const getDefaultNavigation = (tags, badges) => {
+    const getDefaultNavigation = (tags, badges) => {
   const Navigation = () => (
     <DefaultNavigation tags={tags} badges={badges}/>
   );
@@ -49,23 +50,21 @@ const getDefaultNavigation = (tags, badges) => {
 
 const Header = ({title, tags, badges, fields, customNavigationComponent, highlightColor, isSearch, path}) => {
 
-  const Navigation = customNavigationComponent?customNavigationComponent:getDefaultNavigation(tags, badges, isSearch, path);
+  const Navigation = customNavigationComponent ? customNavigationComponent : getDefaultNavigation(tags, badges, isSearch, path);
   const style = {}
-  if(highlightColor !== undefined){
-    style['borderLeft'] = "10px solid "+highlightColor;
+  if (highlightColor !== undefined) {
+    style['borderLeft'] = "10px solid " + highlightColor;
   }
 
   return (
     <div className="kgs-instance__header" style={style}>
-      <Navigation />
+      <Navigation/>
       <div className="kgs-instance__header_fields">
-        {customNavigationComponent && (
-          <TagsAndBadges tags={tags} badges={badges} />
-        )}
+        <TagsAndBadges tags={tags} badges={badges}/>
         <div className="kgs-instance__header_title">
-          <Title text={title} />
+          <Title text={title}/>
         </div>
-        <FieldsPanel fields={fields} fieldComponent={Field} />
+        <FieldsPanel fields={fields} fieldComponent={Field}/>
       </div>
     </div>
   );

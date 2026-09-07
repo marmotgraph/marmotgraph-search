@@ -107,7 +107,7 @@ const InstanceContainer = ({ instanceId, path, isPreview, warning, watermark }) 
         <Notification text={warning} />
         {data && (
           <>
-            <InstanceBreadcrumbsNav />
+            {/*<InstanceBreadcrumbsNav />*/}
             <InstanceView data={data} path={path} isSearch={false} />
           </>
         )}
