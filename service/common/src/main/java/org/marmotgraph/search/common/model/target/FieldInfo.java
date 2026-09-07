@@ -65,6 +65,8 @@ public @interface FieldInfo {
 
     String layout() default "";
 
+    String group() default "";
+
     String linkIcon() default "";
 
     String tagIcon() default "";

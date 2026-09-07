@@ -20,22 +20,22 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 import FieldsPanel from '../../../components/Field/FieldsPanel';
-import { ImagePreviews } from '../../../features/image/ImagePreviews';
+import {ImagePreviews} from '../../../features/image/ImagePreviews';
 import './Tabs.css';
 import './Overview.css';
-import { setTab } from '../../../features/instance/instanceSlice';
-import { Field } from '../../Field/Field';
+import {setTab} from '../../../features/instance/instanceSlice';
+import {Field} from '../../Field/Field';
 
 const Tab = ({tab, active, onClick}) => {
 
   const handleClick = () => onClick(tab.name);
 
-  const className = `kgs-tabs__button ${active?'is-active':''}`;
+  const className = `kgs-tabs__button ${active ? 'is-active' : ''}`;
   return (
-    <button type="button" className={className} onClick={handleClick}>{tab.name?tab.name:''}</button>
+    <button type="button" className={className} onClick={handleClick}>{tab.name ? tab.name : ''}</button>
   );
 };
 
@@ -48,33 +48,34 @@ const TabsView = ({tab}) => {
   if (tab.name === 'Overview') {
     const previews = tab.previews;
     const summaryFields = tab.fields.filter(f => f.mapping.layout === 'summary');
-
     return (
-      <div className={`kgs-tabs__view kgs-tabs__overview ${(previews && previews.length) ? 'kgs-tabs__overview__with-previews' : ''}  ${(summaryFields && summaryFields.length) ? 'kgs-tabs__overview__with-summary' : ''}`}>
-        <ImagePreviews className={`kgs-tabs__overview__previews ${(previews && previews.length > 1) ? 'has-many' : ''}`} width="300px" images={previews} />
-        <FieldsPanel className="kgs-tabs__overview__summary" fields={summaryFields} fieldComponent={Field} />
-        <FieldsPanel className="kgs-tabs__overview__main" fields={tab.fields} fieldComponent={Field} />
+      <div
+        className={`kgs-tabs__view kgs-tabs__overview ${(previews && previews.length) ? 'kgs-tabs__overview__with-previews' : ''}  ${(summaryFields && summaryFields.length) ? 'kgs-tabs__overview__with-summary' : ''}`}>
+        <ImagePreviews className={`kgs-tabs__overview__previews ${(previews && previews.length > 1) ? 'has-many' : ''}`}
+                       width="300px" images={previews}/>
+        <FieldsPanel className="kgs-tabs__overview__summary" fields={summaryFields} fieldComponent={Field} group={true}/>
+        <FieldsPanel className="kgs-tabs__overview__main" fields={tab.fields} fieldComponent={Field}/>
       </div>
     );
   }
 
   return (
-    <FieldsPanel className="kgs-tabs__view" fields={tab.fields} fieldComponent={Field} />
+    <FieldsPanel className="kgs-tabs__view" fields={tab.fields} fieldComponent={Field}/>
   );
 };
 
-const Tabs = ({tabs, selectedTab, onTabClick }) => {
+const Tabs = ({tabs, selectedTab, onTabClick}) => {
   const dispatch = useDispatch();
-  const hasContent = Array.isArray(tabs) && tabs.length>0;
-  let activeTab = selectedTab?tabs.find(t => t.name === selectedTab):null;
+  const hasContent = Array.isArray(tabs) && tabs.length > 0;
+  let activeTab = selectedTab ? tabs.find(t => t.name === selectedTab) : null;
   if (!activeTab && hasContent) {
     activeTab = tabs[0];
   }
   useEffect(() => {
-    if(activeTab && selectedTab !== activeTab.name) {
+    if (activeTab && selectedTab !== activeTab.name) {
       dispatch(setTab(activeTab.name));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   if (!hasContent) {
@@ -85,7 +86,7 @@ const Tabs = ({tabs, selectedTab, onTabClick }) => {
     <>
       <div className="kgs-tabs__buttons">
         {tabs.map(t => (
-          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={onTabClick} />
+          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={onTabClick}/>
         ))}
       </div>
       <div className="kgs-tabs__content">

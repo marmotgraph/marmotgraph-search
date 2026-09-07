@@ -23,15 +23,25 @@
 
 import React from 'react';
 
-const FieldsPanel = ({className, fields, fieldComponent}) =>{
+const FieldsPanel = ({className, fields, fieldComponent, group}) => {
   if (!fields || !fields.length) {
     return null;
   }
+
   const FieldComponent = fieldComponent;
-  return (
-    <div className={`kgs-fields-panel ${className??''}`}>
-      {fields && fields.map(({name, data, mapping, type}) => (
-        <FieldComponent key={name} name={name} data={data} mapping={mapping} type={type} />
+  return (<div className={`kgs-fields-panel  ${className ?? ''}`}>
+      {group &&
+        Array.from(Map.groupBy(fields, item => item.mapping.group), ([key, group]) => (
+          <div className={'kgs-fields-panel-group'}>
+            {key && <div className={'kgs-fields-panel-group-label'}>{key}</div>}
+            {group.map(({name, data, mapping, type}) => (
+              <FieldComponent key={name} name={name} data={data} mapping={mapping} type={type}/>
+            ))}
+          </div>
+        ))
+      }
+      {!group && fields && fields.map(({name, data, mapping, type}) => (
+        <FieldComponent key={name} name={name} data={data} mapping={mapping} type={type}/>
       ))}
     </div>
   );

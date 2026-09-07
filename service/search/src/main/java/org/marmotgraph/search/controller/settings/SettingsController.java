@@ -150,6 +150,9 @@ public class SettingsController {
             if (StringUtils.isNotBlank(info.layout())) {
                 propertyDefinition.put("layout", info.layout());
             }
+            if (StringUtils.isNotBlank(info.group())) {
+                propertyDefinition.put("group", info.group());
+            }
             if (StringUtils.isNotBlank(info.linkIcon())) {
                 propertyDefinition.put("linkIcon", info.linkIcon());
             }
