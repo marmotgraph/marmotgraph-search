@@ -46,7 +46,7 @@ const CopyToClipboardButton = ({
   icon,
   text,
   title='Send to clipboard',
-  confirmationText='sent to clipoard',
+  confirmationText='sent to clipboard',
   content
 }) => {
 

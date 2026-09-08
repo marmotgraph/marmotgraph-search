@@ -53,7 +53,7 @@ const ShareButtons = ({ url, instanceId }) => {
 </a> : null }
         </span>
         <CopyToClipboardButton icon={faClipboard} title="Copy search link to clipboard"
-                               confirmationText="search link copied to clipoard" content={url} className="item"/>
+                               confirmationText="search link copied to clipboard" content={url} className="item"/>
       </span>
     </span>
   );
