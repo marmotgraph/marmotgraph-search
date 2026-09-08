@@ -73,4 +73,5 @@
     color: var(--color-8);
     background-color: #ffeeaa;
     z-index: 1;
+    margin-left: -150px;
 }
