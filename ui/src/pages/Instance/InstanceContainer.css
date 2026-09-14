@@ -21,21 +21,53 @@
  *
  */
 
-.kgs-instance-container {
-  padding: 0 var(--site-margin);
-  min-height: 100vh;
+html:has(.kgs-instance-container),
+html:has(.kgs-instance-container) body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#root:has(.kgs-instance-container) {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root:has(.kgs-instance-container) > div:first-child {
+  flex: 0 0 auto;
+}
+
+#root:has(.kgs-instance-container) main {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#root:has(.kgs-instance-container) .site-footer {
+  display: none;
+}
+
+.kgs-instance-container {
+  padding: 0 var(--site-margin);
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .kgs-instance-container > .kgs-instance {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-height: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 @media (min-width:1200px) { 
   .kgs-instance-container {
-    max-width: 1200px;
     max-width: 1400px;
     margin: 0 auto;
   }

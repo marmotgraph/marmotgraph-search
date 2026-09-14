@@ -24,7 +24,7 @@
 .kgs-instance {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: max-content max-content max-content 1fr max-content max-content;
+    grid-template-rows: max-content max-content max-content minmax(0, 1fr) max-content max-content;
     grid-template-areas:
         "header"
         "outdated"
@@ -34,7 +34,8 @@
         "report";
     position: relative;
     width: 100%;
-    min-height: 100%;
+    min-height: 0;
+    overflow: hidden;
     text-align: left;
     font-size: var(--font-size);
     font-weight: normal;
@@ -72,7 +73,7 @@ button.kgs-instance-link {
 
     .kgs-instance {
         grid-template-columns: 250px 1fr;
-        grid-template-rows: max-content 1fr max-content max-content;
+        grid-template-rows: max-content minmax(0, 1fr) max-content max-content;
         grid-template-areas: 
             "header header"
             "menu body"
@@ -82,7 +83,7 @@ button.kgs-instance-link {
 
     .kgs-instance.kgs-outdated {
         grid-template-columns: 250px 1fr;
-        grid-template-rows: max-content max-content 1fr max-content max-content;
+        grid-template-rows: max-content max-content minmax(0, 1fr) max-content max-content;
         grid-template-areas: 
             "header header"
             "outdated outdated"
@@ -102,6 +103,8 @@ button.kgs-instance-link {
 
 .kgs-instance .kgs-instance__header {
     grid-area: header;
+    z-index: 2;
+    background-color: var(--background-color-2);
 }
 
 .kgs-instance .kgs-tabs__buttons {
@@ -110,11 +113,22 @@ button.kgs-instance-link {
 
 .kgs-instance .kgs-tabs__content {
     grid-area: body;
+    min-height: 0;
+    min-width: 0;
+    overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .kgs-instance .kgs-instance__footer {
     grid-area: footer;
+    z-index: 2;
+    background-color: var(--background-color-2);
+}
+
+.kgs-instance .kgs-notice,
+.kgs-instance .kgs-instance__image_popup {
+    grid-area: report;
 }
 
 .kgs-instance .kgs-instance-disclaimer {
