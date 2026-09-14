@@ -26,6 +26,7 @@
     flex-direction: column;
     position: relative;
     padding: 5px 10px 0 25px;
+    margin-bottom: 0 !important;
 }
  
 @media (min-width: 900px) {
@@ -80,8 +81,5 @@ body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active:h
 
 .kgs-tabs__content {
     position: relative;
-}
-
-.kgs-tabs__view {
-    padding: 20px;
+    padding: 30px;
 }

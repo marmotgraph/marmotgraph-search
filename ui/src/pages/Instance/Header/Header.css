@@ -73,13 +73,13 @@ body[profile="tefhealth"] .kgs-instance__header{
 }
 
 .kgs-instance__header_fields {
-  padding: 0 25px 20px 25px;
+    padding: 0 30px 20px;
 }
 
 @media (min-width: 900px) {
 
   .kgs-instance__header_fields {
-      padding: 0 35px 20px 35px;
+      padding: 0 30px 20px;
   }
   
   .kgs-instance__header_navigation {
