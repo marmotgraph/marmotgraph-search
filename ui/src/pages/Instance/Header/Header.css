@@ -35,7 +35,11 @@ body[profile="tefhealth"] .kgs-instance__header{
   box-shadow: 0 2px 6px var(--color-selected-shadow);
 }
 
-
+.kgs-carousel__navigation {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
 
 .kgs-instance__header_navigation {
   display: flex;
