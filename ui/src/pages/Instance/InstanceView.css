@@ -22,20 +22,14 @@
  */
 
 .kgs-instance {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: max-content max-content max-content minmax(0, 1fr) max-content max-content;
-    grid-template-areas:
-        "header"
-        "outdated"
-        "menu"
-        "body"
-        "footer"
-        "report";
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+
     position: relative;
     width: 100%;
     min-height: 0;
-    overflow: hidden;
+
     text-align: left;
     font-size: var(--font-size);
     font-weight: normal;
@@ -43,7 +37,6 @@
     overflow-wrap: break-word;
     word-break: break-word;
     white-space: pre-wrap;
-    grid-row-gap: 10px;
 }
 
 .kgs-outdated-version-disclaimer {

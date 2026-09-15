@@ -22,11 +22,19 @@
  */
 
 .kgs-tabs__buttons {
+    flex: 0 0 auto;
     display: flex;
-    flex-direction: column;
-    position: relative;
-    padding: 5px 10px 0 25px;
-    margin-bottom: 0 !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0;
+    padding: 0 0;
+    background: transparent;
+    margin: 30px;
+    border-bottom: 1px solid lightgray;
+    position: sticky;
+    z-index: 9;
+    margin-bottom: 0;
 }
  
 @media (min-width: 900px) {
@@ -39,40 +47,37 @@
  
 .kgs-tabs__buttons > button.kgs-tabs__button {
     display: block;
-    width: 100%;
-    margin: 0;
-    padding: 12px 0 8px 0;
+    width: auto;
+    position: relative;
+    flex-shrink: 0;
+    margin-bottom: -2px;           /* overlap the bar border */
+    padding: 10px 20px;
     background: none;
-    border: 0;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background: transparent;
     /*border-bottom: 3px solid transparent;*/
     color: var(--color-7);
     font-size: var(--font-size-small);
     font-weight: bold;
     text-align: left;
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+    /*transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;*/
+    outline: none;
 }
 
 .kgs-tabs__buttons > button.kgs-tabs__button.is-active {
+    /*background: rgba(0, 200, 123, 0.1);*/
     color: var(--link-highlight-color);
     border-bottom-color: var(--link-highlight-color);
+    font-weight: bold;
 }
 
-body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button {
-    font-weight: normal;
-    color: var(--color-eb-black);
-    padding-bottom: 2px;
-    margin-bottom: 4px;
-}
-
-body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button:hover {
+.kgs-tabs__buttons > button.kgs-tabs__button:hover {
     color: var(--link-highlight-color);
-}
-
-body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active {
-    border-bottom: 1px solid var(--color-eb-black);
-}
-
-body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active:hover {
-    border-bottom-color: var(--link-highlight-color);
 }
 
 .kgs-tabs-info {
@@ -80,6 +85,9 @@ body[profile="ebrains"] .kgs-tabs__buttons > button.kgs-tabs__button.is-active:h
 }
 
 .kgs-tabs__content {
+    flex: 1 1 0;
     position: relative;
     padding: 30px;
+    min-height: 0;
+    overflow-y: auto;
 }
