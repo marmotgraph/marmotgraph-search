@@ -242,6 +242,8 @@
 
 .kgs-carousel__navigation {
     flex: 1;
+    display: flex;
+    justify-content: flex-end;
     text-align: right;
 }
 
@@ -252,7 +254,7 @@
     padding: 1px 7px 2px;
     border: 0;
     background-color: transparent;
-    color: var(--color-2);
+    color: var(--color-1);
     text-align: center;
     font-weight: 500;
     z-index: 1500;
@@ -269,14 +271,6 @@
 
 .kgs-carousel__close-button:hover .fa-close:before {
     font-weight: bold;
-}
-
-.kgs-carousel__close-button::after {
-    content: "esc";
-    position: absolute;
-    transform: translate(-16px,14px);
-    font-size: var(--font-size-extra-small);
-    color: var(--color-2);
 }
 
 .kgs-carousel .kgs-info .kgs-info__panel {

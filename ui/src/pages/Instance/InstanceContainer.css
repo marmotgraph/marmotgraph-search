@@ -57,6 +57,7 @@ html:has(.kgs-instance-container) body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  width: 90vw
 }
 
 .kgs-instance-container > .kgs-instance {

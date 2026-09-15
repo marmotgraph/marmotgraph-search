@@ -39,14 +39,6 @@
     white-space: pre-wrap;
 }
 
-.kgs-outdated-version-disclaimer {
-    grid-area: outdated;
-}
-
-.kgs-outdated-version-disclaimer .alert {
-    padding-left: 30px;
-}
-
 .kgs-all-versions {
     padding: 30px;
     font-size: small;
@@ -95,17 +87,11 @@ button.kgs-instance-link {
 }
 
 .kgs-instance .kgs-instance__header {
-    grid-area: header;
     z-index: 2;
     background-color: var(--background-color-2);
 }
 
-.kgs-instance .kgs-tabs__buttons {
-    grid-area: menu;
-}
-
 .kgs-instance .kgs-tabs__content {
-    grid-area: body;
     min-height: 0;
     min-width: 0;
     overflow-x: hidden;
@@ -114,14 +100,8 @@ button.kgs-instance-link {
 }
 
 .kgs-instance .kgs-instance__footer {
-    grid-area: footer;
     z-index: 2;
     background-color: var(--background-color-2);
-}
-
-.kgs-instance .kgs-notice,
-.kgs-instance .kgs-instance__image_popup {
-    grid-area: report;
 }
 
 .kgs-instance .kgs-instance-disclaimer {
