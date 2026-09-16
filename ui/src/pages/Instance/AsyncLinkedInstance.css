@@ -18,6 +18,6 @@
 
 .kgs-async-linked-instance__error > button {
   border: 0;
-  color: var(--color-8);
+  color: var(--icon-text-color);
   background: transparent;
 }

@@ -23,7 +23,7 @@
 
 .kgs-selected-filters {
     margin: 0 0 12px;
-    background: var(--background-color-2, #fff);
+    background: var(--surface-base-bg, #fff);
     border: 1px solid #DDE4EC;
     border-radius: 6px;
     overflow: hidden;
@@ -88,7 +88,7 @@
 
 .kgs-selected-filters__reset:hover,
 .kgs-selected-filters__reset:focus {
-    color: var(--color-37);
+    color: var(--link-highlight-hover-color);
     outline: none;
     text-decoration: underline;
 }

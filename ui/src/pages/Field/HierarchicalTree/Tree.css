@@ -31,7 +31,7 @@
 }
 
 .kgs-tree .rc-tree .rc-tree-treenode:hover .rc-tree-title {
-  color: var(--color-8);
+  color: var(--icon-text-color);
 }
 
 .kgs-tree .rc-tree .rc-tree-node-selected {

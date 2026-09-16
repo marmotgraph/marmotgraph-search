@@ -47,7 +47,7 @@
 
 .kgs-share-links a,
 .kgs-share-links a:visited {
-  color: var(--color-2);
+  color: var(--text-secondary-color);
   transition: none;
   box-shadow: none;
   cursor: pointer;
@@ -62,7 +62,7 @@
 
 .kgs-share-links a .svg-inline--fa:before,
 .kgs-share-links a:visited .svg-inline--fa:before {
-  color: var(--color-2);
+  color: var(--text-secondary-color);
 }
 
 .kgs-share-links a:hover .svg-inline--fa:before,

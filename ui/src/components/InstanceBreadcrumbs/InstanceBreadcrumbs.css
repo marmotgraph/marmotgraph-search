@@ -120,7 +120,7 @@
     padding: 3px 7px;
     border: 1px solid var(--border-subtle-color, #E2E8F0);
     border-radius: 6px;
-    background: var(--background-color-2, #fff);
+    background: var(--surface-base-bg, #fff);
     color: var(--text-muted-color, #64748B);
     font-size: inherit;
     font-weight: 600;
@@ -147,7 +147,7 @@
     list-style: none;
     border: 1px solid var(--border-subtle-color, #E2E8F0);
     border-radius: 8px;
-    background: var(--background-color-2, #fff);
+    background: var(--surface-base-bg, #fff);
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
 }
 

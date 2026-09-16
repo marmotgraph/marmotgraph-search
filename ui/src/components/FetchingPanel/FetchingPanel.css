@@ -38,7 +38,7 @@
     padding: 20px;
     border-radius: 4px;
     box-sizing: border-box;
-    background-color: var(--background-color-2);
+    background-color: var(--surface-base-bg);
     transition: margin-top 0.25s ease-in;
     box-shadow: var(--shadow-panel-sm);
     text-align: center;

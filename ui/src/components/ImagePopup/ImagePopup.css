@@ -51,9 +51,9 @@
   max-width: 90%;
   min-height: 58px;
   padding: 20px;
-  border: 1px solid var(--border-color-3);
+  border: 1px solid var(--border-neutral-color);
   border-radius: 4px;
-  background-color: var(--background-color-2);
+  background-color: var(--surface-base-bg);
 }
 
 .kgs-image_popup-content video,

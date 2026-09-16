@@ -64,7 +64,7 @@
 }
 
 .kgs-search-results-footer__terms-short-notice .kgs-notice-panel {
-    background-color: var(--background-color-7);
+    background-color: var(--surface-notice-bar-bg);
     opacity: 0.9;
     padding: 20px var(--site-margin) 70px var(--site-margin);
 }

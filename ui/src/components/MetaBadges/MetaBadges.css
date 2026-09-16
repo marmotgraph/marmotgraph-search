@@ -44,7 +44,7 @@
 
 .kgs-meta-badge-tooltip {
   z-index: 100000;
-  background-color: var(--color-8);
+  background-color: var(--icon-text-color);
   opacity: 1;
 }
 

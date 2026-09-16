@@ -43,7 +43,7 @@
     flex: 0 0 16px;
     width: 16px;
     height: 16px;
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     -webkit-appearance: none;
     appearance: none;
     pointer-events: none;
@@ -59,7 +59,7 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 10px;
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     pointer-events: none;
 }
 
@@ -69,7 +69,7 @@
     width: 16px;
     height: 16px;
     border: 1.5px solid var(--border-hover-color, #CBD5E1);
-    background-color: var(--color-17, #fff);
+    background-color: var(--surface-elevated-bg, #fff);
     border-radius: 3px;
     box-shadow: none;
 }
@@ -119,7 +119,7 @@ body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text 
 }
 
 body[profile="tefhealth"] .kgs-facet-checkbox.is-active .fa-check {
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
 }
 
 .kgs-facet-checkbox.has-any-child-active:not(.is-active) input[type="checkbox"]:after {

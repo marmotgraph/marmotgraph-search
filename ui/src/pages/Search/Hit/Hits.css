@@ -41,13 +41,13 @@
 }
 
 .kgs-hits > div {
-    border-top: 1px solid var(--color-27);
+    border-top: 1px solid var(--text-divider-color);
     width: 100%;
     margin-top: 40px;
     padding: 10px 20px;
     padding-bottom: 20px;
     font-size: var(--font-size-small);
-    color: var(--color-27);
+    color: var(--text-divider-color);
 }
 
 @media (min-width: 576px) {
@@ -91,8 +91,8 @@ button.kgs-hit-button {
     margin: 0;
     padding: 0;
     border: 0;
-    border-bottom: 1px solid var(--border-color-8);
-    background-color: var(--background-color-2);
+    border-bottom: 1px solid var(--border-strong-color);
+    background-color: var(--surface-base-bg);
     overflow: hidden;
 }
 

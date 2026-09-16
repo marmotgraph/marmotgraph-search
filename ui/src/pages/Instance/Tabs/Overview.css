@@ -69,7 +69,7 @@
 @media (min-width: 400px) {
     .kgs-tabs__overview__previews > div {
         width: 340px;
-        border: 1px solid var(--border-color-3);
+        border: 1px solid var(--border-neutral-color);
         padding: 20px;
     }
     .kgs-tabs__overview__previews.has-many > div {

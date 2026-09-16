@@ -2,15 +2,15 @@
 .kgs-instance-disclaimer {
   display: inline-block; 
   font-size: small;
-  color: var(--color-8);
+  color: var(--icon-text-color);
   text-align: center;
   padding: 10px 20px;
 }
 
 .kgs-instance-disclaimer a {
-  color: var(--link-color-1)
+  color: var(--link-default-color)
 }
 
 .kgs-instance-disclaimer a:hover {
-  color: var(--link-color-2);
+  color: var(--link-hover-color);
 }

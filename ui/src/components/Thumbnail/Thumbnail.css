@@ -50,7 +50,7 @@
   padding: 0;
   border: 0;
   background: 0;
-  color: var(--link-color-1);
+  color: var(--link-default-color);
 }
 
 @keyframes kgs-thumbnail-zoom-dynamic {

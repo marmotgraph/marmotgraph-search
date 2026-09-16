@@ -24,7 +24,7 @@
 @import './Search/Facet/FiltersPanel.theme.css';
 
 .kgs-search {
-    /*background: var(--background-color-1);*/
+    /*background: var(--surface-input-bg);*/
     background-color: var(--surface-tint-bg, #F0F4F8);
 }
 

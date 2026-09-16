@@ -96,7 +96,7 @@ body[profile="tefhealth"] .footer__menu{
 }
 
 .site-footer .footer__content .logo {
-    color: var(--color-1);
+    color: var(--text-strong-color);
 }
 
 .site-footer .footer__end {
@@ -118,7 +118,7 @@ body[profile="tefhealth"] .footer__menu{
 }
 
 .site-footer .footer__end .footer__social li a:hover {
-    color: var(--color-10);
+    color: var(--text-emphasis-color);
 }
 
 .footer__copyright_addition {
@@ -234,7 +234,7 @@ body[profile="tefhealth"] .footer__menu{
 .logo {
     display: inline-block;
     margin: -25px auto 0 0;
-    color: var(--color-1);
+    color: var(--text-strong-color);
     min-width: 200px;
 }
 
@@ -262,8 +262,8 @@ body[theme="dark"] .eu-logo:after {
     content: "Co-funded by\A the European Union";
     display: inline-block;
     font-size: 9px;
-    background: var(--background-color-2);
-    color: var(--color-10);
+    background: var(--surface-base-bg);
+    color: var(--text-emphasis-color);
     -webkit-font-smoothing: auto;
     white-space: pre;
     position: absolute;
@@ -277,8 +277,8 @@ body[theme="dark"] .eu-logo:after {
 body[theme="dark"] .hbp-logo:after {
     content: "Human Brain Project";
     display: inline-block;
-    background: var(--background-color-2);
-    color: var(--color-10);
+    background: var(--surface-base-bg);
+    color: var(--text-emphasis-color);
     -webkit-font-smoothing: auto;
     white-space: pre;
     position: absolute;

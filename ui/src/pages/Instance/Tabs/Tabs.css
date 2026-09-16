@@ -50,7 +50,7 @@
     border-radius: 4px 4px 0 0;
     background: transparent;
     /*border-bottom: 3px solid transparent;*/
-    color: var(--color-7);
+    color: var(--text-label-color);
     font-size: var(--font-size-small);
     font-weight: bold;
     text-align: left;
@@ -114,9 +114,9 @@
         width: 100%;
         margin: 0;
         padding: 10px 14px;
-        border: 1px solid var(--border-color-6, #ddd);
+        border: 1px solid var(--border-hairline-color, #ddd);
         border-radius: 8px;
-        background: var(--background-color-2, #fff);
+        background: var(--surface-base-bg, #fff);
         color: var(--link-highlight-color);
         font-size: var(--font-size-small);
         font-weight: bold;
@@ -141,7 +141,7 @@
 
     .kgs-tabs__dropdown-chevron {
         flex-shrink: 0;
-        color: var(--color-7);
+        color: var(--text-label-color);
         font-size: 12px;
         transition: transform 0.15s ease;
     }
@@ -161,7 +161,7 @@
         list-style: none;
         border: 1px solid var(--border-subtle-color, #E2E8F0);
         border-radius: 8px;
-        background: var(--background-color-2, #fff);
+        background: var(--surface-base-bg, #fff);
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
         max-height: min(60vh, 320px);
         overflow-y: auto;
@@ -174,7 +174,7 @@
         padding: 10px 14px;
         border: 0;
         background: transparent;
-        color: var(--color-7);
+        color: var(--text-label-color);
         font-size: var(--font-size-small);
         font-weight: bold;
         line-height: 1.4;
@@ -205,7 +205,7 @@
         scroll-margin-top: 8px;
         padding-bottom: 28px;
         margin-bottom: 24px;
-        border-bottom: 1px solid var(--border-color-1, #e0e0e0);
+        border-bottom: 1px solid var(--border-divider-color, #e0e0e0);
     }
 
     .kgs-tabs__section:last-child {
@@ -216,7 +216,7 @@
 
     .kgs-tabs__section-title {
         margin: 0 0 16px;
-        color: var(--color-8);
+        color: var(--icon-text-color);
         font-size: var(--font-size-big);
         font-weight: bold;
         line-height: 1.3;

@@ -146,7 +146,7 @@
 }
 
 .kgs-field__table .table>:not(:first-child) {
-    border-top: 1px solid var(--border-color-6);
+    border-top: 1px solid var(--border-hairline-color);
 }
 
 .kgs-field__table .table tbody td {
@@ -216,7 +216,7 @@
         position: sticky;
         left: 0;
         z-index: 1;
-        background-color: var(--background-color-2, #fff);
+        background-color: var(--surface-base-bg, #fff);
     }
 
     .kgs-field__table .table thead th:first-child {

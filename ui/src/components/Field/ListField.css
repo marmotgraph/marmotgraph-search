@@ -62,7 +62,7 @@
 }
 
 .kgs-field .kgs-field__list.items-as-tags svg path {
-    fill:var(--color-20);
+    fill:var(--icon-emphasis-color);
 }
 
 .kgs-field__list.items-as-tags > span > span {

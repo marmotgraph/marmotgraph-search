@@ -62,7 +62,7 @@
     border: 0;
     background-color: transparent;
     text-decoration: none;
-    color: var(--link-color-1);
+    color: var(--link-default-color);
     text-align: left;
 }
 
@@ -73,7 +73,7 @@
 .kgs-field .field-value a,
 .kgs-field .field-value a:visited {
     text-decoration: none;
-    color: var(--link-color-1);
+    color: var(--link-default-color);
 }
 
 .kgs-field .field-value a:focus,
@@ -84,7 +84,7 @@
 
 .kgs-field .kgs-hint {
     margin-right: 10px;
-    color: var(--color-8);
+    color: var(--icon-text-color);
 }
 
 .kgs-field__highlights{
@@ -112,7 +112,7 @@
     word-break: keep-all;
     white-space: nowrap;
     font-size: var(--font-size-big);
-    color: var(--color-24);
+    color: var(--text-caption-color);
 }
 
 .kgs-field.kgs-field__icon {
@@ -133,7 +133,7 @@
 }
 
 .kgs-field .field-value__tag div>svg>path {
-    fill: var(--color-20);
+    fill: var(--icon-emphasis-color);
 }
 
 

@@ -28,7 +28,7 @@
     font-size: var(--font-size);
     font-weight: 500;
     line-height: 1.3em;
-    color: var(--color-7);
+    color: var(--text-label-color);
 }
 
 .kgs-field + .kgs-field {
@@ -43,7 +43,7 @@
     display: inline-block;
     font-weight: bold;
     font-size: var(--font-size);
-    color: var(--color-8);
+    color: var(--icon-text-color);
     vertical-align: top;
 }
 
@@ -57,7 +57,7 @@
     padding: 0 8px 0 3px;
     font-weight: bold;
     font-size: var(--font-size-small);
-    color: var(--color-12);
+    color: var(--text-label-accent-color);
 }
 
 .kgs-field ul > li > ul {
@@ -78,7 +78,7 @@
 .kgs-field__table .table>tfoot>tr>th,
 .kgs-field__table .table>thead>tr>td,
 .kgs-field__table .table>thead>tr>th {
-    border-color: var(--border-color-6);
+    border-color: var(--border-hairline-color);
 }
 
 .kgs-field__table .table>tbody>tr>th .field-value a {

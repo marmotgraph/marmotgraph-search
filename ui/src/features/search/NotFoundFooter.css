@@ -22,5 +22,5 @@
  */
 
 .kgs-search__not-found-footer {
-  color: var(--color-8);
+  color: var(--icon-text-color);
 }

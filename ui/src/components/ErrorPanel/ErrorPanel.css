@@ -50,11 +50,11 @@
 }
 
 .kgs-error-message a {
-    color: var(--link-color-1) !important;
+    color: var(--link-default-color) !important;
 }
 
 .kgs-error-message a:hover {
-    color: var(--link-color-2) !important;
+    color: var(--link-hover-color) !important;
 }
 
 .kgs-error-navigation {
@@ -69,23 +69,23 @@
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
-    color: var(--color-11, #555);
+    color: var(--button-default-text-color);
     font-weight: 700;
     cursor: pointer;
 }
 
 .kgs-error-navigation button:hover {
-    background-color: var(--color-35, #e6e6e6);
+    background-color: var(--button-default-background-color-hover);
 }
 
 .kgs-error-navigation button.primary {
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     background-color: var(--button-primary-background-color);
     border-color: var(--button-primary-border-color);
 }
 
 .kgs-error-navigation button.primary:hover {
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     background-color: var(--button-primary-background-color-hover);
     border-color: var(--button-primary-border-color-hover);
 }

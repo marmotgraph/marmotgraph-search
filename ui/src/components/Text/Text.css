@@ -43,7 +43,7 @@
 
 .field-markdown blockquote {
     font-size: unset;
-    border-left-color: var(--color-25);
+    border-left-color: var(--border-blockquote-color);
     white-space: pre-line;
 }
 

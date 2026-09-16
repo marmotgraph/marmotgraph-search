@@ -39,8 +39,8 @@
     bottom: 0;
     left: 0;
     box-sizing: border-box;
-    color: var(--color-26);
-    background-color: var(--background-color-2);
+    color: var(--text-overlay-color);
+    background-color: var(--surface-base-bg);
 }
 
 .kgs-info__container {
@@ -80,13 +80,13 @@
     border: 0;
     margin: 0;
     background-color: transparent;
-    color: var(--color-19);
+    color: var(--icon-muted-color);
     text-align: center;
     z-index: 1500;
 }
 
 .kgs-info__closeButton:hover {
-    color: var(--color-20);
+    color: var(--icon-emphasis-color);
 }
 
 @media (min-width:768px) { 

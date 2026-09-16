@@ -54,7 +54,7 @@
     padding: 14px 16px;
     border: 1px solid var(--border-hover-color, #CBD5E1);
     border-radius: var(--radius-lg, 8px);
-    background: var(--color-17, #fff);
+    background: var(--surface-elevated-bg, #fff);
     color: var(--text-heading-color, #1E293B);
     text-align: left;
     cursor: pointer;

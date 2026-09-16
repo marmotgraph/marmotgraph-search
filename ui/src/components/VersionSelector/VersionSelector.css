@@ -43,12 +43,12 @@
     padding-top: 4px;
     padding-bottom: 4px;
     min-width: unset;
-    color: var(--color-36);
+    color: var(--text-on-light-surface-color);
     padding-inline: 1em;
 }
 
 .kgs-version_selector .kgs-select:after {
-    border-top-color: var(--color-36);
+    border-top-color: var(--text-on-light-surface-color);
 }
 
 .kgs-version_selector .kg-outdated-version {

@@ -22,7 +22,7 @@
  */
 
 .kgs-instance[data-type] .kgs-instance__header .kgs-field {
-  color: var(--color-36);
+  color: var(--text-on-light-surface-color);
   margin-bottom: 0;
 }
 

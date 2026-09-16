@@ -27,7 +27,7 @@ button.kgs-previous-instance-link-btn {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--link-color-1);
+  color: var(--link-default-color);
   cursor: pointer;
   text-decoration: none;
   text-align: left;

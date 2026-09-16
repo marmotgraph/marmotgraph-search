@@ -67,7 +67,7 @@
     width: 100%;
     height: 100%;
     border-radius: 3px;
-    background-color: var(--border-color-3);
+    background-color: var(--border-neutral-color);
     transition: left 0.25s ease-in;
     transform: translate3D(0,0,0);
 }
@@ -161,7 +161,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: var(--background-color-2);
+    background-color: var(--surface-base-bg);
     border-radius: 3px;
     overflow: hidden;
     display: flex;
@@ -228,7 +228,7 @@
     background-color: transparent;
     border: 0;
     border-radius: 3px;
-    color: var(--color-2);
+    color: var(--text-secondary-color);
     font-weight: 500;
 }
 
@@ -254,7 +254,7 @@
     padding: 1px 7px 2px;
     border: 0;
     background-color: transparent;
-    color: var(--color-1);
+    color: var(--text-strong-color);
     text-align: center;
     font-weight: 500;
     z-index: 1500;

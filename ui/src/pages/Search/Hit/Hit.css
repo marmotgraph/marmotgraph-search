@@ -106,7 +106,7 @@
     text-align: left;
     font-size: var(--font-size);
     font-weight: normal;
-    color: var(--color-8);
+    color: var(--icon-text-color);
 }
 
 .kgs-hit__body.has-badges .kgs-hit__content {
@@ -126,7 +126,7 @@
 }
 
 .kgs-hit[data-type] .kgs-field {
-    color: var(--color-8);
+    color: var(--icon-text-color);
     font-weight: normal;
 }
 
@@ -169,5 +169,5 @@ body[profile="ebrains"] .kgs-hit[data-type] .kgs-field__title {
 .kgs-hit-highlight {
     background-color: var(--color-highlight);
     font-style: italic;
-    color: var(--color-34);
+    color: var(--text-highlight-color);
 }

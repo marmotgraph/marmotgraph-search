@@ -32,7 +32,7 @@
   margin: 0;
   padding: 0;
   outline: none;
-  color: var(--link-color-1);
+  color: var(--link-default-color);
 }
 
 .kgs-hierarchical-files__info  .kgs-hierarchical-files__info_link {
@@ -40,7 +40,7 @@
   background-color: var(--button-default-background-color);
   border-color: var(--button-default-border-color);
   font-size: var(--font-size);
-  color: var(--color-36);
+  color: var(--text-on-light-surface-color);
   margin-top: 20px;
 }
 
@@ -49,5 +49,5 @@
 .kgs-hierarchical-files__info  .kgs-hierarchical-files__info_link:active  {
   background-color: var(--button-default-background-color-hover);
   border-color: var(--button-default-border-color);
-  color: var(--color-33);   
+  color: var(--text-on-tint-color);   
 }

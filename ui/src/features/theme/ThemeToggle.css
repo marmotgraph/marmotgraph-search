@@ -27,7 +27,7 @@
   display: inline-grid;
   grid-template-columns: repeat(2, 24px);
   margin: 3px 0;
-  background: var(--background-color-8);
+  background: var(--surface-toggle-track-bg);
   border-radius: 20px;
 }
 
@@ -44,14 +44,14 @@
   transition: all .2s ease;
   background: none;
   line-height: 24px;
-  color: var(--color-19);
+  color: var(--icon-muted-color);
   outline: none;
 }
 
 .kgs-theme_toggle button.kgs-theme_toggle__button.selected {
   transform: scale(1.12);
   font-size: 0.8em;
-  background: var(--color-19);
+  background: var(--icon-muted-color);
   color: white;
   border-radius: 50%;
 }

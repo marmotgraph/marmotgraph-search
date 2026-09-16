@@ -33,7 +33,7 @@
     text-align: left;
     font-size: var(--font-size);
     font-weight: normal;
-    color: var(--color-8);
+    color: var(--icon-text-color);
     overflow-wrap: break-word;
     word-break: break-word;
     white-space: pre-wrap;
@@ -51,7 +51,7 @@ button.kgs-instance-link {
     padding: 0;
     margin: 0;
     text-decoration: none;
-    color: var(--link-color-1);
+    color: var(--link-default-color);
 }
 
 @media (min-width: 768px) {
@@ -88,7 +88,7 @@ button.kgs-instance-link {
 
 .kgs-instance .kgs-instance__header {
     z-index: 2;
-    background-color: var(--background-color-2);
+    background-color: var(--surface-base-bg);
 }
 
 .kgs-instance .kgs-tabs__content {
@@ -101,14 +101,14 @@ button.kgs-instance-link {
 
 .kgs-instance .kgs-instance__footer {
     z-index: 2;
-    background-color: var(--background-color-2);
+    background-color: var(--surface-base-bg);
 }
 
 .kgs-instance .kgs-instance-disclaimer {
     display: inline-block;
     width: 100%;
     font-size: small;
-    color: var(--color-8);
+    color: var(--icon-text-color);
     text-align: center;
     padding: 10px 20px 16px;
 }
@@ -120,5 +120,5 @@ button.kgs-instance-link {
 }
 
 .kgs-instance-container .kgs-search-results-footer .kgs-select select {
-    background-color: var(--background-color-1);
+    background-color: var(--surface-input-bg);
 }

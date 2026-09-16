@@ -37,7 +37,7 @@
 .kgs-hitsInfos {
     display: block;
     font-size: 14px;
-    color: var(--color-15);
+    color: var(--text-info-color);
     line-height: 1.4;
     white-space: normal;
     text-align: left;
@@ -52,7 +52,7 @@
 }
 
 .kgs-hitsInfos .kgs-hitsInfos-highlight {
-    color: var(--color-10);
+    color: var(--text-emphasis-color);
     font-weight: bold;
     white-space: nowrap;
 }
@@ -82,7 +82,7 @@ body[profile="ebrains"] .kgs-hitsInfos-viewing {
 }
 
 body[profile="ebrains"] .kgs-hitsInfos-viewing .kgs-hitsInfos-highlight {
-    color: var(--color-15);
+    color: var(--text-info-color);
     font-weight: var(--font-weight-semibold, 600);
 }
 
@@ -101,7 +101,7 @@ body[profile="ebrains"] .kgs-hitsInfos-viewing .kgs-hitsInfos-highlight {
     margin: 2px 0;
     padding: 0;
     border: 0;
-    color: var(--link-color-1);
+    color: var(--link-default-color);
     background-color: transparent;
     font-size: inherit;
 }

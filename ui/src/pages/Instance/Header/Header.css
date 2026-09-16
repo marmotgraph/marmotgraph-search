@@ -126,7 +126,7 @@ body[profile="tefhealth"] .kgs-instance__header{
 }
 
 .kgs-instance__header .kgs-copy-to-clipboard button {
-  color: var(--color-2);
+  color: var(--text-secondary-color);
   font-weight: 500;
   box-shadow: none;
   transition: none;
@@ -151,7 +151,7 @@ body[profile="tefhealth"] .kgs-instance__header{
 
 .kgs-instance__header .kgs-share-links a.kgs-email-link,
 .kgs-instance__header .kgs-share-links a.kgs-email-link:visited {
-  color: var(--color-2);
+  color: var(--text-secondary-color);
   transition: none;
   box-shadow: none;
 }
@@ -164,7 +164,7 @@ body[profile="tefhealth"] .kgs-instance__header{
 
 .kgs-instance__header .kgs-share-links a.kgs-email-link .fa-envelope-o:before,
 .kgs-instance__header .kgs-share-links a.kgs-email-link:visited .fa-envelope-o:before {
-  color: var(--color-2);
+  color: var(--text-secondary-color);
 }
 
 .kgs-instance__header .kgs-share-links a.kgs-email-link:hover .fa-envelope-o:before,

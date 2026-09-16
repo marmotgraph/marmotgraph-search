@@ -39,13 +39,13 @@
 }
   
 .kgs-image_carousel .carousel .thumb {
-    border-color: var(--background-color-2);
+    border-color: var(--surface-base-bg);
     min-height: 80px;
 }
 
 .kgs-image_carousel .carousel .thumb.selected, 
 .kgs-image_carousel .carousel .thumb:hover {
-    border-color: var(--border-color-5);
+    border-color: var(--border-selected-color);
 }
 
 .kgs-image_carousel .carousel .slide .kgs-image_carousel-icon {

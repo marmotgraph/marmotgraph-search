@@ -30,6 +30,7 @@
 
 .kgs-badge {
   --badge-accent: var(--text-muted-color, #64748B);
+  --badge-text-color: #333;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -37,8 +38,8 @@
   padding: 2px 8px 2px 6px;
   border-radius: var(--radius-lg, 8px);
   border: 1px solid color-mix(in srgb, var(--badge-accent) 30%, #E2E8EE);
-  background: var(--color-17, #fff);
-  color: var(--color-8, #333);
+  background: var(--surface-elevated-bg, #fff);
+  color: var(--badge-text-color);
   font-size: 11px;
   font-weight: 600;
   line-height: 1.35;

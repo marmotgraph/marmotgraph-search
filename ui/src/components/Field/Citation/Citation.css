@@ -30,11 +30,11 @@
 
 .kgs-citation a {
    text-decoration: none;
-   color: var(--link-color-1);
+   color: var(--link-default-color);
  }
 
  .kgs-citation a:hover {
-   color: var(--link-color-2);
+   color: var(--link-hover-color);
  }
  
 .kgs-citation .kgs-citation-download {
@@ -57,7 +57,7 @@
    font-family: inherit; 
    padding: 10px 30px 10px 10px;
    white-space: pre-line;
-   background: var(--color-6);
+   background: var(--surface-code-bg);
    border: 1px solid #ced4da;
    border-radius: 0.25em;
  }
@@ -71,7 +71,7 @@
 
 .kgs-citation > pre > span blockquote {
     font-size: unset;
-    border-left-color: var(--color-25);
+    border-left-color: var(--border-blockquote-color);
     white-space: pre-line;
 }
 

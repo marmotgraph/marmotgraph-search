@@ -54,6 +54,7 @@
     --button-default-background-color: var(--color-35);
     --button-default-background-color-hover: var(--color-35);
     --button-default-border-color: var(--color-35);
+    --button-default-text-color: var(--color-11);
     --default-border-color: var(--color-35);
     --link-color-active: var(--link-color-2);
     --light-text: #828282;
@@ -109,6 +110,8 @@
      *   --surface-subtle-bg    subtle panel/section backgrounds
      *   --surface-muted-bg     hover/muted chip backgrounds
      *   --surface-tint-bg      page-level background tint (search page, header)
+     *   --surface-elevated-bg  plain white surface for cards/panels/controls
+     *   --text-on-accent-color text/icon color placed on a solid accent background
      *   --color-accent         primary accent (selected/active state, links)
      *   --color-accent-hover   accent hover/active-darker state
      *   --color-accent-tint-border  accent-tinted border on chip/tag hover
@@ -127,6 +130,8 @@
     --surface-subtle-bg: #F8FAFC;
     --surface-muted-bg: #F1F5F9;
     --surface-tint-bg: #F0F4F8;
+    --surface-elevated-bg: #fff;
+    --text-on-accent-color: #fff;
     --color-accent: #2563EB;
     --color-accent-hover: #1D4ED8;
     --color-accent-tint-border: #93C5FD;
@@ -135,6 +140,108 @@
     --radius-pill: 999px;
     --shadow-panel: 3px 3px 6px var(--box-shadow-2);
     --shadow-panel-sm: 1px 1px 2px var(--box-shadow-2);
+
+    /*
+     * Speaking aliases for the legacy numbered --color-N / --background-color-N /
+     * --border-color-N / --box-shadow-N / --link-color-N variables above.
+     * Component CSS should reference these names, not the numbered ones directly,
+     * so their purpose is clear and tenants can override by name.
+     * These are pure aliases (theme-aware: they follow whichever numbered
+     * variable is active for the current body[theme] scope) - overriding the
+     * underlying --color-N etc. still works, but prefer overriding the alias.
+     *
+     * Text / icon colors:
+     *   --text-strong-color             high-contrast ink text (logo, carousel controls)
+     *   --text-secondary-color          secondary interactive text (share/copy links, carousel labels)
+     *   --surface-code-bg               citation <pre> code block background
+     *   --text-label-color              field/tab labels, search input area text
+     *   --icon-text-color               default icon & secondary text color (most widely used; badges, headers, field icons)
+     *   --text-emphasis-color           hover/emphasis text (footer social hover, hits-info highlighted count)
+     *   --text-control-color            form control text (search bar input, toggle label hover)
+     *   --text-label-accent-color       field label's trailing ":" accent
+     *   --text-info-color               informational body copy (select dropdown, hits info summary)
+     *   --text-faint-color              faint/unchecked toggle label text
+     *   --icon-muted-color              default color for icon-buttons (panel/email close buttons)
+     *   --icon-emphasis-color           hover color for icon-buttons, and plain emphasized icon fills
+     *   --icon-link-color               link icon svg fill
+     *   --text-caption-color            small caption/type label text (field type badge)
+     *   --border-blockquote-color       blockquote left border
+     *   --text-overlay-color            text on a full-bleed overlay panel (InfoPanel)
+     *   --text-divider-color            hit list section divider border & its caption text
+     *   --text-on-notice-color          text on the notice panel scrim
+     *   --search-button-hover-text-color  search panel primary button, hover-state text
+     *   --text-on-tint-color            text that must stay dark on light-tinted panels (search h1, download link hover)
+     *   --text-highlight-color          search hit highlighted/marked term text
+     *   --text-on-light-surface-color    text on elements that keep a fixed light background regardless of site theme (notification, version selector)
+     *   --link-highlight-hover-color    hover state of --link-highlight-color
+     *
+     * Surface backgrounds:
+     *   --surface-input-bg              form control background (select dropdown)
+     *   --surface-base-bg               primary app surface/card background (most widely used)
+     *   --surface-recessed-bg           inset/collapsible details panel background
+     *   --surface-notice-scrim-bg       translucent notice panel scrim
+     *   --surface-notice-bar-bg         slim notice bar background
+     *   --surface-toggle-track-bg       theme toggle track background
+     *
+     * Borders:
+     *   --border-divider-color          generic section divider (tabs)
+     *   --border-neutral-color          modal/popup border (details popup, image popup, carousel dot bg)
+     *   --border-selected-color         carousel thumbnail selected/hover border
+     *   --border-hairline-color         table/card hairline border
+     *   --border-notice-color           notice bar border
+     *   --border-strong-color           high-contrast border (hit divider, spinner)
+     *   --border-translucent-color      translucent border/icon tone (spinner ring, bg-error icon)
+     *
+     * Shadow:
+     *   --shadow-color                  neutral shadow tint used to build box-shadows
+     *
+     * Links:
+     *   --link-default-color            default link color
+     *   --link-hover-color              link hover/active color
+     */
+    --text-strong-color: var(--color-1);
+    --text-secondary-color: var(--color-2);
+    --surface-code-bg: var(--color-6);
+    --text-label-color: var(--color-7);
+    --icon-text-color: var(--color-8);
+    --text-emphasis-color: var(--color-10);
+    --text-control-color: var(--color-11);
+    --text-label-accent-color: var(--color-12);
+    --text-info-color: var(--color-15);
+    --text-faint-color: var(--color-16);
+    --icon-muted-color: var(--color-19);
+    --icon-emphasis-color: var(--color-20);
+    --icon-link-color: var(--color-23);
+    --text-caption-color: var(--color-24);
+    --border-blockquote-color: var(--color-25);
+    --text-overlay-color: var(--color-26);
+    --text-divider-color: var(--color-27);
+    --text-on-notice-color: var(--color-28);
+    --search-button-hover-text-color: var(--color-32);
+    --text-on-tint-color: var(--color-33);
+    --text-highlight-color: var(--color-34);
+    --text-on-light-surface-color: var(--color-36);
+    --link-highlight-hover-color: var(--color-37);
+
+    --surface-input-bg: var(--background-color-1);
+    --surface-base-bg: var(--background-color-2);
+    --surface-recessed-bg: var(--background-color-5);
+    --surface-notice-scrim-bg: var(--background-color-6);
+    --surface-notice-bar-bg: var(--background-color-7);
+    --surface-toggle-track-bg: var(--background-color-8);
+
+    --border-divider-color: var(--border-color-1);
+    --border-neutral-color: var(--border-color-3);
+    --border-selected-color: var(--border-color-5);
+    --border-hairline-color: var(--border-color-6);
+    --border-notice-color: var(--border-color-7);
+    --border-strong-color: var(--border-color-8);
+    --border-translucent-color: var(--border-color-9);
+
+    --shadow-color: var(--box-shadow-2);
+
+    --link-default-color: var(--link-color-1);
+    --link-hover-color: var(--link-color-2);
 }
 
 /* TODO: Uncomment if you want dark mode enabled */
@@ -196,6 +303,7 @@
     --button-default-background-color: var(--color-35);
     --button-default-background-color-hover: var(--color-35);
     --button-default-border-color: var(--color-35);
+    --button-default-text-color: var(--color-11);
     --default-border-color:var(--color-35);
     /*--link-color-active: var(--link-color-2);*/
     --light-text: #828282;

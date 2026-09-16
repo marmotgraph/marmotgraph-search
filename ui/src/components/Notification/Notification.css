@@ -29,7 +29,7 @@
     border-radius: 5px;
     background-color: var(--color-selected);
     background-color: #fee78a;
-    color: var(--color-36);
+    color: var(--text-on-light-surface-color);
 }
 
 .kgs-notification p{

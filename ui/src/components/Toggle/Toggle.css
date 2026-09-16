@@ -38,8 +38,8 @@
 .kgs-toggle > div button {
     flex: 1 1;
     padding: 3px 35px; 
-    background-color: var(--background-color-2);
-    border: 1px solid var(--background-color-2);
+    background-color: var(--surface-base-bg);
+    border: 1px solid var(--surface-base-bg);
     border-right: none;
     cursor: pointer;
     font-weight: 500;
@@ -72,7 +72,7 @@
 
 .kgs-toggle > div > button:not(:last-child):not(.is-active):not(.is-disabled):hover,
 .kgs-toggle > div > button:not(:last-child):not(.is-active):not(.is-disabled):not([disabled]):focus  {
-    box-shadow: 0px 3px 6px var(--box-shadow-2);
+    box-shadow: 0px 3px 6px var(--shadow-color);
 }
 
 .kgs-toggle > div > button:last-child:not(.is-active):not(.is-disabled):hover,
@@ -84,11 +84,11 @@
     display: inline;
     font-size: 22px;
     font-weight: normal;
-    color: var(--color-16);
+    color: var(--text-faint-color);
 }
 
 .kgs-toggle > div > button:not(.is-active):hover > label {
-    color: var(--color-11);
+    color: var(--text-control-color);
 }
 
 .kgs-toggle > div > button.is-active > label {

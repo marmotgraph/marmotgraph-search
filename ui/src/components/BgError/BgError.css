@@ -31,7 +31,7 @@
 }
 
 .kgs-bg-error-icon {
-    color: var(--border-color-9);
+    color: var(--border-translucent-color);
     transform: scale(2);
     margin-bottom: 70px;
 }
@@ -41,11 +41,11 @@
 }
 
 .kgs-bg-error-message a {
-    color: var(--link-color-1) !important;
+    color: var(--link-default-color) !important;
 }
 
 .kgs-bg-error-message a:hover {
-    color: var(--link-color-2) !important;
+    color: var(--link-hover-color) !important;
 }
 
 .kgs-bg-error-navigation {
@@ -61,23 +61,23 @@
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
-    color: var(--color-11, #555);
+    color: var(--button-default-text-color);
     font-weight: 700;
     cursor: pointer;
 }
 
 .kgs-bg-error-navigation button:hover {
-    background-color: var(--color-35, #e6e6e6);
+    background-color: var(--button-default-background-color-hover);
 }
 
 .kgs-bg-error-navigation button.primary {
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     background-color: var(--button-primary-background-color);
     border-color: var(--button-primary-border-color);
 }
 
 .kgs-bg-error-navigation button.primary:hover {
-    color: var(--color-17, #fff);
+    color: var(--text-on-accent-color, #fff);
     background-color: var(--button-primary-background-color-hover);
     border-color: var(--button-primary-border-color-hover);
 }

@@ -33,7 +33,7 @@
 
  .kgs-files-search .form-control {
      border: 1px solid var(--default-border-color);
-     color: var(--color-7);
+     color: var(--text-label-color);
      padding-left: 30px;
  }
 
@@ -55,7 +55,7 @@
 }
 
 .kgs-hierarchical-files>.rc-tree .rc-tree-treenode:hover .rc-tree-title {
-    color: var(--color-8);
+    color: var(--icon-text-color);
 }
 
 .kgs-hierarchical-files .rc-tree-node-selected {

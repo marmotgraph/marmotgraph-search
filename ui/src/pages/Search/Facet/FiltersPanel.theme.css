@@ -55,7 +55,7 @@
 
 .kgs-search {
     /* Column – default: full viewport height, white background */
-    --filters-column-bg: var(--color-17, #fff);
+    --filters-column-bg: var(--surface-elevated-bg, #fff);
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
@@ -89,7 +89,7 @@
     --filters-facet-title-color: var(--text-heading-color, #1E293B);
     --filters-facet-title-size: 14px;
     --filters-facet-badge-bg: var(--color-accent, #2563EB);
-    --filters-facet-badge-color: var(--color-17, #fff);
+    --filters-facet-badge-color: var(--text-on-accent-color, #fff);
     --filters-facet-chevron-color: var(--text-subtle-color, #94A3B8);
     --filters-facet-body-padding: 0 16px 14px;
 
@@ -131,12 +131,12 @@ body[profile="cscs"] .kgs-search {
     --filters-column-gap: 20px;
     --filters-column-overflow: visible;
 
-    --filters-types-bg: var(--background-color-2, #fff);
+    --filters-types-bg: var(--surface-base-bg, #fff);
     --filters-types-radius: var(--radius-lg, 8px);
     --filters-categories-bg: var(--filters-types-bg);
     --filters-categories-radius: var(--filters-types-radius);
 
-    --filters-panel-bg: var(--background-color-2, #fff);
+    --filters-panel-bg: var(--surface-base-bg, #fff);
     --filters-panel-border: 1px solid var(--border-subtle-color, #E2E8F0);
     --filters-panel-radius: var(--radius-lg, 8px);
     --filters-panel-shadow: none;

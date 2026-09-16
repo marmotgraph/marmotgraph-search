@@ -37,14 +37,14 @@
     top: 0;
     left: 0;
     padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color-7);
+    border-bottom: 1px solid var(--border-notice-color);
     box-shadow: 0 4px 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
     z-index: 3;
 }
 
 
 .kgs-search-panel > h1 {
-    color: var(--color-33);
+    color: var(--text-on-tint-color);
     text-align: center;
     margin-top: 10px;
     margin-bottom: 30px;
@@ -79,15 +79,15 @@
 
 .kgs-search-panel .kg-search-bar {
     flex: 1;
-    color: var(--color-11);
-    background-color: var(--background-color-2);
+    color: var(--text-control-color);
+    background-color: var(--surface-base-bg);
     background-image: none;
-    border: 1px solid var(--background-color-2);
+    border: 1px solid var(--surface-base-bg);
     border-radius: 2px;
     transition: border-color ease-in-out .15s;
 }
 .kgs-search-panel .kg-search-bar.is-focused {
-    background-color: var(--background-color-2);
+    background-color: var(--surface-base-bg);
 }
 
 .kgs-search-panel .kg-search-bar__icon {
@@ -102,12 +102,12 @@
     width: 100%;
     padding:5px 120px 5px 60px;
     vertical-align: top;
-    color: var(--color-11);
+    color: var(--text-control-color);
     font-size: 21px;
 }
 
 .kgs-search-panel input.kg-search-bar:hover {
-    color: var(--color-11);
+    color: var(--text-control-color);
 }
 
 .kgs-search-panel input.kg-search-bar:focus {
@@ -143,7 +143,7 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
     border-radius: 2px;
     background-color: #1668b3;
     color: #fff;
-    /*color: var(--color-32);*/
+    /*color: var(--search-button-hover-text-color);*/
     /*font-size: 22px;*/
     font-size: 18px;
     /*text-transform: uppercase;*/
@@ -151,8 +151,8 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
 }
 
 .kgs-search-panel .kgs-search-panel-button:hover {
-    color: var(--color-32)!important;
-    /*background-color: var(--color-37);*/
+    color: var(--search-button-hover-text-color)!important;
+    /*background-color: var(--link-highlight-hover-color);*/
     background-color: #0f4d87;
 }
 
@@ -167,7 +167,7 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
     padding: 16px 0;
     border: 0;
     background-color: transparent;
-    color: var(--color-15);
+    color: var(--text-info-color);
     opacity: 0;
     text-align: center;
     cursor: pointer;
@@ -204,13 +204,13 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
 }
 
 .kgs-search-panel button.kgs-search-panel-help__button:hover {
-    /*color: var(--color-37);*/
+    /*color: var(--link-highlight-hover-color);*/
     color: #0f4d87;
 }
 
 .kgs-search-panel .kg-search-bar .sk-spinning-loader {
-    border-color: var(--border-color-9);
-    border-left-color: var(--border-color-8);
+    border-color: var(--border-translucent-color);
+    border-left-color: var(--border-strong-color);
 }
 
 @media (min-width: 992px) {
