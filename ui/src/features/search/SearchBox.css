@@ -86,10 +86,6 @@
     border-radius: var(--radius-xs);
     transition: border-color var(--transition-fast);
 }
-.kgs-search-panel .kg-search-bar.is-focused {
-    background-color: var(--surface-base-bg);
-}
-
 .kgs-search-panel .kg-search-bar__icon {
     position: absolute;
     opacity: 1;
@@ -206,11 +202,6 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
 .kgs-search-panel button.kgs-search-panel-help__button:hover {
     /*color: var(--link-highlight-hover-color);*/
     color: #0f4d87;
-}
-
-.kgs-search-panel .kg-search-bar .sk-spinning-loader {
-    border-color: var(--border-translucent-color);
-    border-left-color: var(--border-strong-color);
 }
 
 @media (min-width: 992px) {

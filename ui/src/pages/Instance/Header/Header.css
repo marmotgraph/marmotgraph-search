@@ -47,11 +47,6 @@ body[profile="tefhealth"] .kgs-instance__header{
   padding: 10px 15px 10px 25px;
 }
   
-.kgs-instance__header_navigation_left {
-  flex:1;
-  padding-top: 10px;
-}
-
 .kgs-instance__header_navigation .kgs-share-links {
   margin-top: 2px;
   margin-left: 15px;
@@ -60,11 +55,6 @@ body[profile="tefhealth"] .kgs-instance__header{
 .kgs-instance__header_navigation .kgs-actions-buttons .kgs-share-links {
   margin-left: 0;
   margin-top: 0;
-}
-
-.kgs-instance__header_navigation_left > a,
-.kgs-instance__header_navigation_left > a:hover  {
-  text-decoration: none;
 }
 
 .kgs-instance__header_title {
@@ -94,28 +84,6 @@ body[profile="tefhealth"] .kgs-instance__header{
 .kgs-instance__header_fields .kgs-tags {
   padding-bottom: 10px;
 }
-
-.kgs-instance__header h3.kgs-instance__group {
-  display: none;
-  margin-top: 0;
-  font-weight: bold;
-  font-size: var(--font-size-small);
-  line-height: 24px;
-}
-
-.kgs-instance__header h3.kgs-instance__group.show {
-  display: block;
-}
-
-.kgs-instance__header h3.kgs-instance__group strong {
-  font-size: 24px;
-  font-weight: normal;
-  text-transform: capitalize;
-  vertical-align: text-bottom;
-  display: inline-block;
-  transform: translateY(1px);
-}
-
 
 .kgs-instance__header .kgs-share-links .kgs-share-links-panel {
   border: 0
@@ -159,16 +127,6 @@ body[profile="tefhealth"] .kgs-instance__header{
 .kgs-instance__header .kgs-share-links a.kgs-email-link:hover,
 .kgs-instance__header .kgs-share-links a.kgs-email-link:visited:hover {
   box-shadow: none;
-  font-weight: bold;
-}
-
-.kgs-instance__header .kgs-share-links a.kgs-email-link .fa-envelope-o:before,
-.kgs-instance__header .kgs-share-links a.kgs-email-link:visited .fa-envelope-o:before {
-  color: var(--text-secondary-color);
-}
-
-.kgs-instance__header .kgs-share-links a.kgs-email-link:hover .fa-envelope-o:before,
-.kgs-instance__header .kgs-share-links a.kgs-email-link:visited:hover .fa-envelope-o:before {
   font-weight: bold;
 }
 

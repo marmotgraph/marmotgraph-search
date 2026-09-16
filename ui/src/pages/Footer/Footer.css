@@ -54,15 +54,6 @@ body[profile="tefhealth"] .footer__menu{
     transform: translateX(-20px);
 }
 
-.site-footer .footer__header .footer__secondary {
-    display: flex;
-    padding-bottom: 10px;
-}
-
-.site-footer .footer__header .footer__secondary .powered-by {
-    margin-right: auto;
-}
-
 .site-footer .footer__content {
     position: relative;
     display: grid;
@@ -105,20 +96,6 @@ body[profile="tefhealth"] .footer__menu{
     align-items: center;
     width: 100%;
     min-height: 65px;
-}
-
-.site-footer .footer__end .footer__social {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
-
-.site-footer .footer__end .footer__social li {
-    margin: 0 8px;
-}
-
-.site-footer .footer__end .footer__social li a:hover {
-    color: var(--text-emphasis-color);
 }
 
 .footer__copyright_addition {
@@ -178,10 +155,6 @@ body[profile="tefhealth"] .footer__menu{
         "hbpEu";
     }
 
-    .site-footer .footer__header .footer__secondary {
-        grid-area: hbpEu;
-    }
-
     .site-footer .footer__content .footer__menu-1 {
         grid-area: menu1;
     }
@@ -208,15 +181,6 @@ body[profile="tefhealth"] .footer__menu{
 @media (min-width: 768px) {
     .site-footer .footer__header {
         display: flex;
-    }
-
-    .site-footer .footer__header .footer__secondary {
-        display: inline-block;
-        padding-bottom: 0;
-    }
-
-    .site-footer .footer__header .footer__secondary .powered-by {
-        margin-right: 0;
     }
 
     .site-footer .footer__content .footer__menu {

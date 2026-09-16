@@ -260,16 +260,7 @@
     z-index: var(--z-modal);
 }
 
-.kgs-carousel__close-button .fa-close:before {
-    font-weight: 500;
-}
-
-
 .kgs-carousel__close-button:hover {
-    font-weight: bold;
-}
-
-.kgs-carousel__close-button:hover .fa-close:before {
     font-weight: bold;
 }
 

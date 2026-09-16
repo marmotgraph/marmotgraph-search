@@ -39,21 +39,6 @@
     white-space: pre-wrap;
 }
 
-.kgs-all-versions {
-    padding: 30px;
-    font-size: small;
-    text-align: center;
-}
-
-button.kgs-instance-link {
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    text-decoration: none;
-    color: var(--link-default-color);
-}
-
 @media (min-width: 768px) {
 
     .kgs-instance {
@@ -61,17 +46,6 @@ button.kgs-instance-link {
         grid-template-rows: max-content minmax(0, 1fr) max-content max-content;
         grid-template-areas: 
             "header header"
-            "menu body"
-            "footer footer"
-            "report report";
-    }
-
-    .kgs-instance.kgs-outdated {
-        grid-template-columns: 250px 1fr;
-        grid-template-rows: max-content max-content minmax(0, 1fr) max-content max-content;
-        grid-template-areas: 
-            "header header"
-            "outdated outdated"
             "menu body"
             "footer footer"
             "report report";

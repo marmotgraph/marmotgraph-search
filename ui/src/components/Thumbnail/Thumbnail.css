@@ -35,10 +35,6 @@
   margin-right: 0;
 }
 
-.kgs-thumbnail--panel .fa-file-o {
-  transform: scale(2) translateX(-2px);
-}
-
 .kgs-thumbnail--container .kgs-thumbnail--panel .kgs-thumbnail--image {
   max-width: 2em;
   height: 2em;

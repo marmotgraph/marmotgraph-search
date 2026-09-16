@@ -1,10 +1,4 @@
 
-@media (min-width: 992px) {
-  .kgs-hint > .__react_component_tooltip {
-    min-width: 350px;
-  }
-}
-
 .kgs-hint-tooltip {
   z-index: var(--z-toast);
   background-color: var(--icon-text-color);

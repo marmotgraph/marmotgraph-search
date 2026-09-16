@@ -65,18 +65,18 @@
     /*cursor: default;*/
 }
 
-.kgs-toggle > div > button:not(.is-active):not(.is-disabled):hover,
-.kgs-toggle > div > button:not(.is-active):not(.is-disabled):not([disabled]):focus  {
+.kgs-toggle > div > button:not(.is-active):hover,
+.kgs-toggle > div > button:not(.is-active):not([disabled]):focus  {
     z-index: var(--z-raised);
 }
 
-.kgs-toggle > div > button:not(:last-child):not(.is-active):not(.is-disabled):hover,
-.kgs-toggle > div > button:not(:last-child):not(.is-active):not(.is-disabled):not([disabled]):focus  {
+.kgs-toggle > div > button:not(:last-child):not(.is-active):hover,
+.kgs-toggle > div > button:not(:last-child):not(.is-active):not([disabled]):focus  {
     box-shadow: 0px 3px 6px var(--shadow-color);
 }
 
-.kgs-toggle > div > button:last-child:not(.is-active):not(.is-disabled):hover,
-.kgs-toggle > div > button:last-child:not(.is-active):not(.is-disabled):not([disabled]):focus  {
+.kgs-toggle > div > button:last-child:not(.is-active):hover,
+.kgs-toggle > div > button:last-child:not(.is-active):not([disabled]):focus  {
     box-shadow: var(--shadow-panel);
 }
 

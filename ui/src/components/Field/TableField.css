@@ -200,10 +200,6 @@
     display: none;
 }
 
-.kg-table__filecol {
-    width: 80%;
-}
-
 .kgs-field .kg-cell-hint.kg-cell-hint {
     margin-right: 0;
     margin-left: 3px;

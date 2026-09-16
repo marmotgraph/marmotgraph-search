@@ -76,10 +76,6 @@
     display: none;
 }
 
-.kgs-tabs-info {
-    padding-top: 20px;
-}
-
 .kgs-tabs__content {
     flex: 1 1 0;
     position: relative;
