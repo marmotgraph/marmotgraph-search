@@ -55,7 +55,7 @@
 
 .kgs-search {
     /* Column – default: full viewport height, white background */
-    --filters-column-bg: #fff;
+    --filters-column-bg: var(--color-17, #fff);
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
@@ -74,23 +74,23 @@
     --filters-panel-min-width: 0;
     --filters-panel-header-padding: 12px 16px;
     --filters-panel-header-bg: transparent;
-    --filters-panel-header-border: 1px solid #E2E8F0;
-    --filters-panel-title-color: #1E293B;
+    --filters-panel-header-border: 1px solid var(--border-subtle-color, #E2E8F0);
+    --filters-panel-title-color: var(--text-heading-color, #1E293B);
     --filters-panel-title-size: 15px;
     --filters-panel-title-weight: 700;
-    --filters-panel-icon-color: #64748B;
-    --filters-panel-reset-color: var(--link-highlight-color, #2563EB);
+    --filters-panel-icon-color: var(--text-muted-color, #64748B);
+    --filters-panel-reset-color: var(--color-accent, #2563EB);
     --filters-panel-body-overflow: visible;
 
     /* Facet sections */
-    --filters-facet-divider: 1px solid #E2E8F0;
+    --filters-facet-divider: 1px solid var(--border-subtle-color, #E2E8F0);
     --filters-facet-header-padding: 12px 16px;
-    --filters-facet-header-hover-bg: #F8FAFC;
-    --filters-facet-title-color: #1E293B;
+    --filters-facet-header-hover-bg: var(--surface-subtle-bg, #F8FAFC);
+    --filters-facet-title-color: var(--text-heading-color, #1E293B);
     --filters-facet-title-size: 14px;
-    --filters-facet-badge-bg: var(--color-selected, #2563EB);
-    --filters-facet-badge-color: #fff;
-    --filters-facet-chevron-color: #94A3B8;
+    --filters-facet-badge-bg: var(--color-accent, #2563EB);
+    --filters-facet-badge-color: var(--color-17, #fff);
+    --filters-facet-chevron-color: var(--text-subtle-color, #94A3B8);
     --filters-facet-body-padding: 0 16px 14px;
 
     /* Categories – primary facet above dependent filters */
@@ -99,12 +99,12 @@
     --filters-categories-title-weight: var(--filters-panel-title-weight, 700);
     --filters-categories-header-padding: 14px 16px;
     --filters-categories-bg: var(--filters-types-bg, #F8FAFC);
-    --filters-categories-border: 1px solid #E2E8F0;
+    --filters-categories-border: 1px solid var(--border-subtle-color, #E2E8F0);
     --filters-categories-radius: var(--filters-types-radius, 8px);
     --filters-categories-shadow: none;
 
     /* Categories block above facets */
-    --filters-types-bg: #F8FAFC;
+    --filters-types-bg: var(--surface-subtle-bg, #F8FAFC);
     --filters-types-padding: 12px 16px 8px;
     --filters-types-radius: 0;
 
@@ -132,13 +132,13 @@ body[profile="cscs"] .kgs-search {
     --filters-column-overflow: visible;
 
     --filters-types-bg: var(--background-color-2, #fff);
-    --filters-types-radius: 8px;
+    --filters-types-radius: var(--radius-lg, 8px);
     --filters-categories-bg: var(--filters-types-bg);
     --filters-categories-radius: var(--filters-types-radius);
 
     --filters-panel-bg: var(--background-color-2, #fff);
-    --filters-panel-border: 1px solid #E2E8F0;
-    --filters-panel-radius: 8px;
+    --filters-panel-border: 1px solid var(--border-subtle-color, #E2E8F0);
+    --filters-panel-radius: var(--radius-lg, 8px);
     --filters-panel-shadow: none;
     --filters-panel-body-overflow: visible;
 }

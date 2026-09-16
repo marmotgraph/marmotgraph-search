@@ -103,6 +103,6 @@ button.kgs-hit-button {
     }
 
     button.kgs-hit-button:hover {
-        box-shadow: 1px 1px 2px var(--box-shadow-2);
+        box-shadow: var(--shadow-panel-sm);
     }
 }

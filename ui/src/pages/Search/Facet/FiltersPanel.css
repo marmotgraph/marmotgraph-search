@@ -84,7 +84,7 @@
 
 .kgs-filters__reset-button:hover,
 .kgs-filters__reset-button:focus {
-    color: var(--color-37, #1D4ED8);
+    color: var(--color-accent-hover, #1D4ED8);
     outline: none;
     text-decoration: underline;
 }

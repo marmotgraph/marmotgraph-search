@@ -40,9 +40,9 @@
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    background: #F0F4F8;
+    background: var(--surface-tint-bg, #F0F4F8);
     border: 1px solid #E2E8EE;
-    border-radius: 4px;
+    border-radius: var(--radius-sm, 4px);
     padding: 2px 7px;
     font-size: 10px;
     color: #4A6278;
@@ -51,7 +51,7 @@
 
 .kgs-tags .kgs-tag:hover {
     background: #EBF4FF;
-    border-color: #93C5FD;
+    border-color: var(--color-accent-tint-border, #93C5FD);
     color: #1A4E8A;
     text-decoration: none !important;
 }

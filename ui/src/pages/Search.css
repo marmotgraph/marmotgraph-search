@@ -25,12 +25,12 @@
 
 .kgs-search {
     /*background: var(--background-color-1);*/
-    background-color: #F0F4F8;
+    background-color: var(--surface-tint-bg, #F0F4F8);
 }
 
 body[profile="tefhealth"] .kgs-search .kgs-search-panel {
     /*background-color: #ffffff;*/
-    background-color: #F0F4F8;
+    background-color: var(--surface-tint-bg, #F0F4F8);
     background-image: url("../../public/static/img/tefhealth_mainheader.png");
 
 }

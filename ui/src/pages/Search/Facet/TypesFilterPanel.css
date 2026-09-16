@@ -77,7 +77,7 @@
     padding: 0;
     border: 0;
     background: transparent;
-    color: var(--filters-panel-reset-color, var(--link-highlight-color, #2563EB));
+    color: var(--filters-panel-reset-color, var(--color-accent, #2563EB));
     font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
@@ -87,7 +87,7 @@
 
 .kgs-facet--categories__reset-button:hover,
 .kgs-facet--categories__reset-button:focus {
-    color: var(--color-37, #1D4ED8);
+    color: var(--color-accent-hover, #1D4ED8);
     outline: none;
     text-decoration: underline;
 }

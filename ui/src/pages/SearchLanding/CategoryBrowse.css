@@ -27,7 +27,7 @@
 
 .kgs-category-browse__title {
     margin: 0 0 16px;
-    color: #334155;
+    color: var(--text-body-color, #334155);
     font-size: 15px;
     font-weight: 600;
     line-height: 1.4;
@@ -52,10 +52,10 @@
     min-height: 88px;
     margin: 0;
     padding: 14px 16px;
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    background: #fff;
-    color: #1E293B;
+    border: 1px solid var(--border-hover-color, #CBD5E1);
+    border-radius: var(--radius-lg, 8px);
+    background: var(--color-17, #fff);
+    color: var(--text-heading-color, #1E293B);
     text-align: left;
     cursor: pointer;
     transition: border-color .15s, box-shadow .15s, transform .15s;
@@ -63,7 +63,7 @@
 
 .kgs-category-browse__box:hover,
 .kgs-category-browse__box:focus {
-    border-color: #93C5FD;
+    border-color: var(--color-accent-tint-border, #93C5FD);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
     outline: none;
     transform: translateY(-1px);
@@ -76,7 +76,7 @@
 }
 
 .kgs-category-browse__count {
-    color: #64748B;
+    color: var(--text-muted-color, #64748B);
     font-size: 12px;
     font-variant-numeric: tabular-nums;
     line-height: 1.3;

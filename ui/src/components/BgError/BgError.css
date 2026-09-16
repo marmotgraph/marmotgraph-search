@@ -61,23 +61,23 @@
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
-    color: #555;
+    color: var(--color-11, #555);
     font-weight: 700;
     cursor: pointer;
 }
 
 .kgs-bg-error-navigation button:hover {
-    background-color: #e6e6e6;  
+    background-color: var(--color-35, #e6e6e6);
 }
 
 .kgs-bg-error-navigation button.primary {
-    color: #fff;
+    color: var(--color-17, #fff);
     background-color: var(--button-primary-background-color);
     border-color: var(--button-primary-border-color);
 }
 
 .kgs-bg-error-navigation button.primary:hover {
-    color: #fff;
+    color: var(--color-17, #fff);
     background-color: var(--button-primary-background-color-hover);
     border-color: var(--button-primary-border-color-hover);
 }

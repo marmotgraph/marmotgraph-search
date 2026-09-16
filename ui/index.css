@@ -94,6 +94,47 @@
     --bold: 700;
     --site-margin: 12px;
     --site-margin-desktop: 42px;
+
+    /*
+     * Shared "modern" design tokens used across the search/filters redesign
+     * (facets, filter panel, tag chips, search box, drawer, pagination, ...).
+     * Override per tenant with body[profile="tenant-id"] { --token: ... }
+     *
+     *   --text-heading-color   titles/headings on cards, panels, facets
+     *   --text-body-color      secondary/body text
+     *   --text-muted-color     muted labels, icons, meta text
+     *   --text-subtle-color    placeholders, chevrons, disabled hints
+     *   --border-subtle-color  default hairline borders/dividers
+     *   --border-hover-color   hover-state borders
+     *   --surface-subtle-bg    subtle panel/section backgrounds
+     *   --surface-muted-bg     hover/muted chip backgrounds
+     *   --surface-tint-bg      page-level background tint (search page, header)
+     *   --color-accent         primary accent (selected/active state, links)
+     *   --color-accent-hover   accent hover/active-darker state
+     *   --color-accent-tint-border  accent-tinted border on chip/tag hover
+     *   --radius-sm            small controls (checkboxes, chips)
+     *   --radius-lg            panels, cards, drawers
+     *   --radius-pill          pill-shaped chips/badges/toggles
+     *   --shadow-panel         popover/panel elevation
+     *   --shadow-panel-sm      subtle popover/panel elevation
+     */
+    --text-heading-color: #1E293B;
+    --text-body-color: #334155;
+    --text-muted-color: #64748B;
+    --text-subtle-color: #94A3B8;
+    --border-subtle-color: #E2E8F0;
+    --border-hover-color: #CBD5E1;
+    --surface-subtle-bg: #F8FAFC;
+    --surface-muted-bg: #F1F5F9;
+    --surface-tint-bg: #F0F4F8;
+    --color-accent: #2563EB;
+    --color-accent-hover: #1D4ED8;
+    --color-accent-tint-border: #93C5FD;
+    --radius-sm: 4px;
+    --radius-lg: 8px;
+    --radius-pill: 999px;
+    --shadow-panel: 3px 3px 6px var(--box-shadow-2);
+    --shadow-panel-sm: 1px 1px 2px var(--box-shadow-2);
 }
 
 /* TODO: Uncomment if you want dark mode enabled */

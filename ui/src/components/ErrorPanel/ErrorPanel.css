@@ -38,11 +38,11 @@
     margin-top: calc(30% - 60px);
     margin-left: calc(50% - 180px);
     padding: 20px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm, 4px);
     box-sizing: border-box;
     background-color: white;
     transition: margin-top 0.25s ease-in;
-    box-shadow: 3px 3px 6px #8f8a8a;
+    box-shadow: var(--shadow-panel);
 }
 
 .kgs-error-message {
@@ -69,23 +69,23 @@
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
-    color: #555;
+    color: var(--color-11, #555);
     font-weight: 700;
     cursor: pointer;
 }
 
 .kgs-error-navigation button:hover {
-    background-color: #e6e6e6; 
+    background-color: var(--color-35, #e6e6e6);
 }
 
 .kgs-error-navigation button.primary {
-    color: #fff;
+    color: var(--color-17, #fff);
     background-color: var(--button-primary-background-color);
     border-color: var(--button-primary-border-color);
 }
 
 .kgs-error-navigation button.primary:hover {
-    color: #fff;
+    color: var(--color-17, #fff);
     background-color: var(--button-primary-background-color-hover);
     border-color: var(--button-primary-border-color-hover);
 }

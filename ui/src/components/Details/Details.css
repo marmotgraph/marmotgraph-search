@@ -30,7 +30,7 @@
 }
 
 .field-details button.toggle:hover{
-  box-shadow: 3px 3px 6px var(--box-shadow-2);
+  box-shadow: var(--shadow-panel);
 }
 
 .field-details button.toggle.in {

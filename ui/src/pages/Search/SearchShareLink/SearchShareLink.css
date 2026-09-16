@@ -10,7 +10,7 @@
     padding: 4px 0;
     border: 0;
     background: transparent;
-    color: var(--link-highlight-color, #2563EB);
+    color: var(--color-accent, #2563EB);
     font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
@@ -21,7 +21,7 @@
 
 .kgs-search-share-link a:hover,
 .kgs-search-share-link a:focus {
-    color: var(--color-37, #1D4ED8);
+    color: var(--color-accent-hover, #1D4ED8);
     outline: none;
     text-decoration: underline;
 }

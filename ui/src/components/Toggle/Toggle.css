@@ -77,7 +77,7 @@
 
 .kgs-toggle > div > button:last-child:not(.is-active):not(.is-disabled):hover,
 .kgs-toggle > div > button:last-child:not(.is-active):not(.is-disabled):not([disabled]):focus  {
-    box-shadow: 3px 3px 6px var(--box-shadow-2);
+    box-shadow: var(--shadow-panel);
 }
 
 .kgs-toggle > div > button > label {

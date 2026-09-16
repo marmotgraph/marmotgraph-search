@@ -57,7 +57,7 @@
     padding: 5px 0;
     border: 0;
     background: transparent;
-    color: var(--link-color-1, #2563EB);
+    color: var(--color-accent, #2563EB);
     font-size: inherit;
     font-weight: 500;
     line-height: inherit;
@@ -72,7 +72,7 @@
 }
 
 .kgs-instance-breadcrumbs__dot {
-    --breadcrumb-accent: #64748B;
+    --breadcrumb-accent: var(--text-muted-color, #64748B);
     flex-shrink: 0;
     width: 7px;
     height: 7px;
@@ -86,7 +86,7 @@
 
 .kgs-instance-breadcrumbs__link:hover,
 .kgs-instance-breadcrumbs__link:focus {
-    color: var(--link-color-active, #1D4ED8);
+    color: var(--color-accent-hover, #1D4ED8);
     outline: none;
 }
 
@@ -97,7 +97,7 @@
 
 .kgs-instance-breadcrumbs__separator {
     margin: 0 5px;
-    color: #94A3B8;
+    color: var(--text-subtle-color, #94A3B8);
     font-size: 12px;
     font-weight: 400;
     flex-shrink: 0;
@@ -110,7 +110,7 @@
 }
 
 .kgs-instance-breadcrumbs__text.is-current {
-    color: #64748B;
+    color: var(--text-muted-color, #64748B);
     font-weight: 400;
 }
 
@@ -118,10 +118,10 @@
     min-width: 26px;
     margin: 0;
     padding: 3px 7px;
-    border: 1px solid var(--border-color-6, #E2E8F0);
+    border: 1px solid var(--border-subtle-color, #E2E8F0);
     border-radius: 6px;
     background: var(--background-color-2, #fff);
-    color: #64748B;
+    color: var(--text-muted-color, #64748B);
     font-size: inherit;
     font-weight: 600;
     line-height: 1;
@@ -130,8 +130,8 @@
 
 .kgs-instance-breadcrumbs__ellipsis:hover,
 .kgs-instance-breadcrumbs__ellipsis:focus {
-    border-color: var(--link-color-1, #2563EB);
-    color: var(--link-color-1, #2563EB);
+    border-color: var(--color-accent, #2563EB);
+    color: var(--color-accent, #2563EB);
     outline: none;
 }
 
@@ -145,7 +145,7 @@
     margin: 0;
     padding: 6px 0;
     list-style: none;
-    border: 1px solid var(--border-color-6, #E2E8F0);
+    border: 1px solid var(--border-subtle-color, #E2E8F0);
     border-radius: 8px;
     background: var(--background-color-2, #fff);
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
@@ -158,7 +158,7 @@
     padding: 7px 12px;
     border: 0;
     background: transparent;
-    color: var(--link-color-1, #2563EB);
+    color: var(--color-accent, #2563EB);
     font-size: inherit;
     font-weight: 500;
     line-height: inherit;
@@ -171,8 +171,8 @@
 
 .kgs-instance-breadcrumbs__menu-item:hover,
 .kgs-instance-breadcrumbs__menu-item:focus {
-    background: var(--background-color-1, #F8FAFC);
-    color: var(--link-color-active, #1D4ED8);
+    background: var(--surface-subtle-bg, #F8FAFC);
+    color: var(--color-accent-hover, #1D4ED8);
     outline: none;
 }
 
