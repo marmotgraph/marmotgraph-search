@@ -20,7 +20,9 @@
  * (Human Brain Project SGA1, SGA2 and SGA3).
  *
  */
-import React, {useEffect} from 'react';
+import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import FieldsPanel from '../../../components/Field/FieldsPanel';
 import {ImagePreviews} from '../../../features/image/ImagePreviews';
@@ -39,6 +41,106 @@ const Tab = ({tab, active, onClick}) => {
   );
 };
 
+const TabsDropdown = ({tabs, activeTab, onTabClick}) => {
+  const menuId = useId();
+  const wrapperRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeMenu = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    closeMenu();
+  }, [activeTab?.name, closeMenu]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const handlePointerDown = event => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeMenu, isOpen]);
+
+  const handleSelect = name => {
+    closeMenu();
+    onTabClick(name);
+  };
+
+  return (
+    <div className="kgs-tabs__dropdown" ref={wrapperRef}>
+      <button
+        type="button"
+        className={`kgs-tabs__dropdown-toggle${isOpen ? ' is-open' : ''}`}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        aria-controls={menuId}
+        onClick={() => setIsOpen(current => !current)}
+      >
+        <span className="kgs-tabs__dropdown-label">{activeTab?.name || ''}</span>
+        <FontAwesomeIcon icon={faChevronDown} className="kgs-tabs__dropdown-chevron" aria-hidden="true" />
+      </button>
+      {isOpen && (
+        <ul className="kgs-tabs__dropdown-menu" id={menuId} role="menu">
+          {tabs.map(t => (
+            <li key={t.name} role="none">
+              <button
+                type="button"
+                className={`kgs-tabs__dropdown-item${t.name === activeTab?.name ? ' is-active' : ''}`}
+                role="menuitem"
+                aria-current={t.name === activeTab?.name ? 'page' : undefined}
+                onClick={() => handleSelect(t.name)}
+              >
+                {t.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const MOBILE_TABS_QUERY = '(max-width: 767px)';
+
+const useIsMobileTabsLayout = () => {
+  const [isMobile, setIsMobile] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia(MOBILE_TABS_QUERY).matches
+  ));
+
+  useEffect(() => {
+    const media = window.matchMedia(MOBILE_TABS_QUERY);
+    const update = event => setIsMobile(event.matches);
+    setIsMobile(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+
+  return isMobile;
+};
+
+const getTabSectionSelector = name => {
+  const escaped = typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
+    ? CSS.escape(name)
+    : String(name).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return `.kgs-tabs__section[data-tab="${escaped}"]`;
+};
 
 const TabsView = ({tab}) => {
   if (!tab || !Array.isArray(tab.fields)) {
@@ -64,19 +166,86 @@ const TabsView = ({tab}) => {
   );
 };
 
+const TabSection = ({tab}) => (
+  <section className="kgs-tabs__section" data-tab={tab.name}>
+    <h2 className="kgs-tabs__section-title">{tab.name}</h2>
+    <TabsView tab={tab}/>
+  </section>
+);
+
 const Tabs = ({tabs, selectedTab, onTabClick}) => {
   const dispatch = useDispatch();
+  const isMobile = useIsMobileTabsLayout();
+  const contentRef = useRef(null);
+  const selectedTabRef = useRef(selectedTab);
+  const isProgrammaticScroll = useRef(false);
+  const programmaticScrollTimeout = useRef(null);
   const hasContent = Array.isArray(tabs) && tabs.length > 0;
   let activeTab = selectedTab ? tabs.find(t => t.name === selectedTab) : null;
   if (!activeTab && hasContent) {
     activeTab = tabs[0];
   }
+  selectedTabRef.current = activeTab?.name;
+
   useEffect(() => {
     if (activeTab && selectedTab !== activeTab.name) {
       dispatch(setTab(activeTab.name));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
+
+  useEffect(() => () => {
+    window.clearTimeout(programmaticScrollTimeout.current);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || !hasContent) {
+      return undefined;
+    }
+
+    const container = contentRef.current;
+    if (!container) {
+      return undefined;
+    }
+
+    const updateActiveFromScroll = () => {
+      if (isProgrammaticScroll.current) {
+        return;
+      }
+
+      const marker = 48;
+      const containerTop = container.getBoundingClientRect().top;
+      const sections = Array.from(container.querySelectorAll('.kgs-tabs__section'));
+      let currentName = sections[0]?.getAttribute('data-tab');
+      sections.forEach(section => {
+        if (section.getBoundingClientRect().top - containerTop <= marker) {
+          currentName = section.getAttribute('data-tab');
+        }
+      });
+
+      if (currentName && currentName !== selectedTabRef.current) {
+        dispatch(setTab(currentName));
+      }
+    };
+
+    container.addEventListener('scroll', updateActiveFromScroll, { passive: true });
+    return () => container.removeEventListener('scroll', updateActiveFromScroll);
+  }, [dispatch, hasContent, isMobile]);
+
+  const handleNavigate = useCallback(name => {
+    if (isMobile && contentRef.current) {
+      const section = contentRef.current.querySelector(getTabSectionSelector(name));
+      if (section) {
+        isProgrammaticScroll.current = true;
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.clearTimeout(programmaticScrollTimeout.current);
+        programmaticScrollTimeout.current = window.setTimeout(() => {
+          isProgrammaticScroll.current = false;
+        }, 800);
+      }
+    }
+    onTabClick(name);
+  }, [isMobile, onTabClick]);
 
   if (!hasContent) {
     return null;
@@ -85,12 +254,19 @@ const Tabs = ({tabs, selectedTab, onTabClick}) => {
   return (
     <>
       <div className="kgs-tabs__buttons">
+        <TabsDropdown tabs={tabs} activeTab={activeTab} onTabClick={handleNavigate} />
         {tabs.map(t => (
-          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={onTabClick}/>
+          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={handleNavigate}/>
         ))}
       </div>
-      <div className="kgs-tabs__content">
-        <TabsView tab={activeTab}/>
+      <div className="kgs-tabs__content" ref={contentRef}>
+        {isMobile ? (
+          tabs.map(tab => (
+            <TabSection key={tab.name} tab={tab} />
+          ))
+        ) : (
+          <TabsView tab={activeTab}/>
+        )}
       </div>
     </>
   );

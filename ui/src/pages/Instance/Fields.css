@@ -31,7 +31,7 @@
 }
 
 .kgs-instance[data-type] .kgs-instance-content .kgs-fields-panel > .kgs-field:last-child {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 
@@ -39,7 +39,7 @@
 .kgs-instance[data-type] .kgs-instance__header .kgs-field__type {
   width: auto;
   width: unset;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-size: 10px;
   font-weight: 400;
   line-height: 1em;
@@ -113,4 +113,18 @@
 
 .kgs-instance[data-type] .kgs-field__filesAsyncUrl .kgs-hierarchical-files>ul {
   height: 100%;
+}
+
+@media (max-width: 767px) {
+  .kgs-instance[data-type] .kgs-field.kgs-field__dataDescriptor {
+    height: calc(100dvh - 8rem) !important;
+    min-height: 75dvh;
+  }
+
+  .kgs-instance[data-type] .kgs-field.kgs-field__dataDescriptor iframe,
+  .kgs-instance[data-type] .kgs-field.kgs-field__dataDescriptor .field-markdown {
+    height: 100% !important;
+    min-height: calc(100dvh - 8rem);
+    width: 100%;
+  }
 }
