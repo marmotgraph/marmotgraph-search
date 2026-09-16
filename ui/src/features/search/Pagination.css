@@ -52,9 +52,3 @@
     color: var(--search-paging-button-hover-color, var(--color-accent-hover));
     outline: none;
 }
-
-body[profile="ebrains"] .kgs-paging__button {
-    font-family: var(--font-plexsans), serif;
-    font-size: var(--text-sm);
-    border-radius: var(--border-radius-4, 8px);
-}

@@ -26,9 +26,6 @@
 }
 
 
-body[profile="tefhealth"] .footer__menu{
-    display: none;
-}
 .site-footer {
     border-top: 1px solid var(--border-color);
     margin-left: auto;
@@ -202,11 +199,6 @@ body[profile="tefhealth"] .footer__menu{
     min-width: 200px;
 }
 
-
-body[profile="tefhealth"] .logo img{
-    height: 3em;
-
-}
 
 .logo img {
     display: inline-block;

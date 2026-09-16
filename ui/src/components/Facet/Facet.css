@@ -125,7 +125,3 @@
     font-size: 12px;
     line-height: 1.3;
 }
-
-body[profile="ebrains"] .kgs-facet__title {
-    font-family: var(--font-plexsans), serif;
-}

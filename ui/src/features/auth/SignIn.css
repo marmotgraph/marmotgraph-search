@@ -33,13 +33,6 @@ button.kgs-login {
     cursor: pointer;
 }
 
-body[profile="ebrains"] button.kgs-login {
-    border-radius: 30px;
-    border: 1px solid var(--color-eb-black);
-    padding-bottom: 12px;
-    padding-top: 10px;
-}
-
 button.kgs-login:hover {
     text-decoration: underline;
 }

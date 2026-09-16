@@ -28,29 +28,6 @@
     background-color: var(--surface-tint-bg);
 }
 
-body[profile="tefhealth"] .kgs-search .kgs-search-panel {
-    /*background-color: #ffffff;*/
-    background-color: var(--surface-tint-bg);
-    background-image: url("../../public/static/img/tefhealth_mainheader.png");
-
-}
-
-
-body[profile="tefhealth"] .kgs-search-panel input{
-   border: 1px solid black;
-    border-radius: 5rem;
-}
-
-body[profile="tefhealth"] .kgs-search__filters > .kgs-facet, body[profile="tefhealth"] .kgs-filters{
-    border-radius: var(--filters-panel-radius, 1rem);
-}
-
-body[profile="tefhealth"] .kgs-search__filters .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text,
-body[profile="tefhealth"] .kgs-search__filters .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count {
-    color: white!important;
-    font-weight: 1.2;
-}
-
 .kgs-search .kgs-search__panel {
     display: block;
     margin: 0 var(--site-margin) 0 0;
@@ -85,11 +62,6 @@ body[profile="tefhealth"] .kgs-search__filters .kgs-facet-checkbox.is-active .kg
     .kgs-search .kgs-search__filters {
         display: none;
     }
-}
-
-body[profile="ebrains"] .kgs-search .kgs-search__main {
-    position: relative;   /* Keeps the element in the normal flow */
-    top: -30px;
 }
 
 .kgs-search .kgs-search__panel .kgs-filters {

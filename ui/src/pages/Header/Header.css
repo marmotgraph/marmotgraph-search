@@ -79,26 +79,6 @@
 .kgs-navbar.navbar-light .navbar-toggler {
   color: var(--icon-text-color);
 }
-body[profile="tefhealth"] .navbar-toggler {
-    display: none;
-}
-
-
-body[profile="tefhealth"] nav.navbar{
-    box-shadow: 0 0px 10px var(--color-selected-shadow);
-    margin-bottom: 10px;
-}
-
-
-body[profile="tefhealth"]{
-    background-size: contain;
-}
-body[profile="tefhealth"] .navbar-brand img{
-    height: 2em;
-    margin-top: 1.5em;
-    margin-bottom: 1.2em;
-}
-
 body[theme="dark"] .kgs-navbar.navbar-light .navbar-toggler {
     border-color: var(--icon-text-color);
 }

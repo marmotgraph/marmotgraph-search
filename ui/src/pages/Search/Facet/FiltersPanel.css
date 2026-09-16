@@ -99,7 +99,3 @@
     scrollbar-gutter: stable;
     -webkit-overflow-scrolling: touch;
 }
-
-body[profile="ebrains"] .kgs-filters__title {
-    font-family: var(--font-plexsans), serif;
-}

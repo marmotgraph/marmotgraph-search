@@ -103,8 +103,3 @@
     font-weight: var(--filters-categories-title-weight, 700);
     letter-spacing: -0.01em;
 }
-
-body[profile="ebrains"] .kgs-facet--categories .kgs-facet__title {
-    font-family: var(--font-plexsans), serif;
-    font-size: var(--text-base);
-}
