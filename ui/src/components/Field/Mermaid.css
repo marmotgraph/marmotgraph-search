@@ -23,7 +23,7 @@
 
 .kgs-mermaid {
   border: 1px solid var(--default-border-color);
-  border-radius: var(--radius-md, 5px);
+  border-radius: var(--radius-md);
 }
 
 .kgs-mermaid .kgs-mermaid__detail {

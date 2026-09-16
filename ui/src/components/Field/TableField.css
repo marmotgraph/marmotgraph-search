@@ -28,7 +28,7 @@
 
 .kgs-field__table .kgs-table-scroll-hint {
     margin: 0 0 6px;
-    color: var(--text-muted-color, #64748B);
+    color: var(--text-muted-color);
     font-size: 12px;
     line-height: 1.3;
     text-align: right;
@@ -93,7 +93,7 @@
 .kgs-field__table .table thead th .kgs-table__sort-button {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-sm, 6px);
+    gap: var(--space-sm);
     margin: 0;
     padding: 0;
     border: 0;
@@ -109,22 +109,22 @@
 
 .kgs-field__table .table thead th .kgs-table__sort-button:hover,
 .kgs-field__table .table thead th .kgs-table__sort-button:focus {
-    color: var(--color-accent, #2563EB);
+    color: var(--color-accent);
     outline: none;
 }
 
 .kgs-field__table .table thead th .kgs-table__sort-button.is-sorted {
-    color: var(--color-accent, #2563EB);
+    color: var(--color-accent);
 }
 
 .kgs-field__table .table thead th .kgs-table__sort-icon {
     flex-shrink: 0;
-    color: var(--text-subtle-color, #94A3B8);
+    color: var(--text-subtle-color);
     font-size: 11px;
 }
 
 .kgs-field__table .table thead th .kgs-table__sort-button.is-sorted .kgs-table__sort-icon {
-    color: var(--color-accent, #2563EB);
+    color: var(--color-accent);
 }
 
 .kgs-field__table .table tbody th > button {
@@ -177,7 +177,7 @@
     padding: 0;
     border: 0;
     background: transparent;
-    color: var(--color-accent, #2563EB);
+    color: var(--color-accent);
     font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
@@ -187,7 +187,7 @@
 
 .kgs-field button[role="link"].kgs-field__viewMore-button:hover,
 .kgs-field button[role="link"].kgs-field__viewMore-button:focus {
-    color: var(--color-accent-hover, #1D4ED8);
+    color: var(--color-accent-hover);
     outline: none;
     text-decoration: underline;
 }
@@ -215,12 +215,12 @@
     .kgs-field__table .table tbody td:first-child {
         position: sticky;
         left: 0;
-        z-index: var(--z-raised, 1);
-        background-color: var(--surface-base-bg, #fff);
+        z-index: var(--z-raised);
+        background-color: var(--surface-base-bg);
     }
 
     .kgs-field__table .table thead th:first-child {
-        z-index: var(--z-elevated, 2);
+        z-index: var(--z-elevated);
     }
 
     .kgs-field__table .kgs-table-scroll.is-scrolled .table thead th:first-child,

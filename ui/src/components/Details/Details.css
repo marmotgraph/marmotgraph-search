@@ -53,7 +53,7 @@
 
 .field-details .popup {
   display: none;
-  z-index: var(--z-popup, 100);
+  z-index: var(--z-popup);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -95,7 +95,7 @@
 }
 
 .field-details .popup .field-details__panel {
-  z-index: var(--z-popup, 100);
+  z-index: var(--z-popup);
   position: absolute;
   top: 50px;
   left: 50%; 
@@ -105,7 +105,7 @@
   min-height: 58px;
   padding: 20px;
   border: 1px solid var(--border-neutral-color);
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm);
   background-color: white;
   cursor: pointer;
 }

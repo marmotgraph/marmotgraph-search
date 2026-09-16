@@ -30,7 +30,7 @@
 /*    margin: 0;*/
 /*    padding: 0 10px;*/
 /*    border: 0;*/
-/*    border-radius: var(--radius-sm, 3px);*/
+/*    border-radius: var(--radius-sm);*/
 /*    background-color: transparent;*/
 /*    font-weight: 500;*/
 /*    color: var(--text-secondary-color);*/
@@ -58,7 +58,7 @@
     margin-top: -100px;
     margin-left: -56px;
     padding: 4px 8px;
-    border-radius: var(--radius-pill, 999px);
+    border-radius: var(--radius-pill);
     font-size: 10px;
     text-align: center;
     color: transparent;
@@ -72,6 +72,6 @@
     margin-top: 5px;
     color: var(--icon-text-color);
     background-color: #ffeeaa;
-    z-index: var(--z-raised, 1);
+    z-index: var(--z-raised);
     margin-left: -150px;
 }

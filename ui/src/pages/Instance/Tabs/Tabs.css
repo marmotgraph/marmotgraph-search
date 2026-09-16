@@ -33,7 +33,7 @@
     margin: 30px;
     border-bottom: 1px solid lightgray;
     position: sticky;
-    z-index: var(--z-tabs, 9);
+    z-index: var(--z-tabs);
     margin-bottom: 0;
 }
 
@@ -47,7 +47,7 @@
     background: none;
     border: 1px solid transparent;
     border-bottom: none;
-    border-radius: var(--radius-sm, 4px) var(--radius-sm, 4px) 0 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     background: transparent;
     /*border-bottom: 3px solid transparent;*/
     color: var(--text-label-color);
@@ -110,13 +110,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: var(--space-xl, 12px);
+        gap: var(--space-xl);
         width: 100%;
         margin: 0;
         padding: 10px 14px;
-        border: 1px solid var(--border-hairline-color, #ddd);
-        border-radius: var(--radius-lg, 8px);
-        background: var(--surface-base-bg, #fff);
+        border: 1px solid var(--border-hairline-color);
+        border-radius: var(--radius-lg);
+        background: var(--surface-base-bg);
         color: var(--link-highlight-color);
         font-size: var(--font-size-small);
         font-weight: bold;
@@ -155,13 +155,13 @@
         top: calc(100% + 4px);
         left: 0;
         right: 0;
-        z-index: var(--z-popover, 20);
+        z-index: var(--z-popover);
         margin: 0;
         padding: 6px 0;
         list-style: none;
-        border: 1px solid var(--border-subtle-color, #E2E8F0);
-        border-radius: var(--radius-lg, 8px);
-        background: var(--surface-base-bg, #fff);
+        border: 1px solid var(--border-subtle-color);
+        border-radius: var(--radius-lg);
+        background: var(--surface-base-bg);
         box-shadow: var(--shadow-elevated);
         max-height: min(60vh, 320px);
         overflow-y: auto;
@@ -187,7 +187,7 @@
 
     .kgs-tabs__dropdown-item:hover,
     .kgs-tabs__dropdown-item:focus {
-        background: var(--surface-subtle-bg, #F8FAFC);
+        background: var(--surface-subtle-bg);
         color: var(--link-highlight-color);
         outline: none;
     }
@@ -205,7 +205,7 @@
         scroll-margin-top: 8px;
         padding-bottom: 28px;
         margin-bottom: 24px;
-        border-bottom: 1px solid var(--border-divider-color, #e0e0e0);
+        border-bottom: 1px solid var(--border-divider-color);
     }
 
     .kgs-tabs__section:last-child {

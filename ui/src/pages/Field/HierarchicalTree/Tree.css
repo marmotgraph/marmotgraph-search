@@ -27,7 +27,7 @@
   padding: 10px;
   overflow-x: hidden;
   border: 1px solid var(--default-border-color);
-  border-radius: var(--radius-md, 5px);
+  border-radius: var(--radius-md);
 }
 
 .kgs-tree .rc-tree .rc-tree-treenode:hover .rc-tree-title {

@@ -26,7 +26,7 @@
      display: flex;
      flex-wrap: wrap;
      align-items: start;
-     gap: var(--space-sm, 6px);
+     gap: var(--space-sm);
      padding: 7px 14px;
  }
 
@@ -39,10 +39,10 @@
 .kgs-tags .kgs-tag {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs, 3px);
-    background: var(--surface-tint-bg, #F0F4F8);
+    gap: var(--space-xs);
+    background: var(--surface-tint-bg);
     border: 1px solid #E2E8EE;
-    border-radius: var(--radius-sm, 4px);
+    border-radius: var(--radius-sm);
     padding: 2px 7px;
     font-size: 10px;
     color: #4A6278;
@@ -51,7 +51,7 @@
 
 .kgs-tags .kgs-tag:hover {
     background: #EBF4FF;
-    border-color: var(--color-accent-tint-border, #93C5FD);
+    border-color: var(--color-accent-tint-border);
     color: #1A4E8A;
     text-decoration: none !important;
 }
@@ -62,7 +62,7 @@ body[profile="ebrains"] .kgs-tags .kgs-tag {
     padding-inline: 10px;
     color: var(--color-eb-darkgrey);
     border: 1px solid var(--color-eb-darkgrey);
-    border-radius: var(--radius-md, 5px)!important;
+    border-radius: var(--radius-md)!important;
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
     font-family: var(--font-plexmono), serif;

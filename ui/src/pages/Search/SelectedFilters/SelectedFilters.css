@@ -23,9 +23,9 @@
 
 .kgs-selected-filters {
     margin: 0 0 12px;
-    background: var(--surface-base-bg, #fff);
+    background: var(--surface-base-bg);
     border: 1px solid #DDE4EC;
-    border-radius: var(--radius-md, 6px);
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-md, 8px);
+    gap: var(--space-md);
     min-height: 28px;
     padding: 4px 8px;
     background: #F4F7FA;
@@ -43,12 +43,12 @@
 .kgs-selected-filters__heading {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 6px);
+    gap: var(--space-sm);
     min-width: 0;
 }
 
 .kgs-selected-filters__title {
-    color: var(--text-muted-color, #64748B);
+    color: var(--text-muted-color);
     font-size: 11px;
     font-weight: 700;
     line-height: 1;
@@ -64,8 +64,8 @@
     min-width: 1.125rem;
     height: 1.125rem;
     padding: 0 4px;
-    border-radius: var(--radius-pill, 999px);
-    background: var(--border-subtle-color, #E2E8F0);
+    border-radius: var(--radius-pill);
+    background: var(--border-subtle-color);
     color: #475569;
     font-size: 10px;
     font-weight: 700;
@@ -109,7 +109,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-sm, 6px);
+    gap: var(--space-sm);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -118,14 +118,14 @@
 .kgs-selected-filter {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-sm, 5px);
+    gap: var(--space-sm);
     max-width: min(100%, 18rem);
     margin: 0;
     padding: 3px 6px 3px 8px;
-    border: 1px solid var(--border-hover-color, #CBD5E1);
-    border-radius: var(--radius-pill, 999px);
-    background: var(--surface-subtle-bg, #F8FAFC);
-    color: var(--text-body-color, #334155);
+    border: 1px solid var(--border-hover-color);
+    border-radius: var(--radius-pill);
+    background: var(--surface-subtle-bg);
+    color: var(--text-body-color);
     font-size: 12px;
     line-height: 1.2;
     cursor: pointer;
@@ -135,14 +135,14 @@
 .kgs-selected-filter:hover,
 .kgs-selected-filter:focus {
     background: #EFF6FF;
-    border-color: var(--color-accent-tint-border, #93C5FD);
+    border-color: var(--color-accent-tint-border);
     color: #1E3A5F;
     outline: none;
 }
 
 .kgs-selected-filter__facet {
     flex-shrink: 0;
-    color: var(--text-subtle-color, #94A3B8);
+    color: var(--text-subtle-color);
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
@@ -165,12 +165,12 @@
 .kgs-selected-filter__remove {
     flex-shrink: 0;
     font-size: 9px;
-    color: var(--text-subtle-color, #94A3B8);
+    color: var(--text-subtle-color);
 }
 
 .kgs-selected-filter:hover .kgs-selected-filter__remove,
 .kgs-selected-filter:focus .kgs-selected-filter__remove {
-    color: var(--color-accent, #2563EB);
+    color: var(--color-accent);
 }
 
 .kgs-selected-filters__more,
@@ -179,10 +179,10 @@
     align-items: center;
     margin: 0;
     padding: 3px 9px;
-    border: 1px dashed var(--border-hover-color, #CBD5E1);
-    border-radius: var(--radius-pill, 999px);
+    border: 1px dashed var(--border-hover-color);
+    border-radius: var(--radius-pill);
     background: transparent;
-    color: var(--text-muted-color, #64748B);
+    color: var(--text-muted-color);
     font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
@@ -195,8 +195,8 @@
 .kgs-selected-filters__toggle:hover,
 .kgs-selected-filters__toggle:focus {
     background: #EFF6FF;
-    border-color: var(--color-accent-tint-border, #93C5FD);
-    color: var(--color-accent, #2563EB);
+    border-color: var(--color-accent-tint-border);
+    color: var(--color-accent);
     outline: none;
 }
 
@@ -226,7 +226,7 @@ body[profile="ebrains"] .kgs-selected-filter {
     padding-inline: 8px;
     color: var(--color-eb-darkgrey);
     border: 1px solid var(--color-eb-darkgrey);
-    border-radius: var(--radius-md, 5px);
+    border-radius: var(--radius-md);
     font-family: var(--font-plexmono), serif;
     font-size: var(--text-sm);
     text-transform: uppercase;
@@ -241,7 +241,7 @@ body[profile="ebrains"] .kgs-selected-filter__facet {
 
 body[profile="ebrains"] .kgs-selected-filters__more,
 body[profile="ebrains"] .kgs-selected-filters__toggle {
-    border-radius: var(--radius-md, 5px);
+    border-radius: var(--radius-md);
     font-family: var(--font-plexmono), serif;
     font-size: var(--text-sm);
     text-transform: uppercase;

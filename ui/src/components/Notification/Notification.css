@@ -26,7 +26,7 @@
     align-items: flex-start;
     margin: 10px var(--site-margin) 15px var(--site-margin);
     padding: 10px;
-    border-radius: var(--radius-md, 5px);
+    border-radius: var(--radius-md);
     background-color: var(--color-selected);
     background-color: #fee78a;
     color: var(--text-on-light-surface-color);

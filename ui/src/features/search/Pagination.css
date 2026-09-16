@@ -37,7 +37,7 @@
     border: 1px solid var(--search-paging-button-border, #E2E8F0);
     border-radius: var(--search-paging-button-radius, 8px);
     background: var(--search-paging-button-bg, #fff);
-    color: var(--search-paging-button-color, var(--color-accent, #2563EB));
+    color: var(--search-paging-button-color, var(--color-accent));
     font-size: var(--search-paging-button-size, 14px);
     font-weight: 600;
     line-height: 1.3;
@@ -49,7 +49,7 @@
 .kgs-paging__button:focus {
     background: var(--search-paging-button-hover-bg, #F8FAFC);
     border-color: var(--search-paging-button-hover-border, #CBD5E1);
-    color: var(--search-paging-button-hover-color, var(--color-accent-hover, #1D4ED8));
+    color: var(--search-paging-button-hover-color, var(--color-accent-hover));
     outline: none;
 }
 

@@ -59,7 +59,7 @@
     display: inline-block;
     margin: 15px 20px 0px 20px;
     border: 1px solid transparent;
-    border-radius: var(--radius-sm, 0.25rem);
+    border-radius: var(--radius-sm);
     padding: 0.5rem 1rem;
     color: var(--button-default-text-color);
     font-weight: 700;
@@ -71,13 +71,13 @@
 }
 
 .kgs-bg-error-navigation button.primary {
-    color: var(--text-on-accent-color, #fff);
+    color: var(--text-on-accent-color);
     background-color: var(--button-primary-background-color);
     border-color: var(--button-primary-border-color);
 }
 
 .kgs-bg-error-navigation button.primary:hover {
-    color: var(--text-on-accent-color, #fff);
+    color: var(--text-on-accent-color);
     background-color: var(--button-primary-background-color-hover);
     border-color: var(--button-primary-border-color-hover);
 }

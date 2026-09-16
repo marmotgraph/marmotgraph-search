@@ -48,7 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-xl, 12px);
+    gap: var(--space-xl);
     padding: var(--filters-panel-header-padding);
     background: var(--filters-panel-header-bg);
     border-bottom: var(--filters-panel-header-border);
@@ -57,7 +57,7 @@
 .kgs-filters__title {
     display: flex;
     align-items: center;
-    gap: var(--space-md, 8px);
+    gap: var(--space-md);
     color: var(--filters-panel-title-color);
     font-size: var(--filters-panel-title-size);
     font-weight: var(--filters-panel-title-weight);
@@ -84,7 +84,7 @@
 
 .kgs-filters__reset-button:hover,
 .kgs-filters__reset-button:focus {
-    color: var(--color-accent-hover, #1D4ED8);
+    color: var(--color-accent-hover);
     outline: none;
     text-decoration: underline;
 }

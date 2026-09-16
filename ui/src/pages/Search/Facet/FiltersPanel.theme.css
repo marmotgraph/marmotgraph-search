@@ -55,11 +55,11 @@
 
 .kgs-search {
     /* Column – default: full viewport height, white background */
-    --filters-column-bg: var(--surface-elevated-bg, #fff);
+    --filters-column-bg: var(--surface-elevated-bg);
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
-    --filters-column-gap: var(--space-2xl, 16px);
+    --filters-column-gap: var(--space-2xl);
     --filters-column-sticky-top: 0px;
     --filters-column-viewport-height: 100dvh;
     --filters-column-available-height: calc(var(--filters-column-viewport-height) - var(--filters-column-sticky-top));
@@ -74,23 +74,23 @@
     --filters-panel-min-width: 0;
     --filters-panel-header-padding: 12px 16px;
     --filters-panel-header-bg: transparent;
-    --filters-panel-header-border: 1px solid var(--border-subtle-color, #E2E8F0);
-    --filters-panel-title-color: var(--text-heading-color, #1E293B);
+    --filters-panel-header-border: 1px solid var(--border-subtle-color);
+    --filters-panel-title-color: var(--text-heading-color);
     --filters-panel-title-size: 15px;
     --filters-panel-title-weight: 700;
-    --filters-panel-icon-color: var(--text-muted-color, #64748B);
-    --filters-panel-reset-color: var(--color-accent, #2563EB);
+    --filters-panel-icon-color: var(--text-muted-color);
+    --filters-panel-reset-color: var(--color-accent);
     --filters-panel-body-overflow: visible;
 
     /* Facet sections */
-    --filters-facet-divider: 1px solid var(--border-subtle-color, #E2E8F0);
+    --filters-facet-divider: 1px solid var(--border-subtle-color);
     --filters-facet-header-padding: 12px 16px;
-    --filters-facet-header-hover-bg: var(--surface-subtle-bg, #F8FAFC);
-    --filters-facet-title-color: var(--text-heading-color, #1E293B);
+    --filters-facet-header-hover-bg: var(--surface-subtle-bg);
+    --filters-facet-title-color: var(--text-heading-color);
     --filters-facet-title-size: 14px;
-    --filters-facet-badge-bg: var(--color-accent, #2563EB);
-    --filters-facet-badge-color: var(--text-on-accent-color, #fff);
-    --filters-facet-chevron-color: var(--text-subtle-color, #94A3B8);
+    --filters-facet-badge-bg: var(--color-accent);
+    --filters-facet-badge-color: var(--text-on-accent-color);
+    --filters-facet-chevron-color: var(--text-subtle-color);
     --filters-facet-body-padding: 0 16px 14px;
 
     /* Categories – primary facet above dependent filters */
@@ -99,12 +99,12 @@
     --filters-categories-title-weight: var(--filters-panel-title-weight, 700);
     --filters-categories-header-padding: 14px 16px;
     --filters-categories-bg: var(--filters-types-bg, #F8FAFC);
-    --filters-categories-border: 1px solid var(--border-subtle-color, #E2E8F0);
+    --filters-categories-border: 1px solid var(--border-subtle-color);
     --filters-categories-radius: var(--filters-types-radius, 8px);
     --filters-categories-shadow: none;
 
     /* Categories block above facets */
-    --filters-types-bg: var(--surface-subtle-bg, #F8FAFC);
+    --filters-types-bg: var(--surface-subtle-bg);
     --filters-types-padding: 12px 16px 8px;
     --filters-types-radius: 0;
 
@@ -128,17 +128,17 @@ body[profile="cscs"] .kgs-search {
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
-    --filters-column-gap: var(--space-3xl, 20px);
+    --filters-column-gap: var(--space-3xl);
     --filters-column-overflow: visible;
 
-    --filters-types-bg: var(--surface-base-bg, #fff);
-    --filters-types-radius: var(--radius-lg, 8px);
+    --filters-types-bg: var(--surface-base-bg);
+    --filters-types-radius: var(--radius-lg);
     --filters-categories-bg: var(--filters-types-bg);
     --filters-categories-radius: var(--filters-types-radius);
 
-    --filters-panel-bg: var(--surface-base-bg, #fff);
-    --filters-panel-border: 1px solid var(--border-subtle-color, #E2E8F0);
-    --filters-panel-radius: var(--radius-lg, 8px);
+    --filters-panel-bg: var(--surface-base-bg);
+    --filters-panel-border: 1px solid var(--border-subtle-color);
+    --filters-panel-radius: var(--radius-lg);
     --filters-panel-shadow: none;
     --filters-panel-body-overflow: visible;
 }

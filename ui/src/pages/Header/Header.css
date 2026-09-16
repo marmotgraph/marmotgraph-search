@@ -24,7 +24,7 @@
 .kgs-navbar.navbar {
   height: auto;
   /*background-color: transparent;*/
-  background-color: var(--surface-tint-bg, #F0F4F8);
+  background-color: var(--surface-tint-bg);
   border: none;
   margin-bottom: 0;
   padding: 0 var(--site-margin) 0 0;
