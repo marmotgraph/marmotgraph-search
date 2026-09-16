@@ -24,7 +24,7 @@
  .kgs-instance__header  {
    flex: 0 0 auto;
    top: 0;
-   z-index: 10;
+   z-index: var(--z-header, 10);
    width: 100%;
    /*background-color: var(--color-eb-lightgrey) @TODO defined for Marmotgraph */
 }

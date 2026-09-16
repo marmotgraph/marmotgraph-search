@@ -29,7 +29,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.15);    
-    z-index: 1800;
+    z-index: var(--z-overlay, 1800);
 }
 
 .kgs-error-panel {
@@ -41,7 +41,7 @@
     border-radius: var(--radius-sm, 4px);
     box-sizing: border-box;
     background-color: white;
-    transition: margin-top 0.25s ease-in;
+    transition: margin-top var(--transition-slow);
     box-shadow: var(--shadow-panel);
 }
 
@@ -67,7 +67,7 @@
     display: inline-block;
     margin: 15px 20px 0 20px;
     border: 1px solid transparent;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm, 0.25rem);
     padding: 0.5rem 1rem;
     color: var(--button-default-text-color);
     font-weight: 700;

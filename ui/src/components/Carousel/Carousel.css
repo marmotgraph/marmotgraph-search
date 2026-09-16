@@ -22,7 +22,7 @@
  */
 
 .kgs-carousel {
-    z-index: 1200;
+    z-index: var(--z-drawer, 1200);
     display: block;
     position: fixed;
     top: 0;  
@@ -41,7 +41,7 @@
     height: calc(100% - 20px);
     margin-top: 10px;
     margin-left: 10px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm, 3px);
 }
 
 @media (min-width: 992px) {
@@ -59,16 +59,16 @@
 }
 
 .kgs-carousel__item {
-    z-index: 1200;
+    z-index: var(--z-drawer, 1200);
     display: block;
     position: absolute;
     top: 0;
     left: 200%;
     width: 100%;
     height: 100%;
-    border-radius: 3px;
+    border-radius: var(--radius-sm, 3px);
     background-color: var(--border-neutral-color);
-    transition: left 0.25s ease-in;
+    transition: left var(--transition-slow);
     transform: translate3D(0,0,0);
 }
 
@@ -162,7 +162,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--surface-base-bg);
-    border-radius: 3px;
+    border-radius: var(--radius-sm, 3px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -227,7 +227,7 @@
     padding: 7px 18px 7px 8px;
     background-color: transparent;
     border: 0;
-    border-radius: 3px;
+    border-radius: var(--radius-sm, 3px);
     color: var(--text-secondary-color);
     font-weight: 500;
 }
@@ -257,7 +257,7 @@
     color: var(--text-strong-color);
     text-align: center;
     font-weight: 500;
-    z-index: 1500;
+    z-index: var(--z-modal, 1500);
 }
 
 .kgs-carousel__close-button .fa-close:before {

@@ -87,7 +87,7 @@ button.kgs-instance-link {
 }
 
 .kgs-instance .kgs-instance__header {
-    z-index: 2;
+    z-index: var(--z-elevated, 2);
     background-color: var(--surface-base-bg);
 }
 
@@ -100,7 +100,7 @@ button.kgs-instance-link {
 }
 
 .kgs-instance .kgs-instance__footer {
-    z-index: 2;
+    z-index: var(--z-elevated, 2);
     background-color: var(--surface-base-bg);
 }
 

@@ -6,7 +6,7 @@
 .kgs-search-share-link a {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-sm, 6px);
     padding: 4px 0;
     border: 0;
     background: transparent;

@@ -99,7 +99,7 @@ button.kgs-hit-button {
 @media (min-width: 576px) {
     button.kgs-hit-button {
         border-bottom-width: 0;
-        transition: box-shadow 0.2s ease-in;
+        transition: box-shadow var(--transition-base);
     }
 
     button.kgs-hit-button:hover {

@@ -6,7 +6,7 @@
 }
 
 .kgs-hint-tooltip {
-  z-index: 100000;
+  z-index: var(--z-toast, 100000);
   background-color: var(--icon-text-color);
   opacity: 1;
 }

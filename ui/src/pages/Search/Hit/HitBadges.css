@@ -25,7 +25,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-md, 8px);
   width: 100%;
   text-align: left;
   padding: 10px 20px 0 20px;

@@ -242,6 +242,84 @@
 
     --link-default-color: var(--link-color-1);
     --link-hover-color: var(--link-color-2);
+
+    /*
+     * Shape / motion / spacing / layering tokens.
+     * Same idea as the color tokens above: name the repeated value once,
+     * reference it everywhere, override per tenant with body[profile="tenant-id"].
+     *
+     * Border-radius scale:
+     *   --radius-xs      2px  - tiny controls
+     *   --radius-sm      4px  - small controls (checkboxes, chips, buttons)
+     *   --radius-md      6px  - medium controls (inputs, small cards)
+     *   --radius-lg      8px  - panels, cards, drawers
+     *   --radius-circle  50%  - perfect circle (avatars, dots)
+     *   --radius-pill    999px - pill-shaped chips/badges/toggles
+     *
+     * Shadow:
+     *   --shadow-elevated  drawer panel / dropdown menu elevation
+     *
+     * Transition (duration + easing, plug into any property list):
+     *   --transition-fast    0.15s ease       - quick hover/focus feedback
+     *   --transition-base    0.2s ease-in     - icon/box-shadow/color hover feedback
+     *   --transition-slow    0.25s ease-in-out - expand/collapse (panels)
+     *   --transition-slower  0.5s ease-in-out  - larger expand/collapse (accordions)
+     *
+     * Spacing scale (for `gap`):
+     *   --space-xs   4px
+     *   --space-sm   6px
+     *   --space-md   8px
+     *   --space-lg   10px
+     *   --space-xl   12px
+     *   --space-2xl  16px
+     *   --space-3xl  20px
+     *   --space-4xl  40px
+     *
+     * z-index layers (documentation only - values unchanged from before,
+     * not renumbered, since stacking contexts are independent per component):
+     *   --z-raised          1     - slightly raised local element (tooltip, sticky table column, toggle track)
+     *   --z-elevated        2     - a level above raised (sticky table header, floating instance-view controls)
+     *   --z-sticky          3     - sticky bars/notices (notice bar, fixed search header)
+     *   --z-tabs            9     - sticky tab button bar
+     *   --z-header          10    - page/instance sticky header
+     *   --z-popover         20    - dropdown menus/popovers
+     *   --z-popup           100   - local fullscreen popup (details popup, image lightbox)
+     *   --z-drawer          1200  - slide-in drawers, carousel controls
+     *   --z-modal           1500  - modal dialogs and their inner controls
+     *   --z-modal-alt       1600  - secondary modal-tier overlay (breadcrumb dropdown menu)
+     *   --z-overlay         1800  - full-screen blocking overlays (loading/error screens)
+     *   --z-modal-backdrop  2000  - modal root/backdrop (info panel)
+     *   --z-toast           100000 - toast/notification badges (always on top)
+     */
+    --radius-xs: 2px;
+    --radius-md: 6px;
+    --radius-circle: 50%;
+    --shadow-elevated: 0 8px 24px rgba(15, 23, 42, 0.12);
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.2s ease-in;
+    --transition-slow: 0.25s ease-in-out;
+    --transition-slower: 0.5s ease-in-out;
+    --space-xs: 4px;
+    --space-sm: 6px;
+    --space-md: 8px;
+    --space-lg: 10px;
+    --space-xl: 12px;
+    --space-2xl: 16px;
+    --space-3xl: 20px;
+    --space-4xl: 40px;
+    --z-raised: 1;
+    --z-elevated: 2;
+    --z-sticky: 3;
+    --z-tabs: 9;
+    --z-header: 10;
+    --z-popover: 20;
+    --z-popup: 100;
+    --z-drawer: 1200;
+    --z-modal: 1500;
+    --z-modal-alt: 1600;
+    --z-overlay: 1800;
+    --z-modal-backdrop: 2000;
+    --z-toast: 100000;
 }
 
 /* TODO: Uncomment if you want dark mode enabled */

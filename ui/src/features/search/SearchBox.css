@@ -39,7 +39,7 @@
     padding: 15px 20px;
     border-bottom: 1px solid var(--border-notice-color);
     box-shadow: 0 4px 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
-    z-index: 3;
+    z-index: var(--z-sticky, 3);
 }
 
 
@@ -83,8 +83,8 @@
     background-color: var(--surface-base-bg);
     background-image: none;
     border: 1px solid var(--surface-base-bg);
-    border-radius: 2px;
-    transition: border-color ease-in-out .15s;
+    border-radius: var(--radius-xs, 2px);
+    transition: border-color var(--transition-fast);
 }
 .kgs-search-panel .kg-search-bar.is-focused {
     background-color: var(--surface-base-bg);
@@ -140,14 +140,14 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
     padding: 5px 20px;
     /*border: 1px solid var(--link-highlight-color);*/
     border: 1px solid rgb(209, 213, 219);
-    border-radius: 2px;
+    border-radius: var(--radius-xs, 2px);
     background-color: #1668b3;
     color: #fff;
     /*color: var(--search-button-hover-text-color);*/
     /*font-size: 22px;*/
     font-size: 18px;
     /*text-transform: uppercase;*/
-    transition: box-shadow 0.2s ease-in;
+    transition: box-shadow var(--transition-base);
 }
 
 .kgs-search-panel .kgs-search-panel-button:hover {
@@ -171,7 +171,7 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
     opacity: 0;
     text-align: center;
     cursor: pointer;
-    transition: opacity 0.2s ease-in;
+    transition: opacity var(--transition-base);
 }
 
 .kgs-search-panel > div > div:hover button.kgs-search-panel-reset__button {
@@ -196,7 +196,7 @@ body[profile="tefhealth"] .kgs-search-panel .kgs-search-panel-button {
     color: var(--link-highlight-color);
     text-align: center;
     cursor: pointer;
-    transition: color 0.2s ease-in;
+    transition: color var(--transition-base);
 
     > svg {
         height:0.8em;

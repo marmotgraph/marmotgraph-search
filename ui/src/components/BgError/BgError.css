@@ -59,7 +59,7 @@
     display: inline-block;
     margin: 15px 20px 0px 20px;
     border: 1px solid transparent;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm, 0.25rem);
     padding: 0.5rem 1rem;
     color: var(--button-default-text-color);
     font-weight: 700;

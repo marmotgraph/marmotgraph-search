@@ -29,7 +29,7 @@
 .kgs-mobile-filters-toggle__button {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-md, 8px);
     margin: 0;
     padding: 10px 14px;
     border: 1px solid var(--border-hover-color, #CBD5E1);

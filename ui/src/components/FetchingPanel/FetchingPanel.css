@@ -28,7 +28,7 @@
     width: 100%;
     height: 100vh;
     background-color: transparent;  
-    z-index: 1800;
+    z-index: var(--z-overlay, 1800);
 }
 
 .kgs-fetching-panel {
@@ -36,10 +36,10 @@
     top: 50%;
     left: 50%;
     padding: 20px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm, 4px);
     box-sizing: border-box;
     background-color: var(--surface-base-bg);
-    transition: margin-top 0.25s ease-in;
+    transition: margin-top var(--transition-slow);
     box-shadow: var(--shadow-panel-sm);
     text-align: center;
     font-size: 16px;

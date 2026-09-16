@@ -73,7 +73,7 @@
     .kgs-hit .kgs-hit__body.has-previewImage {
         display: grid;
         grid-template-columns: 1fr auto;
-        grid-column-gap: 12px;
+        grid-column-gap: var(--space-xl, 12px);
         align-items: stretch;
     }
 

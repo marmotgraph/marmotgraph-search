@@ -93,7 +93,7 @@
 .kgs-field__table .table thead th .kgs-table__sort-button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-sm, 6px);
     margin: 0;
     padding: 0;
     border: 0;
@@ -215,12 +215,12 @@
     .kgs-field__table .table tbody td:first-child {
         position: sticky;
         left: 0;
-        z-index: 1;
+        z-index: var(--z-raised, 1);
         background-color: var(--surface-base-bg, #fff);
     }
 
     .kgs-field__table .table thead th:first-child {
-        z-index: 2;
+        z-index: var(--z-elevated, 2);
     }
 
     .kgs-field__table .kgs-table-scroll.is-scrolled .table thead th:first-child,

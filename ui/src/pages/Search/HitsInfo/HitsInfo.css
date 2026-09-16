@@ -25,7 +25,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px 16px;
+    gap: var(--space-xl, 12px) var(--space-2xl, 16px);
     margin: 8px 0 10px;
 }
 

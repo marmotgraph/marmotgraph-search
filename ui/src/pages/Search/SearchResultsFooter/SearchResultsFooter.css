@@ -60,7 +60,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 3;
+    z-index: var(--z-sticky, 3);
 }
 
 .kgs-search-results-footer__terms-short-notice .kgs-notice-panel {

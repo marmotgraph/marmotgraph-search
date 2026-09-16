@@ -26,13 +26,13 @@ a.kgs-email-link {
     margin: 0;
     padding: 0 10px;
     border: 0;
-    border-radius: 3px;
+    border-radius: var(--radius-sm, 3px);
     background-color: transparent;
     font-weight: 500;
     color: var(--icon-muted-color);
     font-size: 22px;
     text-align: center;
-    transition: box-shadow 0.2s ease-in, color 0.2s ease-in;
+    transition: box-shadow var(--transition-base), color var(--transition-base);
     line-height: 1.5em;
 }
 

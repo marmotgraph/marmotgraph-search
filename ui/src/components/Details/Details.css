@@ -26,7 +26,7 @@
   border: 0;
   margin-left: 6px;
   color: var(--color-warning);
-  transition: color 0.2s ease-in;
+  transition: color var(--transition-base);
 }
 
 .field-details button.toggle:hover{
@@ -47,20 +47,20 @@
 .field-details .collapsible {
   position: relative;
   max-height: 0;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height var(--transition-slower);
   overflow: hidden;
 }
 
 .field-details .popup {
   display: none;
-  z-index: 100;
+  z-index: var(--z-popup, 100);
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   background-color: rgba(0,0,0,0);
-  transition: background-color 0.5s ease-in-out;
+  transition: background-color var(--transition-slower);
 }
 
 .field-details .popup.show {
@@ -95,7 +95,7 @@
 }
 
 .field-details .popup .field-details__panel {
-  z-index: 100;
+  z-index: var(--z-popup, 100);
   position: absolute;
   top: 50px;
   left: 50%; 
@@ -105,7 +105,7 @@
   min-height: 58px;
   padding: 20px;
   border: 1px solid var(--border-neutral-color);
-  border-radius: 4px;
+  border-radius: var(--radius-sm, 4px);
   background-color: white;
   cursor: pointer;
 }
@@ -120,7 +120,7 @@
   font-size: 8px;
   cursor: pointer;
   color: var(--icon-muted-color);
-  transition: box-shadow 0.2s ease-in;
+  transition: box-shadow var(--transition-base);
 }
 
 .field-details button.field-details__close-button:hover{

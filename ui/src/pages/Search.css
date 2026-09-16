@@ -63,7 +63,7 @@ body[profile="tefhealth"] .kgs-search__filters .kgs-facet-checkbox.is-active .kg
 
 .kgs-search__filters {
     position: relative;
-    z-index: 1;
+    z-index: var(--z-raised, 1);
     width: 100%;
     display: flex;
     flex-direction: column;

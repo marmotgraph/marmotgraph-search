@@ -59,7 +59,7 @@
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
-    --filters-column-gap: 16px;
+    --filters-column-gap: var(--space-2xl, 16px);
     --filters-column-sticky-top: 0px;
     --filters-column-viewport-height: 100dvh;
     --filters-column-available-height: calc(var(--filters-column-viewport-height) - var(--filters-column-sticky-top));
@@ -128,7 +128,7 @@ body[profile="cscs"] .kgs-search {
     --filters-column-min-height: auto;
     --filters-column-max-height: none;
     --filters-column-padding: 0;
-    --filters-column-gap: 20px;
+    --filters-column-gap: var(--space-3xl, 20px);
     --filters-column-overflow: visible;
 
     --filters-types-bg: var(--surface-base-bg, #fff);

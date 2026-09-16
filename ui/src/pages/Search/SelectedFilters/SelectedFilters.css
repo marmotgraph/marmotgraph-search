@@ -25,7 +25,7 @@
     margin: 0 0 12px;
     background: var(--surface-base-bg, #fff);
     border: 1px solid #DDE4EC;
-    border-radius: 6px;
+    border-radius: var(--radius-md, 6px);
     overflow: hidden;
 }
 
@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--space-md, 8px);
     min-height: 28px;
     padding: 4px 8px;
     background: #F4F7FA;
@@ -43,7 +43,7 @@
 .kgs-selected-filters__heading {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-sm, 6px);
     min-width: 0;
 }
 
@@ -109,7 +109,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-sm, 6px);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -118,7 +118,7 @@
 .kgs-selected-filter {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: var(--space-sm, 5px);
     max-width: min(100%, 18rem);
     margin: 0;
     padding: 3px 6px 3px 8px;
@@ -129,7 +129,7 @@
     font-size: 12px;
     line-height: 1.2;
     cursor: pointer;
-    transition: background .12s, border-color .12s, color .12s;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .kgs-selected-filter:hover,
@@ -187,7 +187,7 @@
     font-weight: 600;
     line-height: 1.2;
     cursor: pointer;
-    transition: background .12s, border-color .12s, color .12s;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .kgs-selected-filters__more:hover,
@@ -226,7 +226,7 @@ body[profile="ebrains"] .kgs-selected-filter {
     padding-inline: 8px;
     color: var(--color-eb-darkgrey);
     border: 1px solid var(--color-eb-darkgrey);
-    border-radius: 5px;
+    border-radius: var(--radius-md, 5px);
     font-family: var(--font-plexmono), serif;
     font-size: var(--text-sm);
     text-transform: uppercase;
@@ -241,7 +241,7 @@ body[profile="ebrains"] .kgs-selected-filter__facet {
 
 body[profile="ebrains"] .kgs-selected-filters__more,
 body[profile="ebrains"] .kgs-selected-filters__toggle {
-    border-radius: 5px;
+    border-radius: var(--radius-md, 5px);
     font-family: var(--font-plexmono), serif;
     font-size: var(--text-sm);
     text-transform: uppercase;
