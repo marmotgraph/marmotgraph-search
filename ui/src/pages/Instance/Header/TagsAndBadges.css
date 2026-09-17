@@ -21,18 +21,11 @@
  *
  */
 
-import React from 'react';
-import './TagsAndBadges.css';
-import HeaderTags from '../../../components/HeaderTags/HeaderTags';
-import MetaBadges from '../../../components/MetaBadges/MetaBadges';
-import Badges from '../../../components/Badges/Badges';
+.kgs-header-tags-and-badges {
+    display: flex;
+    align-items: center;
+}
 
-const TagsAndBadges = ({ tags, badges }) => (
-  <div className="kgs-header-tags-and-badges">
-    {badges && <Badges badges={badges} />}
-    <HeaderTags tags={tags} />
-    <MetaBadges badges={badges} />
-  </div>
-);
-
-export default TagsAndBadges;
+.kgs-header-tags-and-badges .kgs-meta-badges {
+    margin-left: auto;
+}

@@ -40,7 +40,6 @@
 .kgs-citation .kgs-citation-download {
     float: right;
     padding-top: 10px;
-    transform: translateX(20px);
  }
 
 .kgs-citation .kgs-copy-to-clipboard {

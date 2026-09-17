@@ -89,6 +89,8 @@
     min-width: 0;
     color: var(--text-body-color);
     font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text {

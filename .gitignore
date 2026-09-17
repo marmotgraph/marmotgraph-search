@@ -11,3 +11,5 @@ build/
 .history/
 .metals
 /service/.bsp
+**/cacheSearch
+**/cacheIndexing

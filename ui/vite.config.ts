@@ -11,16 +11,20 @@ const targetURL = process.env.VITE_KG_API_TARGET_URL || 'http://localhost:8080';
 //   target: 'https://search.kg-dev.ebrains.eu',
 
 export default defineConfig({
-  base: '/',
+  base: "/",
   plugins: [react(), viteTsconfigPaths()],
   server: {
+    host: process.env.VITE_DEV_HOST || true,
     open: true,
     port: 3000,
+    allowedHosts: process.env.VITE_ALLOWED_HOSTS
+      ? process.env.VITE_ALLOWED_HOSTS.split(",")
+      : undefined,
     proxy: {
-      '/api': {
+      "/api": {
         target: targetURL,
         changeOrigin: true
       }
     }
-  },
+  }
 });

@@ -45,6 +45,7 @@ import org.marmotgraph.search.indexing.controller.metrics.MetricsController;
 import org.marmotgraph.search.indexing.controller.settings.SettingsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -65,12 +66,13 @@ public class IndexingController {
     private final TranslationController translationController;
 
     private final ReferenceResolver referenceResolver;
+    private final boolean developmentMode;
 
     private final KG kgV3;
 
     private final static Logger logger = LoggerFactory.getLogger(IndexingController.class);
 
-    public IndexingController(MappingController mappingController, MetricsController metricsController, SettingsController settingsController, ElasticSearchController elasticSearchController, TranslationController translationController, KG kgV3, ESServiceClient esServiceClient, ESHelper esHelper, ReferenceResolver referenceResolver) {
+    public IndexingController(MappingController mappingController, MetricsController metricsController, SettingsController settingsController, ElasticSearchController elasticSearchController, TranslationController translationController, KG kgV3, ESServiceClient esServiceClient, ESHelper esHelper, ReferenceResolver referenceResolver, @Value("${developmentMode:false}") boolean developmentMode) {
         this.mappingController = mappingController;
         this.metricsController = metricsController;
         this.settingsController = settingsController;
@@ -80,6 +82,7 @@ public class IndexingController {
         this.esHelper = esHelper;
         this.referenceResolver = referenceResolver;
         this.kgV3 = kgV3;
+        this.developmentMode = developmentMode;
     }
 
     public ErrorReportResult.ErrorReportResultByTargetType populateIndex(TranslatorModel translatorModel, DataStage dataStage, boolean temporary) {
@@ -101,7 +104,7 @@ public class IndexingController {
             }
             searchableIds.addAll(updateResult.searchableIds);
             nonSearchableIds.addAll(updateResult.nonSearchableIds);
-            if(!updateResult.badges.isEmpty()) {
+            if(!updateResult.badges.isEmpty() && !developmentMode) {
                 kgV3.persistBadges(translatorModel.targetClass().getSimpleName(), updateResult.badges);
             }
         }
