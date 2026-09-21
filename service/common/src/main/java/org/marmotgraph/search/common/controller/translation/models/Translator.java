@@ -40,8 +40,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Translator<Source extends SourceInstance, Target extends TargetInstance> extends TranslatorBase {
@@ -73,8 +73,7 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
 
     protected Target setup(String category, Source sourceEntity, Class<Target> targetType, TranslatorUtils translatorUtils) throws TranslationException{
         try {
-            Target target = null;
-            target = targetType.getConstructor().newInstance();
+            Target target = targetType.getConstructor().newInstance();
             ArrayList<Value<String>> types = new ArrayList<>();
             types.add(new Value<>(translatorUtils.getSimpleTypeName().orElse(category)));
             target.setType(types);
@@ -82,7 +81,12 @@ public abstract class Translator<Source extends SourceInstance, Target extends T
             target.setMappingKey(category);
             target.setId(IdUtils.getUUID(sourceEntity.getId()));
             target.setAllIdentifiers(sourceEntity.getIdentifier());
-            target.setIdentifier(Collections.singletonList(target.getId()));
+            List<String> identifiers = IdUtils.getUUID(sourceEntity.getIdentifier()).stream().distinct().toList();
+            if(!identifiers.contains(target.getId())){
+                identifiers = new ArrayList<>(identifiers);
+                identifiers.add(target.getId());
+            }
+            target.setIdentifier(identifiers);
             target.setSemanticType(new Value<>(translatorUtils.getSemanticType()));
             return target;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
