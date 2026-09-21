@@ -23,9 +23,9 @@
 
 .kgs-search-landing {
     display: flex;
-    flex: 1;
+    flex: 1 0 auto;
     justify-content: center;
-    min-height: calc(100vh - 200px);
+    width: 100%;
     padding: 24px var(--site-margin);
     background-color: #F0F4F8;
 }
@@ -41,9 +41,16 @@
     border-bottom: 0;
 }
 
+.kgs-search-landing__terms-short-notice .kgs-notice-panel {
+    padding-bottom: 70px;
+}
+
+.kgs-search-landing__terms-short-notice .kgs-notice-agree-button {
+    bottom: 15px;
+}
+
 @media (min-width: 576px) {
     .kgs-search-landing {
-        min-height: calc(100vh - 240px);
         padding: 48px var(--site-margin);
     }
 }

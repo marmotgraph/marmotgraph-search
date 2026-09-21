@@ -221,6 +221,12 @@ html {
     min-height: 100%;
 }
 
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
 body {
     display: block !important;
     overflow-x: hidden;
@@ -232,6 +238,13 @@ body {
     color: var(--color-1);
     -webkit-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 *,
@@ -265,7 +278,9 @@ main {
     font-weight: 400;
     font-family: var(--font-stack) sans-serif;
     position: relative;
-    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
     background: var(--background-color-2);
     border-bottom: 1px solid var(--border-color-1);
     z-index: 100;

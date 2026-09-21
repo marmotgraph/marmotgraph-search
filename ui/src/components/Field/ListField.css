@@ -49,6 +49,7 @@
 
 .kgs-field .kgs-field__list > ul > li > .field-value {
     vertical-align: top;
+    width: 100%;
 }
 
 .kgs-field .kgs-field__list.items-as-tags {

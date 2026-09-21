@@ -39,6 +39,7 @@ body[profile="tefhealth"] .footer__menu{
     font-size: 14px;
     font-size: var(--font-size-small);
     color: var(--light-text);
+    flex-shrink: 0;
 }
 
 .site-footer .footer__header {

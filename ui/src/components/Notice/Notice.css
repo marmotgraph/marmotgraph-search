@@ -71,13 +71,13 @@ main .kgs-notice a:hover, main .kgs-notice a:visited,  main .kgs-notice a:hover:
 }
 
 main .kgs-notice .kgs-notice-agree-button{
-    background-color: var(--link-highlight-color);
-    border-color: var(--color-warning);
+    background-color: var(--button-default-background-color);
+    color: var(--color-36);
 }
 
 main .kgs-notice .kgs-notice-agree-button:hover{
-    background-color: var(--color-warning);
-    border-color: var(--color-warning);
+    background-color: var(--link-highlight-color);
+    color: var(--color-32);
 }
 
 
