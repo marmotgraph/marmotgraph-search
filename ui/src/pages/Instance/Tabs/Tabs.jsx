@@ -206,19 +206,37 @@ const Tabs = ({tabs, selectedTab, onTabClick}) => {
       return undefined;
     }
 
-    const container = contentRef.current;
-    if (!container) {
+    const content = contentRef.current;
+    if (!content) {
       return undefined;
     }
+
+    const getScrollParent = element => {
+      let current = element.parentElement;
+      while (current) {
+        const overflowY = window.getComputedStyle(current).overflowY;
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          return current;
+        }
+        current = current.parentElement;
+      }
+      return element;
+    };
+
+    const container = getScrollParent(content);
 
     const updateActiveFromScroll = () => {
       if (isProgrammaticScroll.current) {
         return;
       }
 
-      const marker = 48;
       const containerTop = container.getBoundingClientRect().top;
-      const sections = Array.from(container.querySelectorAll('.kgs-tabs__section'));
+      const tabsButtons = container.querySelector('.kgs-tabs__buttons');
+      const marker = Math.max(
+        48,
+        (tabsButtons?.getBoundingClientRect().bottom ?? containerTop) - containerTop + 8
+      );
+      const sections = Array.from(content.querySelectorAll('.kgs-tabs__section'));
       let currentName = sections[0]?.getAttribute('data-tab');
       sections.forEach(section => {
         if (section.getBoundingClientRect().top - containerTop <= marker) {

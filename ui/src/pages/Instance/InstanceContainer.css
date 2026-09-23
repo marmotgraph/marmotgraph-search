@@ -67,6 +67,21 @@ html:has(.kgs-instance-container) body {
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .kgs-instance-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .kgs-instance-container > .kgs-instance {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: min-content;
+    overflow: visible;
+  }
+}
+
 @media (min-width:1200px) { 
   .kgs-instance-container {
     max-width: 1400px;

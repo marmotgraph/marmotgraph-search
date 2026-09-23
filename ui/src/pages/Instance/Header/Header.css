@@ -23,10 +23,17 @@
 
  .kgs-instance__header  {
    flex: 0 0 auto;
-   top: 0;
-   z-index: 10;
+   position: relative;
    width: 100%;
    /*background-color: var(--color-eb-lightgrey) @TODO defined for Marmotgraph */
+}
+
+@media (max-width: 767px) {
+  .kgs-instance__header {
+    position: relative;
+    top: auto;
+    z-index: auto;
+  }
 }
 
 body[profile="tefhealth"] .kgs-instance__header{
@@ -77,13 +84,13 @@ body[profile="tefhealth"] .kgs-instance__header{
 }
 
 .kgs-instance__header_fields {
-    padding: 0 30px 20px;
+    padding: 0 30px;
 }
 
 @media (min-width: 900px) {
 
   .kgs-instance__header_fields {
-      padding: 0 30px 20px;
+      padding: 0 30px;
   }
   
   .kgs-instance__header_navigation {

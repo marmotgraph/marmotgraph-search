@@ -57,16 +57,19 @@ const Header = ({title, tags, badges, fields, customNavigationComponent, highlig
   }
 
   return (
-    <div className="kgs-instance__header" style={style}>
-      <Navigation/>
-      <div className="kgs-instance__header_fields">
-        <TagsAndBadges tags={tags} badges={badges}/>
-        <div className="kgs-instance__header_title">
-          <Title text={title}/>
+    <>
+      {customNavigationComponent && <Navigation />}
+      <div className="kgs-instance__header" style={style}>
+        {!customNavigationComponent && <Navigation />}
+        <div className="kgs-instance__header_fields">
+          <TagsAndBadges tags={tags} badges={badges}/>
+          <div className="kgs-instance__header_title">
+            <Title text={title}/>
+          </div>
+          <FieldsPanel fields={fields} fieldComponent={Field}/>
         </div>
-        <FieldsPanel fields={fields} fieldComponent={Field}/>
       </div>
-    </div>
+    </>
   );
 };
 

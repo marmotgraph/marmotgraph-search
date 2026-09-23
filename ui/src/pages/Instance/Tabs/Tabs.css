@@ -30,11 +30,10 @@
     gap: 0;
     padding: 0 0;
     background: transparent;
-    margin: 30px;
+    margin: 0 30px;
     border-bottom: 1px solid lightgray;
     position: sticky;
     z-index: 9;
-    margin-bottom: 0;
 }
 
 .kgs-tabs__buttons > button.kgs-tabs__button {
@@ -199,6 +198,9 @@
     .kgs-tabs__content {
         padding: 20px 16px;
         scroll-behavior: smooth;
+        flex: 0 0 auto;
+        min-height: auto;
+        overflow: visible;
     }
 
     .kgs-tabs__section {

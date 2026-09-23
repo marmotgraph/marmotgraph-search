@@ -175,6 +175,25 @@
     overflow: hidden;
 }
 
+@media (max-width: 767px) {
+    .kgs-carousel__content {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .kgs-carousel__content > .kgs-instance {
+        flex: 0 0 auto;
+        height: auto;
+        min-height: min-content;
+        overflow: visible;
+    }
+
+    .kgs-carousel .kgs-tabs__buttons {
+        position: static;
+    }
+}
+
 /*
 .kgs-carousel .kgs-carousel__item.position0 .kgs-carousel__body {
     background-color: red;
@@ -204,6 +223,17 @@
     height: 50px;
     box-sizing: border-box; 
     padding: 0 0 0 10px;
+}
+
+@media (max-width: 767px) {
+    .kgs-carousel__header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        flex: 0 0 auto;
+        background-color: var(--background-color-2);
+        border-bottom: 1px solid var(--border-color-1);
+    }
 }
 
 @media screen and (min-width:0\0) {  

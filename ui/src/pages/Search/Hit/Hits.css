@@ -60,7 +60,7 @@
     position: relative;
     display: inline-block;
     width: 100%;
-    margin: 0;
+    margin: 10px 0 10px 0;
 }
 
 @media (min-width: 576px) {
@@ -91,7 +91,7 @@ button.kgs-hit-button {
     margin: 0;
     padding: 0;
     border: 0;
-    border-bottom: 1px solid var(--border-color-8);
+    /*border-bottom: 1px solid var(--border-color-8);*/
     background-color: var(--background-color-2);
     overflow: hidden;
 }

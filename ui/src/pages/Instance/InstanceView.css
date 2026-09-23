@@ -104,6 +104,24 @@ button.kgs-instance-link {
     background-color: var(--background-color-2);
 }
 
+@media (max-width: 767px) {
+    .kgs-instance {
+        height: auto;
+        overflow: visible;
+    }
+
+    .kgs-instance .kgs-tabs__content {
+        flex: 0 0 auto;
+        min-height: auto;
+        overflow: visible;
+    }
+
+    .kgs-instance .kgs-instance__footer {
+        flex: 0 0 auto;
+        position: relative;
+    }
+}
+
 .kgs-instance .kgs-instance-disclaimer {
     display: inline-block;
     width: 100%;
