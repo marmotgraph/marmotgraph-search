@@ -30,4 +30,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access= AccessLevel.PRIVATE)
 public final class Constants {
     public static final String AUTHORIZATION = "Authorization";
+
+    public final static String SUGGEST_TEXT_PROPERTY = "suggest_text";
 }

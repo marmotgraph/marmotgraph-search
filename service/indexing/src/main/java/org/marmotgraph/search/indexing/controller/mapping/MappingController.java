@@ -24,11 +24,12 @@
 
 package org.marmotgraph.search.indexing.controller.mapping;
 
+import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.search.common.configuration.Constants;
+import org.marmotgraph.search.common.model.target.Children;
 import org.marmotgraph.search.common.model.target.ElasticSearchInfo;
 import org.marmotgraph.search.common.model.target.FieldInfo;
-import org.marmotgraph.search.common.model.target.Children;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,8 @@ public class MappingController {
     public final static String TEXT_ANALYZER = "custom_text_analyzer";
     private final static String KEYWORD = "keyword";
     private final static String PROPERTIES = "properties";
+    private final static List<String> INNER_SUGGESTION_TARGETS = List.of("value", "title", "name");
+
 
     public MappingController(MetaModelUtils utils) {
         this.utils = utils;
@@ -69,23 +72,25 @@ public class MappingController {
         Map<String, Object> mapping = new LinkedHashMap<>();
         Map<String, Object> properties = new LinkedHashMap<>();
         Map<String, Object> timestamp = new LinkedHashMap<>();
+
         mapping.put(PROPERTIES, properties);
         mapping.put("dynamic", false);
         timestamp.put("type", "date");
         properties.put("id", Map.of("type", KEYWORD));
         properties.put("type", Map.of("type", KEYWORD));
         properties.put("@timestamp", timestamp);
-        properties.putAll(handleType(clazz, null, useCustomAnalyzer));
+        properties.put(Constants.SUGGEST_TEXT_PROPERTY, Map.of("type", "text", "analyzer", "standard"));
+        properties.putAll(handleType(clazz, null, useCustomAnalyzer, false));
         logger.info(String.format("Mapping created: %s", mapping));
         return mapping;
     }
 
-    private Map<String, Object> handleType(Type type, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer) {
+    private Map<String, Object> handleType(Type type, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer, boolean useForSuggestion) {
         Map<String, Object> properties = new LinkedHashMap<>();
         List<MetaModelUtils.FieldWithGenericTypeInfo> allFields = utils.getAllFields(type);
         allFields.sort(Comparator.comparing(f -> utils.getPropertyName(f.field())));
         allFields.forEach(field -> {
-            Map<String, Object> fieldDefinition = handleField(field, parentInfo, useCustomAnalyzer);
+            Map<String, Object> fieldDefinition = handleField(field, parentInfo, useCustomAnalyzer, useForSuggestion && INNER_SUGGESTION_TARGETS.contains(field.field().getName()));
             if (!fieldDefinition.isEmpty()) {
                 properties.put(utils.getPropertyName(field.field()), fieldDefinition);
             }
@@ -93,42 +98,40 @@ public class MappingController {
         return properties;
     }
 
-    private Map<String, Object> handleField(MetaModelUtils.FieldWithGenericTypeInfo field, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer) {
+    private Map<String, Object> handleField(MetaModelUtils.FieldWithGenericTypeInfo field, ElasticSearchInfo parentInfo, boolean useCustomAnalyzer, boolean useForSuggestion) {
         try {
             ElasticSearchInfo esInfo = field.field().getAnnotation(ElasticSearchInfo.class);
             FieldInfo fieldInfo = field.field().getAnnotation(FieldInfo.class);
             boolean isSingleWord = fieldInfo != null && fieldInfo.isSingleWord();
             String analyzer = KEYWORD;
-            if(useCustomAnalyzer && !isSingleWord) {
+            if (useCustomAnalyzer && !isSingleWord) {
                 analyzer = TEXT_ANALYZER;
             }
-            if(esInfo == null && parentInfo != null) {
+            if (esInfo == null && parentInfo != null) {
                 esInfo = parentInfo;
             }
+            boolean doUseForSuggestion = useForSuggestion || (fieldInfo != null && fieldInfo.useForSuggestion());
+
             if (esInfo == null || esInfo.mapping()) {
                 Type topTypeToHandle = field.genericType() != null ? field.genericType() : MetaModelUtils.getTopTypeToHandle(field.field().getGenericType());
                 Map<String, Object> fieldDefinition = new HashMap<>();
-
-
-                if(topTypeToHandle instanceof ParameterizedType && ((ParameterizedType)topTypeToHandle).getRawType() == Children.class){
-                    Map<String, Object> otherType = handleType(topTypeToHandle, esInfo, useCustomAnalyzer);
+                if (topTypeToHandle instanceof ParameterizedType && ((ParameterizedType) topTypeToHandle).getRawType() == Children.class) {
+                    Map<String, Object> otherType = handleType(topTypeToHandle, esInfo, useCustomAnalyzer, doUseForSuggestion);
                     //TODO check if nested shouldn't be defined one level further up
-                    ((Map<String, Object>)otherType.get("children")).put("type", "nested");
+                    ((Map<String, Object>) otherType.get("children")).put("type", "nested");
                     fieldDefinition.put(PROPERTIES, otherType);
-
                     //TODO check why we need this "artificial" value mapping
-                    Map<String,  Object> value= new LinkedHashMap<>();
+                    Map<String, Object> value = new LinkedHashMap<>();
                     otherType.put("value", value);
-                    Map<String,  Object> fields = new LinkedHashMap<>();
+                    Map<String, Object> fields = new LinkedHashMap<>();
                     value.put("fields", fields);
                     value.put("type", "text");
                     value.put("analyzer", analyzer);
-                    Map<String,  Object> keyword= new LinkedHashMap<>();
+                    Map<String, Object> keyword = new LinkedHashMap<>();
                     fields.put(KEYWORD, keyword);
-                    keyword.put("type",KEYWORD);
-                }
-                else if (topTypeToHandle == String.class) {
-                    if(esInfo != null && StringUtils.isNotBlank(esInfo.type())) {
+                    keyword.put("type", KEYWORD);
+                } else if (topTypeToHandle == String.class) {
+                    if (esInfo != null && StringUtils.isNotBlank(esInfo.type())) {
                         fieldDefinition.put("type", esInfo.type());
                     } else {
                         fieldDefinition.put("type", "text");
@@ -142,18 +145,21 @@ public class MappingController {
                         }
                         fieldDefinition.put("analyzer", analyzer);
                     }
+                    if (doUseForSuggestion) {
+                        fieldDefinition.put("copy_to", Constants.SUGGEST_TEXT_PROPERTY);
+                    }
                 } else if (topTypeToHandle == Date.class) {
                     fieldDefinition.put("type", "date");
                 } else if (topTypeToHandle == Boolean.class || topTypeToHandle == boolean.class) {
                     fieldDefinition.put("type", "boolean");
                 } else if (topTypeToHandle == Integer.class || topTypeToHandle == int.class) {
-                    if(esInfo != null && StringUtils.isNotBlank(esInfo.type())) {
+                    if (esInfo != null && StringUtils.isNotBlank(esInfo.type())) {
                         fieldDefinition.put("type", esInfo.type());
                     } else {
                         fieldDefinition.put("type", "integer");
                     }
                 } else {
-                    Map<String, Object> otherType = handleType(topTypeToHandle, esInfo, useCustomAnalyzer);
+                    Map<String, Object> otherType = handleType(topTypeToHandle, esInfo, useCustomAnalyzer, doUseForSuggestion);
                     fieldDefinition.put(PROPERTIES, otherType);
                 }
                 return fieldDefinition;

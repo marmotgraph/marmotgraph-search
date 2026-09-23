@@ -290,12 +290,8 @@ public class Search {
             @RequestParam(name="cursor", required = false) String cursorToken,
             @RequestBody Map<String, FacetValue> facetValues
     ) {
-        try {
-            Map<String, Object> result = searchController.search(q, categories, size, facetValues, group.equals("public") ? DataStage.RELEASED : DataStage.IN_PROGRESS, cursorToken);
-            return ResponseEntity.ok(result);
-        } catch (WebClientResponseException e) {
-            return ResponseEntity.status(e.getStatusCode()).build();
-        }
+        return ResponseEntity.ok(searchController.search(q, categories, size, facetValues, group.equals("public") ? DataStage.RELEASED : DataStage.IN_PROGRESS, cursorToken));
+
     }
 
 

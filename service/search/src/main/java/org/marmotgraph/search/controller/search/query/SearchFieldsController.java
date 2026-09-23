@@ -22,7 +22,7 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
-package org.marmotgraph.search.controller.search;
+package org.marmotgraph.search.controller.search.query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.marmotgraph.search.common.controller.translation.models.TranslatorModel;
@@ -87,16 +87,6 @@ public class SearchFieldsController {
 //          addChildrenFieldHighlight(highlights, topTypeToHandle, String.format("%s.children", path));
         }
         return null;
-    }
-
-    @Cacheable(value = "suggestFields", key = "#category")
-    public List<String> getSuggestionFields(String category) {
-        Map<String, Double> fieldsWithBoost = new HashMap<>();
-        final Type classForType = utils.getClassForType(category);
-        if (classForType != null) {
-            reflectFields(classForType, FieldInfo::useForSuggestion);
-        }
-        return fieldsWithBoost.keySet().stream().sorted().collect(Collectors.toList());
     }
 
 
