@@ -161,7 +161,7 @@
 
 .kgs-search-filters-drawer__clear:hover,
 .kgs-search-filters-drawer__clear:focus {
-    border-color: #94A3B8;
+    border-color: var(--color-muted);
     background: #F8FAFC;
     outline: none;
 }

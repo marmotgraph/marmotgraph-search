@@ -81,7 +81,7 @@
 }
 
 .kgs-facet__chevron {
-    color: var(--filters-facet-chevron-color, #94A3B8);
+    color: var(--filters-facet-chevron-color);
     font-size: 12px;
     transition: transform 0.2s ease;
 }

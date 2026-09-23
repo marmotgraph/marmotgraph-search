@@ -33,7 +33,6 @@
 .kgs-navbar button,
 .kgs-navbar button:hover {
   display: inline;
-  border: 0;
   background: transparent;
   height: auto;
   -webkit-appearance: unset;
@@ -64,8 +63,8 @@
   
 .kgs-navbar .container-fluid {
   max-width: 2100px;
-  padding-right: 0px;
-  padding-left: 0px;
+  padding-right: 0;
+  padding-left: 0;
 }
   
 .kgs-navbar.navbar-light .navbar-brand {

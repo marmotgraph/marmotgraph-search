@@ -139,6 +139,8 @@
     --color-38: #808080;
     --color-selected: var(--color-30);
     --color-highlight: #f5d864;
+    --color-text-muted: #64748B;
+    --color-muted: #94a3b8;
     --color-unselected: var(--color-13);
     --color-warning: #f56722;
     --color-warning-off: var(--color-1);

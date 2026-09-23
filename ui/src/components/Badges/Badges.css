@@ -29,7 +29,7 @@
 }
 
 .kgs-badge {
-  --badge-accent: #64748B;
+  --badge-accent: var(--color-text-muted);
   display: inline-flex;
   align-items: center;
   gap: 6px;

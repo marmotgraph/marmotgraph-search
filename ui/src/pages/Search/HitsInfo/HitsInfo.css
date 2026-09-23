@@ -45,7 +45,7 @@
 
 .kgs-hitsInfos-viewing {
     display: inline-block;
-    color: #64748B;
+    color: var(--color-text-muted);
     font-size: 13px;
     line-height: 1.35;
     letter-spacing: 0.01em;

@@ -90,7 +90,7 @@
     --filters-facet-title-size: 14px;
     --filters-facet-badge-bg: var(--color-selected, #2563EB);
     --filters-facet-badge-color: #fff;
-    --filters-facet-chevron-color: #94A3B8;
+    --filters-facet-chevron-color: var(--color-muted);
     --filters-facet-body-padding: 0 16px 14px;
 
     /* Categories – primary facet above dependent filters */

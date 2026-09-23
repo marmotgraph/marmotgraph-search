@@ -97,7 +97,7 @@
 
 .kgs-instance-breadcrumbs__separator {
     margin: 0 5px;
-    color: #94A3B8;
+    color: var(--color-muted);
     font-size: 12px;
     font-weight: 400;
     flex-shrink: 0;

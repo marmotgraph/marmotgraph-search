@@ -119,7 +119,7 @@
 
 .kgs-field__table .table thead th .kgs-table__sort-icon {
     flex-shrink: 0;
-    color: #94A3B8;
+    color: var(--color-muted);
     font-size: 11px;
 }
 

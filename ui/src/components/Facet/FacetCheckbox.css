@@ -106,7 +106,7 @@ body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text 
     min-width: auto;
     padding: 0;
     background: transparent;
-    color: #94A3B8;
+    color: var(--color-muted);
     font-size: 12px;
     font-variant-numeric: tabular-nums;
     text-align: right;
@@ -114,8 +114,8 @@ body[profile="ebrains"] .kgs-facet-checkbox.is-active .kgs-facet-checkbox__text 
 
 .kgs-facet-checkbox.is-active .kgs-facet-checkbox__count {
     background: transparent;
-    color: #64748B;
-    font-weight: 500;
+    color: var(--color-text-muted);
+    font-weight: 600;
 }
 
 body[profile="tefhealth"] .kgs-facet-checkbox.is-active .fa-check {

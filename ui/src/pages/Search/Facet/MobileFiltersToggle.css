@@ -44,7 +44,7 @@
 
 .kgs-mobile-filters-toggle__button:hover,
 .kgs-mobile-filters-toggle__button:focus {
-    border-color: #94A3B8;
+    border-color: var(--color-muted);
     background: #F8FAFC;
     outline: none;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
