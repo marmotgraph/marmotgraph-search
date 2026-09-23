@@ -149,14 +149,17 @@ const TabsView = ({tab}) => {
 
   if (tab.name === 'Overview') {
     const previews = tab.previews;
+    const topFields = tab.fields.filter(f => f.mapping.layout === 'top');
     const summaryFields = tab.fields.filter(f => f.mapping.layout === 'summary');
+    const mainFields = tab.fields.filter(f => f.mapping.layout !== 'top' && f.mapping.layout !== 'summary');
     return (
       <div
-        className={`kgs-tabs__view kgs-tabs__overview ${(previews && previews.length) ? 'kgs-tabs__overview__with-previews' : ''}  ${(summaryFields && summaryFields.length) ? 'kgs-tabs__overview__with-summary' : ''}`}>
+        className={`kgs-tabs__view kgs-tabs__overview ${(previews && previews.length) ? 'kgs-tabs__overview__with-previews' : ''}  ${(summaryFields && summaryFields.length) ? 'kgs-tabs__overview__with-summary' : ''} ${(topFields && topFields.length) ? 'kgs-tabs__overview__with-top' : ''}`}>
+        <FieldsPanel className="kgs-tabs__overview__top" fields={topFields} fieldComponent={Field}/>
         <ImagePreviews className={`kgs-tabs__overview__previews ${(previews && previews.length > 1) ? 'has-many' : ''}`}
                        width="300px" images={previews}/>
         <FieldsPanel className="kgs-tabs__overview__summary" fields={summaryFields} fieldComponent={Field} group={true}/>
-        <FieldsPanel className="kgs-tabs__overview__main" fields={tab.fields} fieldComponent={Field}/>
+        <FieldsPanel className="kgs-tabs__overview__main" fields={mainFields} fieldComponent={Field}/>
       </div>
     );
   }

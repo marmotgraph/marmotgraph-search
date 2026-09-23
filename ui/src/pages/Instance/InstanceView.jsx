@@ -90,7 +90,7 @@ const getFieldsByTabs = (type, data, typeMapping, previews) => {
     )
     .reduce((acc, [name, mapping]) => {
       const groupName =
-        !mapping.layout || mapping.layout === 'summary' ? null : mapping.layout;
+        !mapping.layout || mapping.layout === 'summary' || mapping.layout === 'top' ? null : mapping.layout;
       const field = getField(type, name, data[name], mapping);
       if (!groupName) {
         overviewFields.push(field);

@@ -314,7 +314,7 @@ const getFieldProps = (
 
   return {
     name: name,
-    layout: ['header', 'summary'].includes(mapping.layout)
+    layout: ['header', 'summary', 'top'].includes(mapping.layout)
       ? mapping.layout
       : null,
     style:

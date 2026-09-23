@@ -25,28 +25,32 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    grid-template-areas: 
+    grid-template-areas:
+            "top"
         "main";
 }
 
 .kgs-tabs__overview.kgs-tabs__overview__with-previews {
     grid-row-gap: 20px;
     grid-template-rows: max-content 1fr;
-    grid-template-areas: 
+    grid-template-areas:
+            "top"
         "previews"
         "main";
 }
 
 .kgs-tabs__overview.kgs-tabs__overview__with-summary { /* summary are shown in main */
     grid-row-gap: 20px;
-    grid-template-areas: 
-        "main";
+    grid-template-areas:
+            "top"
+            "main";
 }
 
 .kgs-tabs__overview.kgs-tabs__overview__with-previews.kgs-tabs__overview__with-summary { /* summary are shown in main */
     grid-row-gap: 20px;
     grid-template-rows: max-content 1fr;
-    grid-template-areas: 
+    grid-template-areas:
+        "top"
         "previews"
         "main";
 }
@@ -81,9 +85,8 @@
     grid-area: main;
 }
 
-.kgs-tabs__overview .kgs-tabs__overview__summary {
-    grid-area: summary;
-    display: none; /* summary are shown in main */
+.kgs-tabs__overview .kgs-tabs__overview__top {
+    grid-area: top;
 }
 
 @media (min-width: 900px) {
@@ -91,7 +94,8 @@
     .kgs-tabs__overview.kgs-tabs__overview__with-previews {
         grid-template-columns: 1fr;
         grid-template-rows: max-content 1fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top"
             "previews"
             "main";
     }
@@ -100,7 +104,8 @@
         grid-column-gap: 40px;
         grid-template-columns: 6fr 4fr;
         grid-template-rows: 1fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top top"
             "main summary";
     }
     
@@ -108,7 +113,8 @@
         grid-column-gap: 40px;
         grid-template-rows: max-content 1fr;
         grid-template-columns: 6fr 4fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top top"
             "previews summary"
             "main main";
     }
@@ -128,7 +134,8 @@
     .kgs-tabs__overview.kgs-tabs__overview__with-previews {
         grid-template-columns: 1fr;
         grid-template-rows: max-content 1fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top"
             "previews"
             "main";
     }
@@ -136,14 +143,16 @@
     .kgs-tabs__overview.kgs-tabs__overview__with-summary { 
         grid-template-columns: 7fr 3fr;
         grid-template-rows: 1fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top top"
             "main summary";
     }
     
     .kgs-tabs__overview.kgs-tabs__overview__with-previews.kgs-tabs__overview__with-summary {
         grid-template-rows: max-content 1fr;
         grid-template-columns: 6fr 4fr;
-        grid-template-areas: 
+        grid-template-areas:
+            "top top"
             "main previews"
             "main summary";
     }
