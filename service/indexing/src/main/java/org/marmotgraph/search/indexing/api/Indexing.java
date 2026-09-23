@@ -144,7 +144,11 @@ public class Indexing {
 //            report.setTargetType("DatasetVersion");
 //            report.setErrors(rep);
 //            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget =Collections.singletonList(report);
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease()).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(m -> !m.autoRelease()).map(m -> {
+                //Ensures the creation of the index if it doesn't exist yet
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), false, false);
+                return indexingController.populateIndex(m, dataStage, false);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental indexing", e);
@@ -176,7 +180,10 @@ public class Indexing {
             if (translatorModels.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
-            List<ErrorReportResult.ErrorReportResultByTargetType> errorReport = translatorModels.stream().map(m -> indexingController.populateIndex(m, dataStage, false)).toList();
+            List<ErrorReportResult.ErrorReportResultByTargetType> errorReport = translatorModels.stream().map(m -> {
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), false, false);
+                return indexingController.populateIndex(m, dataStage, false);
+            }).toList();
             return handleErrorReportResult(errorReport);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental indexing", e);
@@ -206,7 +213,10 @@ public class Indexing {
     @Operation(summary = "incremental auto release")
     public ResponseEntity<ErrorReportResult> incrementalUpdateAutoRelease(@RequestParam("databaseScope") DataStage dataStage) {
         try {
-            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> indexingController.populateIndex(m, dataStage, false)).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<ErrorReportResult.ErrorReportResultByTargetType> errorsByTarget = translatorRegistry.getTranslators().stream().filter(TranslatorModel::autoRelease).map(m -> {
+                indexingController.recreateIndex(dataStage, m.targetClass(), m.autoRelease(), false, false);
+                return indexingController.populateIndex(m, dataStage, false);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
             return handleErrorReportResult(errorsByTarget);
         } catch (WebClientResponseException e) {
             logger.info("Unsuccessful incremental autorelease indexing", e);
