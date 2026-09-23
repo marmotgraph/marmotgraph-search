@@ -2,6 +2,7 @@ package org.marmotgraph.search.controller.search;
 
 import lombok.AllArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -66,7 +67,7 @@ public class QueryTranslator {
     }
 
     private QueryParser newParser() {
-        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new StandardAnalyzer(CharArraySet.EMPTY_SET);
         QueryParser parser = new QueryParser(DEFAULT_FIELD_PLACEHOLDER, analyzer);
         parser.setDefaultOperator(QueryParser.Operator.AND); // bare "a b" => AND; switch to OR if you prefer recall over precision
         parser.setAllowLeadingWildcard(false);                // block leading '*'/'?': expensive and usually unintentional
@@ -142,7 +143,7 @@ public class QueryTranslator {
         List<Map<String, Object>> should = new ArrayList<>();
         for (String field : textFields) {
             should.add(Map.of("match_phrase", Map.of(
-                    field, Map.of("query", phraseText, "boost", PHRASE_MATCH_BOOST)
+                    field, Map.of("query", phraseText, "boost", PHRASE_MATCH_BOOST, "zero_terms_query", "all")
             )));
         }
         return Map.of("bool", Map.of("should", should, "minimum_should_match", 1));
@@ -168,14 +169,16 @@ public class QueryTranslator {
                 Map.entry("query", term),
                 Map.entry("type", "best_fields"),
                 Map.entry("fields", textFields),
-                Map.entry("boost", EXACT_MATCH_BOOST)
+                Map.entry("boost", EXACT_MATCH_BOOST),
+                Map.entry("zero_terms_query", "all")
         )));
 
         should.add(Map.of("multi_match", Map.ofEntries(
                 Map.entry("query", term),
                 Map.entry("type", "bool_prefix"),
                 Map.entry("fields", textFields),
-                Map.entry("boost", PREFIX_MATCH_BOOST)
+                Map.entry("boost", PREFIX_MATCH_BOOST),
+                Map.entry("zero_terms_query", "all")
         )));
 
         should.add(Map.of("term", Map.of(
@@ -199,7 +202,8 @@ public class QueryTranslator {
                 Map.entry("query", prefix),
                 Map.entry("type", "bool_prefix"),
                 Map.entry("fields", textFields),
-                Map.entry("boost", PREFIX_MATCH_BOOST)
+                Map.entry("boost", PREFIX_MATCH_BOOST),
+                Map.entry("zero_terms_query", "all")
         )));
 
         // Identifier fields: only if you deliberately want substring/prefix search
