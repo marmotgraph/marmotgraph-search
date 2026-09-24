@@ -42,7 +42,7 @@ const CustomTableCell = ({ field, isFirstCell, onCollapseToggle, fieldComponent:
 
   if (field.level === 1) {
     return (
-      <th>
+      <td>
         {isFirstCell && field.isCollectionCollapsible && (
           <button onClick={handleClick}><FontAwesomeIcon icon={field.isCollectionCollapsed?faChevronRight:faChevronDown} /></button>
         )}
@@ -50,7 +50,7 @@ const CustomTableCell = ({ field, isFirstCell, onCollapseToggle, fieldComponent:
         {isFirstCell && field.isCollectionASubset && (
           <Hint className="kg-cell-hint" value={`The represented tissue samples are the subset used in this ${field.type?field.type.toLowerCase():'dataset'}`} />
         )}
-      </th>
+      </td>
     );
   }
   return (
