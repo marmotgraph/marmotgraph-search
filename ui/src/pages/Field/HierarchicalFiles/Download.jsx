@@ -34,7 +34,7 @@ import {useSelector} from 'react-redux';
 
 const Download = ({name, type, url}) => {
 
-  const configuration = useSelector(state => state.application.config);
+  const configuration = useSelector(state => state.application.custom);
   const [showTermsOfUse, toggleTermsOfUse] = useState(false);
 
   const trackDownload = e => {
