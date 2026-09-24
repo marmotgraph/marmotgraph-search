@@ -36,6 +36,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class QueryGenerator {
@@ -144,7 +145,15 @@ public class QueryGenerator {
 
     }
 
+
+    private final Map<String, Map<String, MarmotGraphQuery>> queryCache = new ConcurrentHashMap<>();
+
     public MarmotGraphQuery generate(Class<?> clazz, String targetType){
+        MarmotGraphQuery fromCache = queryCache.getOrDefault(clazz.getCanonicalName(), new HashMap<>()).get(targetType);
+        if(fromCache!=null){
+            logger.info(String.format("Query for %s (%s) found in cache", clazz.getCanonicalName(), targetType));
+            return fromCache;
+        }
         logger.info(String.format("Generating query for %s (%s)", clazz.getCanonicalName(), targetType));
         MergedAnnotations classAnnotations = MergedAnnotations.from(clazz, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
         if(classAnnotations.isPresent(Query.class)){
@@ -153,6 +162,8 @@ public class QueryGenerator {
             String defaultPropertyNamespace = queryAnnotation.getString("defaultPropertyNamespace");
             MarmotGraphQuery query = new MarmotGraphQuery("https://core.kg.ebrains.eu/vocab/query/", "https://schema.hbp.eu/myQuery/", targetType);
             query.setStructure(evaluateStructure(clazz, defaultPropertyNamespace, defaultTypeNamespace));
+            queryCache.computeIfAbsent(clazz.getCanonicalName(), f -> new HashMap<>()).put(targetType, query);
+            logger.info(String.format("Query for %s (%s) generated", clazz.getCanonicalName(), targetType));
             return query;
         }
         return null;

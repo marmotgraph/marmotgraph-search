@@ -83,7 +83,7 @@ public class IndexingController {
     }
 
     public ErrorReportResult.ErrorReportResultByTargetType populateIndex(TranslatorModel translatorModel, DataStage dataStage, boolean temporary) {
-        ErrorReportResult.ErrorReportResultByTargetType errorReportByTargetType =  null;
+        ErrorReportResult.ErrorReportResultByTargetType errorReportByTargetType = null;
         Set<String> searchableIds = new HashSet<>();
         Set<String> nonSearchableIds = new HashSet<>();
         if (translatorModel.translator() != null) {
@@ -101,7 +101,7 @@ public class IndexingController {
             }
             searchableIds.addAll(updateResult.searchableIds);
             nonSearchableIds.addAll(updateResult.nonSearchableIds);
-            if(!updateResult.badges.isEmpty()) {
+            if (!updateResult.badges.isEmpty()) {
                 kgV3.persistBadges(translatorModel.targetClass().getSimpleName(), updateResult.badges);
             }
         }
@@ -134,7 +134,6 @@ public class IndexingController {
         translatorModel.semanticTypes().forEach(semanticType -> {
             String queryId = translatorModel.queryId(semanticType);
             translationContext.put(TranslatorUtils.SEMANTIC_TYPE, semanticType);
-            Integer lastTotal = null;
             boolean hasMore = true;
             int from = 0;
             while (hasMore) {
@@ -146,7 +145,7 @@ public class IndexingController {
                 if (instances != null) {
                     List<Target> searchableInstances = new ArrayList<>();
                     List<Target> nonSearchableInstances = new ArrayList<>();
-                    final List<Target> processableInstances = instances.stream().filter(instance -> !excludedIds.contains(instance.getId())).map(instance -> (Target)instance).collect(Collectors.toList());
+                    final List<Target> processableInstances = instances.stream().filter(instance -> !excludedIds.contains(instance.getId())).map(instance -> (Target) instance).collect(Collectors.toList());
                     referenceResolver.clearNonResolvableReferences(processableInstances, existingIdentifiers);
                     processableInstances.forEach(instance -> {
                         logger.debug("Translating instance {}", instance.getId());
@@ -158,13 +157,13 @@ public class IndexingController {
                             updateResult.nonSearchableIds.add(handledInstance.getId());
                             nonSearchableInstances.add(handledInstance);
                         }
-                        if(handledInstance instanceof HasBadges){
+                        if (handledInstance instanceof HasBadges) {
                             final List<String> badges = ((HasBadges) handledInstance).getBadges();
-                            if(badges != null){
+                            if (badges != null) {
                                 badges.stream().filter(relevantBadges::contains).forEach(badge -> {
                                     String qualifiedProperty = String.format("https://search.kg.ebrains.eu/vocab/badges/%s", badge);
                                     updateResult.badges.computeIfAbsent(qualifiedProperty, k -> new ArrayList<>());
-                                    ((List)updateResult.badges.get(qualifiedProperty)).add(Map.of("@id", String.format("https://kg.ebrains.eu/api/instances/%s", handledInstance.getId())));
+                                    ((List) updateResult.badges.get(qualifiedProperty)).add(Map.of("@id", String.format("https://kg.ebrains.eu/api/instances/%s", handledInstance.getId())));
                                 });
                             }
                         }
@@ -180,11 +179,12 @@ public class IndexingController {
                         }
                     }
                 }
-                if (result.getTotal() != null) {
-                    lastTotal = result.getTotal();
+                if (result.getTotal() == null && result.getSize() == 0) {
+                    hasMore = false;
+                } else if(result.getTotal() != null) {
+                    hasMore = from < result.getTotal();
                 }
                 from = result.getFrom() + result.getSize();
-                hasMore = lastTotal != null && from < lastTotal;
             }
         });
         return updateResult;
@@ -216,13 +216,13 @@ public class IndexingController {
         Map<String, Object> mapping = mappingController.generateMapping(clazz, !autorelease);
         if (autorelease) {
             String index = esHelper.getAutoReleasedIndex(dataStage, clazz, temporary);
-            if(elasticSearchController.indexNotExists(index) || force) {
+            if (elasticSearchController.indexNotExists(index) || force) {
                 Map<String, Object> payload = Map.of("mappings", mapping);
                 elasticSearchController.recreateAutoReleasedIndex(dataStage, payload, clazz, temporary);
             }
         } else {
             String index = esHelper.getSearchableIndex(dataStage, clazz, temporary);
-            if(elasticSearchController.indexNotExists(index) || force) {
+            if (elasticSearchController.indexNotExists(index) || force) {
                 Map<String, Object> settings = settingsController.generateSearchIndexSettings();
                 Map<String, Object> payload = Map.of(
                         "mappings", mapping,

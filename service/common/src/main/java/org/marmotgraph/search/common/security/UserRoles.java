@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.common.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -38,6 +39,11 @@ public class UserRoles{
 
     private static final String ROLE_IN_PROGRESS = "ROLE_IN_PROGRESS";
 
+    private final boolean developmentMode;
+    public UserRoles(@Value("${developmentMode:false}") boolean developmentMode){
+        this.developmentMode = developmentMode;
+    }
+
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @PreAuthorize("hasRole('IN_PROGRESS')")
@@ -50,8 +56,8 @@ public class UserRoles{
     public @interface MustBeAdmin {
     }
 
-    public static boolean hasInProgressRole(JwtAuthenticationToken user){
-        return user.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_IN_PROGRESS));
+    public boolean hasInProgressRole(JwtAuthenticationToken user){
+        return developmentMode || user.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_IN_PROGRESS));
     }
 
 

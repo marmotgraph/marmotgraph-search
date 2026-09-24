@@ -24,13 +24,17 @@
 
 package org.marmotgraph.search.indexing.configuration;
 
+import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.indexing.controller.elasticsearch.ElasticSearchController;
+import org.marmotgraph.search.indexing.controller.indexing.IndexingController;
 import org.marmotgraph.search.indexing.controller.queries.QueryController;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Stream;
 
 
 @Component
@@ -41,17 +45,21 @@ public class Setup {
 
     private final ElasticSearchController elasticSearchController;
 
+    private final IndexingController indexingController;
+
     private final boolean uploadQueries;
 
-    public Setup(QueryController queryController, @Value("${UPLOAD_QUERIES:true}") boolean uploadQueries, ElasticSearchController elasticSearchController) {
+    public Setup(QueryController queryController, @Value("${UPLOAD_QUERIES:true}") boolean uploadQueries, ElasticSearchController elasticSearchController, IndexingController indexingController) {
         this.queryController = queryController;
         this.uploadQueries = uploadQueries;
         this.elasticSearchController = elasticSearchController;
+        this.indexingController = indexingController;
     }
 
     @PostConstruct
     public void uploadQueries() {
         elasticSearchController.ensureResourcesIndex();
+        Stream.of(DataStage.values()).forEach(s -> indexingController.recreateIdentifiersIndex(s, false));
         if(uploadQueries) {
            queryController.uploadQueries();
         }

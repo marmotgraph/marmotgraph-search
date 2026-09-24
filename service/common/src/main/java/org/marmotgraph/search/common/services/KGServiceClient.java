@@ -296,7 +296,7 @@ public class KGServiceClient {
     public <T> ResultsOfKG<T> executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, int from, int size) {
         String url;
         if (appConfig.localQueries()) {
-            url = String.format("%s/queries?stage=%s&from=%d&size=%d", kgCoreEndpoint, dataStage, from, size);
+            url = String.format("%s/queries?stage=%s&from=%d&size=%d&returnTotalResults=false", kgCoreEndpoint, dataStage, from, size);
         } else {
             url = String.format("%s/queries/%s/instances?stage=%s&from=%d&size=%d", kgCoreEndpoint, queryId, dataStage, from, size);
         }

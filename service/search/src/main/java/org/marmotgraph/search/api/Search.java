@@ -63,6 +63,7 @@ public class Search {
     private final DOICitationFormatter doiCitationFormatter;
     private final TranslatorRegistry translatorRegistry;
     private final UserAuthorization userAuthorization;
+    private final UserRoles userRoles;
 
 
     @GetMapping("/citation")
@@ -123,7 +124,7 @@ public class Search {
     }
 
     private boolean canReadLiveFiles(JwtAuthenticationToken token, UUID repositoryUUID) {
-        return UserRoles.hasInProgressRole(token) || searchController.isInvitedForFileRepository(repositoryUUID);
+        return userRoles.hasInProgressRole(token) || searchController.isInvitedForFileRepository(repositoryUUID);
     }
 
 
