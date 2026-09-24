@@ -82,7 +82,7 @@ public class TranslatorRegistry {
     }
 
     public Class<?> getFileClass() {
-        return null;
+        return translators.stream().filter(c -> c.translator().getClass().getSimpleName().equalsIgnoreCase("file")).map(TranslatorModel::targetClass).findFirst().orElse(null);
     }
 
     public List<String> getMainCategories(){
