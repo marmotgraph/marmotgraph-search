@@ -538,20 +538,6 @@ public class SearchController extends FacetAggregationUtils {
             v.setMeta(null);
         }
 
-        if (v instanceof VersionedInstance) {
-            VersionedInstance versioned = (VersionedInstance) v;
-
-            if (StringUtils.isNotBlank(versioned.getVersion())) {
-                res.put("version", versioned.getVersion());
-            }
-            if (!CollectionUtils.isEmpty(versioned.getVersions())) {
-                res.put("versions", versioned.getVersions());
-            }
-            if (versioned.getAllVersionRef() != null) {
-                res.put("allVersionRef", versioned.getAllVersionRef());
-            }
-        }
-
         if (v instanceof HasPreviews) {
             HasPreviews hasPreviews = (HasPreviews) v;
             List<Map<String, Object>> previews = new ArrayList<>();
