@@ -29,9 +29,11 @@
             "top"
         "main";
 }
+.kgs-fields-panel.kgs-tabs__overview__top{
+    margin-bottom: 20px;
+}
 
 .kgs-tabs__overview.kgs-tabs__overview__with-previews {
-    grid-row-gap: 20px;
     grid-template-rows: max-content 1fr;
     grid-template-areas:
             "top"
@@ -40,14 +42,13 @@
 }
 
 .kgs-tabs__overview.kgs-tabs__overview__with-summary { /* summary are shown in main */
-    grid-row-gap: 20px;
+
     grid-template-areas:
             "top"
             "main";
 }
 
 .kgs-tabs__overview.kgs-tabs__overview__with-previews.kgs-tabs__overview__with-summary { /* summary are shown in main */
-    grid-row-gap: 20px;
     grid-template-rows: max-content 1fr;
     grid-template-areas:
         "top"
