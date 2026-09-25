@@ -44,7 +44,7 @@ const Citation = ({title, citation, doi, bibtex}) => {
         :
         <>
           {title && (
-            <h6><strong>${title}</strong></h6>
+            <h6><strong>{title}</strong></h6>
           )}
           <a href={`https://doi.org/${doi}`}>DOI: {doi}</a>
         </>

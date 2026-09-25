@@ -213,11 +213,10 @@ public class IndexingController {
 
     public void recreateIndex(DataStage dataStage, Class<? extends TargetInstance> clazz, boolean autorelease, boolean temporary, boolean force) {
         elasticSearchController.ensureResourcesIndex();
-        Map<String, Object> mapping = mappingController.generateMapping(clazz, !autorelease);
         if (autorelease) {
             String index = esHelper.getAutoReleasedIndex(dataStage, clazz, temporary);
             if (elasticSearchController.indexNotExists(index) || force) {
-                Map<String, Object> payload = Map.of("mappings", mapping);
+                Map<String, Object> payload = Map.of("mappings", mappingController.generateMapping(clazz, false));
                 elasticSearchController.recreateAutoReleasedIndex(dataStage, payload, clazz, temporary);
             }
         } else {
@@ -225,7 +224,7 @@ public class IndexingController {
             if (elasticSearchController.indexNotExists(index) || force) {
                 Map<String, Object> settings = settingsController.generateSearchIndexSettings();
                 Map<String, Object> payload = Map.of(
-                        "mappings", mapping,
+                        "mappings", mappingController.generateMapping(clazz, true),
                         "settings", settings);
                 elasticSearchController.recreateSearchIndex(payload, clazz, dataStage, temporary);
             }
