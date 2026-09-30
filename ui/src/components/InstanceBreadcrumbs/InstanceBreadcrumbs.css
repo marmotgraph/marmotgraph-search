@@ -31,6 +31,7 @@
 .kgs-instance-breadcrumbs__list {
     display: flex;
     align-items: center;
+    width: 100%;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -40,19 +41,24 @@
 .kgs-instance-breadcrumbs__item {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    min-width: 0;
+    flex: 0 1 auto;
 }
 
 .kgs-instance-breadcrumbs__item--ellipsis {
     position: relative;
-    flex-shrink: 0;
+    flex: 0 0 auto;
 }
 
 .kgs-instance-breadcrumbs__item--current {
-    flex-shrink: 0;
+    flex: 0 1 auto;
 }
 
 .kgs-instance-breadcrumbs__link {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
     margin: 0;
     padding: 5px 0;
     border: 0;
@@ -69,6 +75,8 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .kgs-instance-breadcrumbs__dot {
@@ -81,7 +89,11 @@
 }
 
 .kgs-instance-breadcrumbs__text {
+    min-width: 0;
+    max-width: 12em;
+    overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .kgs-instance-breadcrumbs__link:hover,
@@ -104,6 +116,10 @@
 }
 
 .kgs-instance-breadcrumbs__current {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
     padding: 5px 0;
     line-height: inherit;
     cursor: default;
@@ -141,7 +157,7 @@
     left: 0;
     z-index: 1600;
     min-width: 220px;
-    /*max-width: min(320px, calc(100vw - 24px));*/
+    max-width: min(280px, calc(100vw - 24px));
     margin: 0;
     padding: 6px 0;
     list-style: none;
@@ -152,8 +168,10 @@
 }
 
 .kgs-instance-breadcrumbs__menu-item {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 7px 12px;
     border: 0;
@@ -164,9 +182,18 @@
     line-height: inherit;
     text-align: left;
     cursor: pointer;
-    white-space: nowrap;
+}
+
+.kgs-instance-breadcrumbs__menu-item .kgs-instance-breadcrumbs__label {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.kgs-instance-breadcrumbs__menu-item .kgs-instance-breadcrumbs__text {
+    max-width: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .kgs-instance-breadcrumbs__menu-item:hover,

@@ -55,7 +55,7 @@ export const ImageCarousel = ({ className, width, images, onClick }) => {
         ))}
       </Carousel>
       {!!hint && (
-        <Hint className="kgs-image_carousel-hint" value={hint} />
+          <span className="kgs-image_carousel-hint">{hint}</span>
       )}
     </div>
   );

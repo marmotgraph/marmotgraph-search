@@ -37,7 +37,7 @@ const BreadcrumbLabel = ({ title, badges, isCurrent }) => (
       aria-hidden="true"
       style={{ '--breadcrumb-accent': getTypeBadgeAccentColor(badges) }}
     />
-    <span className={`kgs-instance-breadcrumbs__text${isCurrent ? ' is-current' : ''}`}>{title}</span>
+    <span className={`kgs-instance-breadcrumbs__text${isCurrent ? ' is-current' : ''}`} title={title || undefined}>{title}</span>
   </span>
 );
 
@@ -149,6 +149,7 @@ const BreadcrumbEllipsisMenu = ({ items, onBreadcrumbClick }) => {
                 type="button"
                 className="kgs-instance-breadcrumbs__menu-item"
                 role="menuitem"
+                title={crumb.title}
                 onClick={() => handleItemClick(index, crumb)}
               >
                 <BreadcrumbLabel title={crumb.title} badges={crumb.badges} />

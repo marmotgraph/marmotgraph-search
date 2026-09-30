@@ -76,9 +76,12 @@
 }
 
 .kgs-image_carousel-hint {
-  position: absolute;
-  top: 2px;
-  left: 8px;
+  text-align: left;
+  display: block;
+  margin-bottom: 1rem;
+  /*position: absolute;*/
+  /*top: 2px;*/
+  /*left: 8px;*/
 }
 
 @media (min-width: 992px) {

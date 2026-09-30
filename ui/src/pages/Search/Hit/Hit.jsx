@@ -159,9 +159,12 @@ export const Hit = ({ data }) => {
   return (
     <div className="kgs-hit" data-type={type} style={highlightColor}>
       <HitBadges badges={badges} />
+      <div className="kgs-hit__title">
+          <Title key="title" text={title} />
+      </div>
       <div className={`kgs-hit__body ${previewImage? 'has-previewImage':''} ${badges?'has-badges':''}`} >
         <div className="kgs-hit__content">
-          <Title key="title" text={title} />
+
           <HighlightsField key="highlights" mapping={mapping} fields={filterHighlightFields(data?.highlight, ['title.value', 'description.value'])} />
           {fields.map(({ name, data, mapping }) =>
             <PrintViewField key={name} name={name} data={data} mapping={mapping} />

@@ -91,7 +91,7 @@ const ImagePopup = ({ className, src, label, link, onClick }) => {
               <React.Fragment>
                 <Media label={label} srcState={srcState}/>
                 {!!label && (
-                  <Hint className="kgs-image_popup-hint" value={label} />
+                    <span className="kgs-image_popup-hint">{label}</span>
                 )}
                 {link && <div className="kgs-image_popup-link" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(converter.makeHtml(link)) }} />}
               </React.Fragment>
