@@ -4,6 +4,9 @@
     min-width: 350px;
   }
 }
+.kgs-hint svg {
+    margin-top: 12px;
+}
 
 .kgs-hint-tooltip {
   z-index: 100000;
