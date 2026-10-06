@@ -26,10 +26,11 @@ package org.marmotgraph.search.api;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.search.common.model.CommitInfo;
+import org.marmotgraph.search.common.customization.Customization;
 import org.marmotgraph.search.common.services.KGServiceClient;
 import org.marmotgraph.search.controller.settings.AuthEndpointCheck;
 import org.marmotgraph.search.controller.settings.SettingsController;
-import org.marmotgraph.search.common.customization.Customization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,17 +46,31 @@ public class Settings {
     private final SettingsController definitionController;
     private final AuthEndpointCheck authEndpointCheck;
     private final Customization customization;
+    private final CommitInfo commitInfo;
 
     @GetMapping("/api/settings/custom.css")
     public String getCSS() {
         return customization.getCSSAdditions();
     }
 
-    public record KeycloakConfig(String realm, String url, String clientId, boolean authEndpointAvailable) { }
-    public record SentryConfig(String dsn, String release, String environment){}
-    public record MatomoConfig(String url, String siteId) {}
-    public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent, String footerSocial, String editorEndpoint, String notFoundFooter, String dataIssueReportSlackUrl) { }
-    public record Setting(String commit, SentryConfig sentry, KeycloakConfig keycloak, MatomoConfig matomo, Customization.Configuration config, CustomSections custom, List<Object> types, Map<String, Object> typeMappings) { }
+    public record KeycloakConfig(String realm, String url, String clientId, boolean authEndpointAvailable) {
+    }
+
+    public record SentryConfig(String dsn, String release, String environment) {
+    }
+
+    public record MatomoConfig(String url, String siteId) {
+    }
+
+    public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent,
+                                 String footerSocial, String editorEndpoint, String notFoundFooter,
+                                 String dataIssueReportSlackUrl) {
+    }
+
+    public record Setting(String commit, SentryConfig sentry, KeycloakConfig keycloak, MatomoConfig matomo,
+                          Customization.Configuration config, CustomSections custom, List<Object> types,
+                          Map<String, Object> typeMappings) {
+    }
 
 
     @GetMapping("/api/settings")
@@ -68,18 +83,22 @@ public class Settings {
             @Value("${matomo.url}") String matomoUrl,
             @Value("${matomo.siteId}") String matomoSiteId,
             @Value("${EDITOR_ENDPOINT:}") String editorEndpoint,
-            @Value("${DATA_ISSUE_REPORT_SLACK_URL:https://cscs-lugano.slack.com/archives/C077HV02F35}") String dataIssueReportSlackUrl
+            @Value("${DATA_ISSUE_REPORT_SLACK_URL:}") String dataIssueReportSlackUrl
     ) {
         String finalCommit = null;
         SentryConfig sentryConfig = null;
         KeycloakConfig keycloakConfig = null;
-        if (StringUtils.isNotBlank(commit) && !commit.equals("\"\"")) {
-            finalCommit = commit;
-            // Only provide sentry when commit is available, ie on deployed env
-            if (StringUtils.isNotBlank(sentryDsnUi)) {
-                sentryConfig = new SentryConfig(sentryDsnUi, commit, sentryEnvironment);
-            }
+        if (StringUtils.isNotBlank(commitInfo.toString())) {
+            finalCommit = commitInfo.toString();
         }
+        else if (StringUtils.isNotBlank(commit) && !commit.equals("\"\"")) {
+            finalCommit = commit;
+        }
+
+        if (StringUtils.isNotBlank(sentryDsnUi)) {
+            sentryConfig = new SentryConfig(sentryDsnUi, commit, sentryEnvironment);
+        }
+
         String authEndpoint = kgv3ServiceClient.getAuthEndpoint();
         if (StringUtils.isNotBlank(authEndpoint)) {
             keycloakConfig = new KeycloakConfig(keycloakRealm, authEndpoint, keycloakClientId, authEndpointCheck.checkAuthEndpointIsAlive());
@@ -90,6 +109,6 @@ public class Settings {
             matomoConfig = new MatomoConfig(matomoUrl, matomoSiteId);
         }
         CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint, customization.getNotFoundFooter(), dataIssueReportSlackUrl);
-        return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections,  definitionController.generateCategories(), definitionController.generateTypeMappings());
+        return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections, definitionController.generateCategories(), definitionController.generateTypeMappings());
     }
 }
