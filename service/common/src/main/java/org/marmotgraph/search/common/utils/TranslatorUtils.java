@@ -39,13 +39,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-
-import static org.marmotgraph.search.common.model.target.ISODateValue.ISO_DATE_PATTERN;
 
 @Getter
 public class TranslatorUtils {
@@ -143,8 +141,7 @@ public class TranslatorUtils {
         if(releaseDate == null) {
             return null;
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ISO_DATE_PATTERN);
-        return dateFormat.format(releaseDate);
+        return releaseDate.toInstant().atOffset(ZoneOffset.UTC).toString();
     }
 
     public Document getResource(String  id){

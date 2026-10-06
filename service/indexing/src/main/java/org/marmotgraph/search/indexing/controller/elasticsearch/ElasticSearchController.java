@@ -36,21 +36,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.*;
 
 @Component
 public class ElasticSearchController {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final JsonMapper jsonMapper;
     private final ESServiceClient esServiceClient;
     private final ESHelper esHelper;
     private final int ESOperationsMaxCharPayload = 1000000;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ElasticSearchController(ESServiceClient esServiceClient, ESHelper esHelper) {
+    public ElasticSearchController(JsonMapper jsonMapper, ESServiceClient esServiceClient, ESHelper esHelper) {
         this.esServiceClient = esServiceClient;
         this.esHelper = esHelper;
+        this.jsonMapper = jsonMapper;
     }
 
 
@@ -120,7 +121,7 @@ public class ElasticSearchController {
             }
             operations.append(String.format("{ \"index\" : { \"_id\" : \"%s\" } } \n", instance.getId()));
             try {
-                operations.append(objectMapper.writeValueAsString(instance)).append("\n");
+                operations.append(jsonMapper.writeValueAsString(instance)).append("\n");
             } catch (JacksonException e) {
                 throw new RuntimeException(e);
             }
@@ -176,7 +177,7 @@ public class ElasticSearchController {
         StringBuilder op = new StringBuilder();
         op.append(String.format("{ \"index\" : { \"_id\" : \"%s\" } } \n", id));
         try {
-            op.append(objectMapper.writeValueAsString(instance));
+            op.append(jsonMapper.writeValueAsString(instance));
         } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
