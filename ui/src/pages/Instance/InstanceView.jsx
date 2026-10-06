@@ -21,20 +21,19 @@
  *
  */
 
-import React, {useMemo} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
 import BgError from '../../components/BgError/BgError';
 import Disclaimer from '../../components/Disclaimer/Disclaimer';
 import TermsShortNotice from '../../features/TermsShortNotice';
-import { selectIsDefaultGroup, selectGroupLabel } from '../../features/groups/groupsSlice';
+import {selectGroupLabel, selectIsDefaultGroup} from '../../features/groups/groupsSlice';
 import ImagePopup from '../../features/image/ImagePopup';
-import { requestInstance, setTab, selectTypeMapping } from '../../features/instance/instanceSlice';
+import {selectTypeMapping, setTab} from '../../features/instance/instanceSlice';
 import Matomo from '../../services/Matomo';
 
 import Header from './Header/Header';
 import Tabs from './Tabs/Tabs';
-import { createContext } from 'react';
 import './InstanceView.css';
 import './Fields.css';
 import {InstanceContext} from '../../contexts/InstanceContext';
@@ -177,7 +176,6 @@ const InstanceView = ({ data, isSearch, path, customNavigationComponent }) => {
       <div className="kgs-instance__footer">
         <Disclaimer content={data?.disclaimer} />
       </div>
-      <TermsShortNotice />
       <ImagePopup className="kgs-instance__image_popup" />
     </div>
     </InstanceContext.Provider>

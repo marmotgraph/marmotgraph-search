@@ -30,7 +30,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { setInfo } from '../features/application/applicationSlice';
-import TermsShortNotice from '../features/TermsShortNotice';
 import { setQueryString } from '../features/search/searchSlice';
 import { getLocationSearchFromQuery, searchToObj } from '../helpers/BrowserHelpers';
 
@@ -177,7 +176,6 @@ const SearchLanding = () => {
         </div>
         <CategoryBrowse onCategorySelect={handleCategorySelect} />
       </div>
-      <TermsShortNotice className="kgs-search-landing__terms-short-notice" />
     </div>
   );
 };

@@ -39,10 +39,10 @@ export const Notice = ({className, show, text, agreeLabel='I agree', onAgree}) =
     <div className={`kgs-notice ${className??''}`}>
       <div className="kgs-notice-panel">
         <span className="kgs-notice-content" dangerouslySetInnerHTML={{__html:html}} />
+        {onAgree && (
+          <button className="btn btn-primary kgs-notice-agree-button" onClick={onAgree}>{agreeLabel}</button>
+        )}
       </div>
-      {onAgree && (
-        <button className="btn btn-primary kgs-notice-agree-button" onClick={onAgree}>{agreeLabel}</button>
-      )}
     </div>
   );
 };

@@ -41,6 +41,7 @@ import Footer from './pages/Footer/Footer';
 import Header from './pages/Header/Header';
 import type AuthAdapter from './services/AuthAdapter';
 import type {Store} from 'redux';
+import TermsShortNotice from './features/TermsShortNotice';
 
 const SearchLandingComp = React.lazy(() => import('./pages/SearchLanding.jsx'));
 const SearchComp = React.lazy(() => import('./pages/Search.jsx'));
@@ -72,6 +73,7 @@ const App = ({authAdapter}: { authAdapter: AuthAdapter; }) => (
           </Authenticate>
         </ErrorBoundary>
         <InfoPanel/>
+        <TermsShortNotice />
       </main>
       <Footer/>
     </AuthProvider>

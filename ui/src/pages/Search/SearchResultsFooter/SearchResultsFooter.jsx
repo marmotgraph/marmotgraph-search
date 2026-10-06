@@ -23,14 +23,12 @@
 
 import React from 'react';
 
-import TermsShortNotice from '../../../features/TermsShortNotice';
 import Pagination from '../../../features/search/Pagination';
 
 import './SearchResultsFooter.css';
 
 const SearchResultsFooter = () => (
   <div className="kgs-search-results-footer">
-    <TermsShortNotice className="kgs-search-results-footer__terms-short-notice" />
     <div className="kgs-search-results-footer__nav">
       <Pagination />
     </div>

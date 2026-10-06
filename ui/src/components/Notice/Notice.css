@@ -22,14 +22,16 @@
  */
 
 .kgs-notice {
-    position: relative;
+    position: fixed;
     left: 0;
     bottom: 0;
     border-top: 1px solid var(--border-color-7);
-    z-index: 3;
+    z-index: 10000;
     background-color: var(--background-color-7);
-    opacity: 0.9;
     white-space: initial;
+    width: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .kgs-notice-panel {
@@ -39,6 +41,7 @@
     padding: 20px var(--site-margin) 70px var(--site-margin);
     background-color: var(--background-color-6);
     color: var(--color-28);
+    display: block;
 }
 
 .kgs-notice-content {
@@ -73,17 +76,10 @@ main .kgs-notice a:hover, main .kgs-notice a:visited,  main .kgs-notice a:hover:
 main .kgs-notice .kgs-notice-agree-button{
     background-color: var(--button-default-background-color);
     color: var(--color-36);
+    right: var(--site-margin);
 }
 
 main .kgs-notice .kgs-notice-agree-button:hover{
     background-color: var(--link-highlight-color);
     color: var(--color-32);
-}
-
-
-@media (min-width: 992px) {
-    .kgs-notice {
-        position: fixed;
-        width: 100%;
-    }
 }
