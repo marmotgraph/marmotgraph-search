@@ -30,10 +30,7 @@ public class IndexingScheduler {
     private final IndexingController indexingController;
     private final TranslatorRegistry translatorRegistry;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final String inProgressInterval;
-    private final String releasedInterval;
-    private final String inProgressAutoReleaseInterval;
-    private final String releasedAutoReleaseInterval;
+
     @Getter
     private final Map<IndexingMode, ErrorReportResult> errorReports = new ConcurrentHashMap<>();
 
@@ -52,20 +49,12 @@ public class IndexingScheduler {
         return threadPoolTaskScheduler;
     }
 
-    public IndexingScheduler(IndexingController indexingController, TranslatorRegistry translatorRegistry,
-                             @Value("${indexing.inprogress:3600000}") String inProgressInterval,
-                             @Value("${indexing.released:3600000}") String releasedInterval,
-                             @Value("${indexing.inprogress-autorelease:3600000}") String inProgressAutoreleaseInterval,
-                             @Value("${indexing.released-autorelease:3600000}") String releasedAutoreleaseInterval) {
+    public IndexingScheduler(IndexingController indexingController, TranslatorRegistry translatorRegistry) {
         this.indexingController = indexingController;
-        this.inProgressInterval = inProgressInterval;
         this.translatorRegistry = translatorRegistry;
-        this.releasedInterval = releasedInterval;
-        this.inProgressAutoReleaseInterval = inProgressAutoreleaseInterval;
-        this.releasedAutoReleaseInterval = releasedAutoreleaseInterval;
     }
 
-    private void scheduledIndexing(IndexingMode mode, String interval){
+    private void scheduledIndexing(IndexingMode mode){
         DataStage stage = switch (mode) {
             case IN_PROGRESS, IN_PROGRESS_AUTORELEASE -> DataStage.IN_PROGRESS;
             default -> DataStage.RELEASED;
@@ -75,7 +64,7 @@ public class IndexingScheduler {
             default -> false;
         };
         indexingController.recreateIdentifiersIndex(stage, false);
-        logger.info("Starting scheduled indexing for stage \"{}\" (autorelease: {}) - interval: {}ms", stage.name(), isAutorelease, interval);
+        logger.info("Starting scheduled indexing for stage \"{}\" (autorelease: {})", stage.name(), isAutorelease);
         ZonedDateTime start = ZonedDateTime.now(ZoneOffset.UTC);
         ErrorReportResult.Extended result = new ErrorReportResult.Extended();
         result.setErrorsByTarget(translatorRegistry.getTranslators().stream().filter(m -> m.autoRelease() == isAutorelease).map(m ->
@@ -93,23 +82,15 @@ public class IndexingScheduler {
     }
 
 
-//    @Scheduled(fixedDelayString = "${indexing.inprogress:3600000}")
-//    public void scheduleInProgressIndexing(){
-//        scheduledIndexing(IndexingMode.IN_PROGRESS, inProgressInterval);
-//    }
+    @Scheduled(fixedDelayString = "${indexing.interval:3600000}", initialDelayString = "${indexing.interval:3600000}")
+    public void scheduleReleasedIndexing(){
+        scheduledIndexing(IndexingMode.RELEASED);
+        scheduledIndexing(IndexingMode.IN_PROGRESS);
+    }
 
-//    @Scheduled(fixedDelayString = "${indexing.released:3600000}")
-//    public void scheduleReleasedIndexing(){
-//        scheduledIndexing(IndexingMode.RELEASED, releasedInterval);
-//    }
-
-//    @Scheduled(fixedDelayString = "${indexing.inprogress-autorelease:86400000}")
-//    public void scheduleInProgressAutoReleaseIndexing(){
-//        scheduledIndexing(IndexingMode.IN_PROGRESS_AUTORELEASE, inProgressAutoReleaseInterval);
-//    }
-//
-//    @Scheduled(fixedDelayString = "${indexing.released-autorelease:86400000}")
-//    public void scheduleReleasedAutoReleaseIndexing(){
-//        scheduledIndexing(IndexingMode.RELEASED_AUTORELEASE, releasedAutoReleaseInterval);
-//    }
+    @Scheduled(cron = "${indexing.autorelease-cron:0 0 1 * * *}")
+    public void scheduleReleasedAutoReleaseIndexing(){
+        scheduledIndexing(IndexingMode.RELEASED_AUTORELEASE);
+        scheduledIndexing(IndexingMode.IN_PROGRESS_AUTORELEASE);
+    }
 }
