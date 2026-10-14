@@ -239,3 +239,60 @@ body[profile="ebrains"] .kgs-search-panel .kgs-search-panel-button:hover {
     border: 1px solid var(--color-primary-hover-border);
     color: var(--color-primary-hover-text);
 }
+
+@media (max-width: 767px) {
+    .kgs-search-panel > div {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .kgs-search-panel > div > div {
+        width: 100%;
+        flex: none;
+    }
+
+    .kgs-search-panel .kgs-search-panel-button {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 12px 16px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .kgs-search-panel input.kg-search-bar {
+        height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+        line-height: 48px;
+    }
+
+    .kgs-search-panel input.kg-search-bar:placeholder-shown {
+        font-size: 16px;
+    }
+
+    .kgs-search-panel .kg-search-bar__icon {
+        top: 50%;
+        margin: 0 0 0 15px;
+        transform: translateY(-50%);
+    }
+
+    .kgs-search-panel input.kg-search-bar::placeholder {
+        font-size: 16px;
+        line-height: 48px;
+        transform: translateY(-2px);
+    }
+
+    .kgs-search-panel input.kg-search-bar::-webkit-input-placeholder {
+        font-size: 16px;
+        line-height: 48px;
+        transform: translateY(-2px);
+    }
+
+    .kgs-search-panel input.kg-search-bar::-moz-placeholder {
+        font-size: 16px;
+        line-height: 48px;
+        transform: translateY(-2px);
+    }
+}

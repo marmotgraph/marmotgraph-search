@@ -190,7 +190,8 @@
     }
 
     .kgs-carousel .kgs-tabs__buttons {
-        position: static;
+        position: sticky;
+        top: 3dvh;
     }
 }
 

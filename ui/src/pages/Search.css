@@ -103,7 +103,7 @@ body[profile="ebrains"] .kgs-search .kgs-search__main {
 @media (max-width: 991px) {
 
     .kgs-search .kgs-search__panel {
-        margin: 0 var(--site-margin) 0 0;
+        /*margin: 0 var(--site-margin) 0 0;*/
         /*margin: 30px var(--site-margin) 0 var(--site-margin);*/
     }
 

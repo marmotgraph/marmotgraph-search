@@ -23,12 +23,12 @@
 
 .kgs-hits {
     position: relative;
-    margin: 0 -20px;
+    /*margin: 0 -20px;*/
 }
 
 @media (max-width: 991px) {
     .kgs-hits {
-        margin: 0 10px;
+        /*margin: 0 10px;*/
     }
 }
 

@@ -36,6 +36,17 @@
     z-index: 9;
 }
 
+.kgs-tabs__sentinel {
+    height: 1px;         /* must have some height for the observer to fire */
+    margin-bottom: -1px; /* invisible – takes up no layout space */
+    pointer-events: none;
+}
+
+.kgs-tabs__buttons.is-stuck {
+    background-color: #ececec; /* or any token/color you prefer */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);  /* optional — helps separate it visually */
+}
+
 .kgs-tabs__buttons > button.kgs-tabs__button {
     display: block;
     width: auto;
@@ -90,8 +101,8 @@
 @media (max-width: 767px) {
     .kgs-tabs__buttons {
         display: block;
-        margin: 16px 16px 0;
-        padding: 0 0 12px;
+        margin: 16px 0 16px 0;
+        padding: 12px;
         border-bottom: 1px solid lightgray;
     }
 

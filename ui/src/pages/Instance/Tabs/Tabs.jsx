@@ -180,6 +180,8 @@ const Tabs = ({tabs, selectedTab, onTabClick}) => {
   const dispatch = useDispatch();
   const isMobile = useIsMobileTabsLayout();
   const contentRef = useRef(null);
+  const sentinelRef = useRef(null);
+  const buttonsRef = useRef(null);
   const selectedTabRef = useRef(selectedTab);
   const isProgrammaticScroll = useRef(false);
   const programmaticScrollTimeout = useRef(null);
@@ -189,6 +191,21 @@ const Tabs = ({tabs, selectedTab, onTabClick}) => {
     activeTab = tabs[0];
   }
   selectedTabRef.current = activeTab?.name;
+
+    useEffect(() => {
+        const sentinel = sentinelRef.current;
+        const buttons  = buttonsRef.current;
+        if (!sentinel || !buttons) {
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => buttons.classList.toggle('is-stuck', !entry.isIntersecting),
+            { threshold: 0 }
+        );
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, []);
 
   useEffect(() => {
     if (activeTab && selectedTab !== activeTab.name) {
@@ -274,12 +291,13 @@ const Tabs = ({tabs, selectedTab, onTabClick}) => {
 
   return (
     <>
-      <div className="kgs-tabs__buttons">
-        <TabsDropdown tabs={tabs} activeTab={activeTab} onTabClick={handleNavigate} />
-        {tabs.map(t => (
-          <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={handleNavigate}/>
-        ))}
-      </div>
+        <div ref={sentinelRef} className="kgs-tabs__sentinel" aria-hidden="true" />  {/* ← add */}
+        <div className="kgs-tabs__buttons" ref={buttonsRef}>                          {/* ← add ref */}
+            <TabsDropdown tabs={tabs} activeTab={activeTab} onTabClick={handleNavigate} />
+            {tabs.map(t => (
+                <Tab key={t.name} tab={t} active={t && t.name === activeTab.name} onClick={handleNavigate}/>
+            ))}
+        </div>
       <div className="kgs-tabs__content" ref={contentRef}>
         {isMobile ? (
           tabs.map(tab => (
