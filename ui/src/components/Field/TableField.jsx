@@ -23,11 +23,13 @@
 
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import {faSort} from '@fortawesome/free-solid-svg-icons/faSort';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
 import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
+import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Hint } from '../Hint/Hint';
 import './TableField.css';
 import { getKey } from './helpers';
@@ -211,29 +213,231 @@ const sortTableRows = (rows, sortState) => {
     .flat();
 };
 
-const SortableTableHeader = ({ column, columnIndex, sortState, onSort }) => {
+const filterRowsByColumnFilters = (rows, columnFilters) => {
+  const activeColumnIndexes = Object.keys(columnFilters).filter(index => columnFilters[index]?.length > 0);
+  if (!activeColumnIndexes.length) {
+    return rows;
+  }
+
+  const groups = partitionRowsIntoGroups(rows);
+  return groups
+    .filter(group =>
+      activeColumnIndexes.every(columnIndex => {
+        const selectedValues = columnFilters[columnIndex];
+        return group.some(row => {
+          const cellValue = getCellSortValue(row[columnIndex]);
+          return selectedValues.includes(cellValue);
+        });
+      })
+    )
+    .flat();
+};
+
+const ActiveFiltersBar = ({ rows, columnFilters, onRemove, onClearAll }) => {
+  const activeFilters = Object.keys(columnFilters).reduce((acc, columnIndex) => {
+    const column = rows[0]?.[columnIndex];
+    if (!column) {
+      return acc;
+    }
+    const label = column.mapping?.label ?? column.name;
+    columnFilters[columnIndex].forEach(value => {
+      acc.push({ columnIndex: Number(columnIndex), label, value });
+    });
+    return acc;
+  }, []);
+
+  if (!activeFilters.length) {
+    return null;
+  }
+
+  return (
+    <div className="kgs-table__active-filters">
+      <span className="kgs-table__active-filters-label">Filtered by:</span>
+      {activeFilters.map(({ columnIndex, label, value }, index) => {
+        const displayValue = value.trim() || '(empty)';
+        return (
+          <span key={`${columnIndex}-${value}-${index}`} className="kgs-table__active-filter-chip">
+            <span className="kgs-table__active-filter-text">{label}: {displayValue}</span>
+            <button
+              type="button"
+              className="kgs-table__active-filter-remove"
+              onClick={() => onRemove(columnIndex, value)}
+              aria-label={`Remove filter ${label}: ${displayValue}`}
+            >
+              <FontAwesomeIcon icon={faTimes} aria-hidden="true" />
+            </button>
+          </span>
+        );
+      })}
+      <button type="button" className="kgs-table__active-filters-clear" onClick={onClearAll}>
+        Clear all
+      </button>
+    </div>
+  );
+};
+
+const ColumnFilterDropdown = ({ rows, columnIndex, selectedValues, onChange, onClose, toggleButtonRef }) => {
+  const [searchText, setSearchText] = useState('');
+  const dropdownRef = useRef(null);
+  const [position, setPosition] = useState(null);
+
+  useLayoutEffect(() => {
+    const button = toggleButtonRef?.current;
+    if (!button) {
+      return;
+    }
+    const rect = button.getBoundingClientRect();
+    const dropdownWidth = 320;
+    let left = rect.left + window.scrollX;
+    if (left + dropdownWidth > window.innerWidth) {
+      left = Math.max(8, rect.right + window.scrollX - dropdownWidth);
+    }
+    setPosition({
+      top: rect.bottom + window.scrollY + 6,
+      left
+    });
+  }, [toggleButtonRef]);
+
+  const distinctValues = useMemo(() => {
+    const map = new Map();
+    rows.forEach(row => {
+      const cell = row[columnIndex];
+      const rawValue = getCellSortValue(cell);
+      const displayText = rawValue.trim() || '(empty)';
+      if (!map.has(displayText)) {
+        map.set(displayText, { value: rawValue, displayText, count: 0 });
+      }
+      map.get(displayText).count += 1;
+    });
+    return Array.from(map.values()).sort((a, b) =>
+      a.displayText.localeCompare(b.displayText, undefined, { numeric: true, sensitivity: 'base' })
+    );
+  }, [rows, columnIndex]);
+
+  const filteredValues = useMemo(() => {
+    const normalized = searchText.trim().toLowerCase();
+    if (!normalized) {
+      return distinctValues;
+    }
+    return distinctValues.filter(item => item.displayText.toLowerCase().includes(normalized));
+  }, [distinctValues, searchText]);
+
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        const button = toggleButtonRef?.current;
+        if (!button || !button.contains(event.target)) {
+          onClose();
+        }
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose, toggleButtonRef]);
+
+  const toggleValue = value => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter(v => v !== value));
+    } else {
+      onChange([...selectedValues, value]);
+    }
+  };
+
+  const selectAll = () => onChange(filteredValues.map(item => item.value));
+  const clearAll = () => onChange([]);
+
+  return (
+    <div
+      className="kgs-table__filter-dropdown"
+      ref={dropdownRef}
+      style={position ? { top: position.top, left: position.left } : { visibility: 'hidden' }}
+    >
+      <div className="kgs-table__filter-dropdown-header">
+        <input
+          type="search"
+          className="kgs-table__filter-dropdown-input"
+          placeholder="Search values..."
+          value={searchText}
+          onChange={event => setSearchText(event.target.value)}
+          autoFocus
+        />
+      </div>
+      <div className="kgs-table__filter-dropdown-actions">
+        <button type="button" onClick={selectAll}>Select all</button>
+        <button type="button" onClick={clearAll}>Clear</button>
+      </div>
+      <div className="kgs-table__filter-dropdown-list">
+        {filteredValues.length === 0 ? (
+          <div className="kgs-table__filter-dropdown-empty">No values found</div>
+        ) : (
+          filteredValues.map(({ value, displayText, count }) => (
+            <label key={displayText} className="kgs-table__filter-dropdown-item">
+              <input
+                type="checkbox"
+                checked={selectedValues.includes(value)}
+                onChange={() => toggleValue(value)}
+              />
+              <span className="kgs-table__filter-dropdown-text">{displayText}</span>
+              <span className="kgs-table__filter-dropdown-count">{count}</span>
+            </label>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TableHeader = ({ column, columnIndex, sortState, onSort, rows, selectedValues, onFilterChange, isFilterOpen, onToggleFilter, showControls }) => {
   const label = column.mapping?.label ?? column.name;
   const isSorted = sortState.columnIndex === columnIndex;
   const sortIcon = !isSorted
     ? faSort
     : (sortState.direction === 'asc' ? faSortUp : faSortDown);
+  const hasFilter = selectedValues.length > 0;
+  const toggleButtonRef = useRef(null);
 
-  const handleClick = () => onSort(columnIndex);
+  const handleSortClick = () => onSort(columnIndex);
 
   return (
     <th
       scope="col"
       aria-sort={isSorted ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
-      <button
-        type="button"
-        className={`kgs-table__sort-button${isSorted ? ' is-sorted' : ''}`}
-        onClick={handleClick}
-        aria-label={`Sort by ${label}${isSorted ? `, ${sortState.direction === 'asc' ? 'ascending' : 'descending'}` : ''}`}
-      >
+      {showControls ? (
+        <div className="kgs-table__header-content">
+          <button
+            type="button"
+            className={`kgs-table__sort-button${isSorted ? ' is-sorted' : ''}`}
+            onClick={handleSortClick}
+            aria-label={`Sort by ${label}${isSorted ? `, ${sortState.direction === 'asc' ? 'ascending' : 'descending'}` : ''}`}
+          >
+            <span className="kgs-table__sort-label">{label}</span>
+            <FontAwesomeIcon icon={sortIcon} className="kgs-table__sort-icon" aria-hidden="true" />
+          </button>
+          <button
+            ref={toggleButtonRef}
+            type="button"
+            className={`kgs-table__filter-toggle${hasFilter ? ' is-active' : ''}`}
+            onClick={onToggleFilter}
+            aria-label={`Filter ${label}`}
+            aria-expanded={isFilterOpen}
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden="true" />
+          </button>
+        </div>
+      ) : (
         <span className="kgs-table__sort-label">{label}</span>
-        <FontAwesomeIcon icon={sortIcon} className="kgs-table__sort-icon" aria-hidden="true" />
-      </button>
+      )}
+      {isFilterOpen && (
+        <ColumnFilterDropdown
+          rows={rows}
+          columnIndex={columnIndex}
+          selectedValues={selectedValues}
+          onChange={onFilterChange}
+          onClose={onToggleFilter}
+          toggleButtonRef={toggleButtonRef}
+        />
+      )}
     </th>
   );
 };
@@ -245,14 +449,21 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
   }, {});
   const [collapsedRowIndexes, setCollapsedRowIndexes] = useState(initialState);
   const [sortState, setSortState] = useState({ columnIndex: null, direction: 'asc' });
+  const [columnFilters, setColumnFilters] = useState({});
+  const [openFilterColumnIndex, setOpenFilterColumnIndex] = useState(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
 
   const rows = filterRows(normalizeRows(list, collapsedRowIndexes));
+  const showTableControls = rows.length > 1;
   const sortedRows = useMemo(
-    () => sortTableRows(rows, sortState),
-    [rows, sortState]
+    () => showTableControls ? sortTableRows(rows, sortState) : rows,
+    [rows, sortState, showTableControls]
+  );
+  const filteredRows = useMemo(
+    () => filterRowsByColumnFilters(sortedRows, columnFilters),
+    [sortedRows, columnFilters]
   );
 
   const updateScrollState = useCallback(() => {
@@ -315,6 +526,39 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
     });
   };
 
+  const handleColumnFilterChange = (columnIndex, values) => {
+    setColumnFilters(current => {
+      const next = { ...current };
+      if (values.length) {
+        next[columnIndex] = values;
+      } else {
+        delete next[columnIndex];
+      }
+      return next;
+    });
+  };
+
+  const handleRemoveFilter = (columnIndex, value) => {
+    setColumnFilters(current => {
+      const nextValues = current[columnIndex].filter(v => v !== value);
+      const next = { ...current };
+      if (nextValues.length) {
+        next[columnIndex] = nextValues;
+      } else {
+        delete next[columnIndex];
+      }
+      return next;
+    });
+  };
+
+  const handleClearAllFilters = () => {
+    setColumnFilters({});
+  };
+
+  const handleToggleFilter = columnIndex => {
+    setOpenFilterColumnIndex(current => current === columnIndex ? null : columnIndex);
+  };
+
   return (
     <div className="kgs-table-wrap">
       {(showScrollHint || isScrolled) && (
@@ -322,26 +566,38 @@ const TableFieldComponent = ({ list, fieldComponent }) => {
           Swipe to see more →
         </p>
       )}
+      <ActiveFiltersBar
+        rows={rows}
+        columnFilters={columnFilters}
+        onRemove={handleRemoveFilter}
+        onClearAll={handleClearAllFilters}
+      />
       <div
         ref={scrollRef}
         className={`kgs-table-scroll${isScrolled ? ' is-scrolled' : ''}`}
       >
-        <table className="table">
+        <table className={`table${showTableControls ? '' : ' kgs-table--no-controls'}`}>
         <thead>
           <tr>
             {rows[0].map((column, columnIndex) => (
-              <SortableTableHeader
+              <TableHeader
                 key={`${column.name}-${columnIndex}`}
                 column={column}
                 columnIndex={columnIndex}
                 sortState={sortState}
                 onSort={handleSort}
+                rows={rows}
+                selectedValues={columnFilters[columnIndex] || []}
+                onFilterChange={values => handleColumnFilterChange(columnIndex, values)}
+                isFilterOpen={showTableControls && openFilterColumnIndex === columnIndex}
+                onToggleFilter={() => handleToggleFilter(columnIndex)}
+                showControls={showTableControls}
               />
             ))}
           </tr>
         </thead>
         <tbody>
-          {sortedRows.map((row, index) => (
+          {filteredRows.map((row, index) => (
             <CustomTableRow
               key={`${index}`}
               row={row}
