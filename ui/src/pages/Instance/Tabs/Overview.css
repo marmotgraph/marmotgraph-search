@@ -29,6 +29,9 @@
             "top"
         "main";
 }
+.kgs-tabs__overview > .kgs-fields-panel {
+    min-width: 0;
+}
 .kgs-fields-panel.kgs-tabs__overview__top{
     margin-bottom: 20px;
 }
