@@ -34,6 +34,9 @@ import { setQueryString } from '../features/search/searchSlice';
 import { getLocationSearchFromQuery, searchToObj } from '../helpers/BrowserHelpers';
 
 import CategoryBrowse from './SearchLanding/CategoryBrowse';
+import ColumnPair from './SearchLanding/ColumnPair';
+import FeatureCards from './SearchLanding/FeatureCards';
+import Hero from './SearchLanding/Hero';
 import '../features/search/SearchBox.css';
 import './SearchLanding.css';
 
@@ -79,6 +82,8 @@ const SearchLanding = () => {
   const group = useSelector(state => state.groups.group);
   const defaultGroup = useSelector(state => state.groups.defaultGroup);
   const help = useSelector(state => state.application.custom.help);
+  const landingPage = useSelector(state => state.application.custom?.landingPage);
+  const showCategoryBrowse = landingPage?.categoryBrowse !== false;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -146,35 +151,39 @@ const SearchLanding = () => {
   return (
     <div className="kgs-search-landing">
       <div className="kgs-search-landing__content">
-        <div className="kgs-search-panel kgs-search-landing__search">
-          <div>
+        <Hero title={landingPage?.hero?.title} text={landingPage?.hero?.text} background={landingPage?.hero?.background}>
+          <div className="kgs-search-panel kgs-search-landing__search">
             <div>
-              <FontAwesomeIcon icon={faSearch} size="1x" className="kg-search-bar__icon" />
-              <input
-                ref={inputRef}
-                className="kg-search-bar"
-                type="text"
-                placeholder={`Search ${configuration.searchExample}`}
-                aria-label="Search"
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              {!!value.length && (
-                <button type="button" className="kgs-search-panel-reset__button" title="Clear" onClick={handleReset}>
-                  <FontAwesomeIcon icon={faTimes} size="2x" />
+              <div>
+                <FontAwesomeIcon icon={faSearch} size="1x" className="kg-search-bar__icon" />
+                <input
+                  ref={inputRef}
+                  className="kg-search-bar"
+                  type="text"
+                  placeholder={`Search ${configuration.searchExample}`}
+                  aria-label="Search"
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                {!!value.length && (
+                  <button type="button" className="kgs-search-panel-reset__button" title="Clear" onClick={handleReset}>
+                    <FontAwesomeIcon icon={faTimes} size="2x" />
+                  </button>
+                )}
+                <button type="button" className="kgs-search-panel-help__button" title="Help" onClick={handleHelp}>
+                  <FontAwesomeIcon icon={faInfoCircle} size="2x" />
                 </button>
-              )}
-              <button type="button" className="kgs-search-panel-help__button" title="Help" onClick={handleHelp}>
-                <FontAwesomeIcon icon={faInfoCircle} size="2x" />
+              </div>
+              <button type="button" className="kgs-search-panel-button" onClick={handleSearch}>
+                Search
               </button>
             </div>
-            <button type="button" className="kgs-search-panel-button" onClick={handleSearch}>
-              Search
-            </button>
           </div>
-        </div>
-        <CategoryBrowse onCategorySelect={handleCategorySelect} />
+        </Hero>
+        {showCategoryBrowse && <CategoryBrowse onCategorySelect={handleCategorySelect} />}
+        <FeatureCards section={landingPage?.cards} />
+        <ColumnPair section={landingPage?.columns} />
       </div>
     </div>
   );

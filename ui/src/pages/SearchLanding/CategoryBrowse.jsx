@@ -61,7 +61,7 @@ const CategoryBrowse = ({ onCategorySelect }) => {
   return (
     <section className="kgs-category-browse" aria-labelledby="kgs-category-browse-title">
       <h2 id="kgs-category-browse-title" className="kgs-category-browse__title">
-        Search by category:
+        Browse by category:
       </h2>
       <ul className="kgs-category-browse__grid">
         {categories.map(category => (

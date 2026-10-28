@@ -1,0 +1,131 @@
+/*
+ * Copyright 2018 - 2021 Swiss Federal Institute of Technology Lausanne (EPFL)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This open source software code was developed in part or in whole in the
+ * Human Brain Project, funded from the European Union's Horizon 2020
+ * Framework Programme for Research and Innovation under
+ * Specific Grant Agreements No. 720270, No. 785907, and No. 945539
+ * (Human Brain Project SGA1, SGA2 and SGA3).
+ *
+ */
+
+.kgs-search-landing a.kgs-landing-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    color: var(--color-primary-bg, #1668b3);
+    font-family: var(--font-plex-sans, inherit);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+}
+
+.kgs-search-landing a.kgs-landing-cta:visited {
+    color: var(--color-primary-bg, #1668b3);
+}
+
+.kgs-search-landing a.kgs-landing-cta:focus-visible {
+    outline: 2px solid var(--color-primary-bg, #1668b3);
+    outline-offset: 3px;
+}
+
+.kgs-landing-cta__icon {
+    flex: 0 0 auto;
+    font-size: 0.85em;
+}
+
+.kgs-landing-cta__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kgs-search-landing a.kgs-landing-cta--link:hover {
+        color: var(--color-primary-bg, #0f4d87);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+}
+
+.kgs-search-landing a.kgs-landing-cta--link:focus-visible {
+    color: var(--color-primary-bg, #0f4d87);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.kgs-search-landing a.kgs-landing-cta--button,
+.kgs-search-landing a.kgs-landing-cta--button-secondary {
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 10px 18px;
+    border-radius: var(--border-radius-4, 8px);
+    font-size: 14px;
+    transition: background-color .15s, border-color .15s, color .15s;
+}
+
+.kgs-search-landing a.kgs-landing-cta--button,
+.kgs-search-landing a.kgs-landing-cta--button:visited {
+    border: 1px solid var(--color-primary-border, transparent);
+    background: var(--color-primary-bg, #1668b3);
+    color: var(--color-primary-text, #fff);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kgs-search-landing a.kgs-landing-cta--button:hover {
+        border-color: var(--color-primary-hover-border, var(--color-primary-hover-bg, #0f4d87));
+        background: var(--color-primary-hover-bg, #0f4d87);
+        color: var(--color-primary-hover-text, #fff);
+        text-decoration: none;
+    }
+}
+
+.kgs-search-landing a.kgs-landing-cta--button:focus-visible {
+    border-color: var(--color-primary-hover-border, var(--color-primary-hover-bg, #0f4d87));
+    background: var(--color-primary-hover-bg, #0f4d87);
+    color: var(--color-primary-hover-text, #fff);
+    text-decoration: none;
+}
+
+.kgs-search-landing a.kgs-landing-cta--button-secondary,
+.kgs-search-landing a.kgs-landing-cta--button-secondary:visited {
+    border: 1px solid var(--color-primary-border, var(--color-primary-bg, #1668b3));
+    background: transparent;
+    color: var(--color-primary-bg, #1668b3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .kgs-search-landing a.kgs-landing-cta--button-secondary:hover {
+        border-color: var(--color-primary-hover-border, var(--color-primary-hover-bg, #0f4d87));
+        background: var(--color-primary-hover-bg, #f0f6fc);
+        color: var(--color-primary-hover-text, var(--color-primary-bg, #0f4d87));
+        text-decoration: none;
+    }
+}
+
+.kgs-search-landing a.kgs-landing-cta--button-secondary:focus-visible {
+    border-color: var(--color-primary-hover-border, var(--color-primary-hover-bg, #0f4d87));
+    background: var(--color-primary-hover-bg, #f0f6fc);
+    color: var(--color-primary-hover-text, var(--color-primary-bg, #0f4d87));
+    text-decoration: none;
+}

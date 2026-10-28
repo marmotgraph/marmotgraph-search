@@ -64,7 +64,7 @@ public class Settings {
 
     public record CustomSections(String termsOfUse, String help, String navbarItems, String footerContent,
                                  String footerSocial, String editorEndpoint, String notFoundFooter,
-                                 String dataIssueReportSlackUrl) {
+                                 String dataIssueReportSlackUrl, Customization.LandingPage landingPage) {
     }
 
     public record Setting(String commit, SentryConfig sentry, KeycloakConfig keycloak, MatomoConfig matomo,
@@ -108,7 +108,7 @@ public class Settings {
         if (StringUtils.isNotBlank(matomoUrl) && StringUtils.isNotBlank(matomoSiteId)) {
             matomoConfig = new MatomoConfig(matomoUrl, matomoSiteId);
         }
-        CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint, customization.getNotFoundFooter(), dataIssueReportSlackUrl);
+        CustomSections customSections = new CustomSections(customization.getTermsOfUse(), customization.getHelp(), customization.getNavBarItems(), customization.getFooterContent(), customization.getFooterSocial(), editorEndpoint, customization.getNotFoundFooter(), dataIssueReportSlackUrl, customization.getLandingPage());
         return new Setting(finalCommit, sentryConfig, keycloakConfig, matomoConfig, customization.getConfiguration(), customSections, definitionController.generateCategories(), definitionController.generateTypeMappings());
     }
 }

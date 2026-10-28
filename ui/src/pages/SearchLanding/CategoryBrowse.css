@@ -61,12 +61,18 @@
     transition: border-color .15s, box-shadow .15s, transform .15s;
 }
 
-.kgs-category-browse__box:hover,
-.kgs-category-browse__box:focus {
-    border-color: #93C5FD;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
-    outline: none;
-    transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+    .kgs-category-browse__box:hover {
+        border-color: #93C5FD;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+        outline: none;
+        transform: translateY(-1px);
+    }
+}
+
+.kgs-category-browse__box:focus-visible {
+    outline: 2px solid #93C5FD;
+    outline-offset: 2px;
 }
 
 .kgs-category-browse__label {

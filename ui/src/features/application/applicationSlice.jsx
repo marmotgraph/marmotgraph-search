@@ -75,6 +75,7 @@ const initialState = {
       footerContent: null,
       footerSocial: null,
       notFoundFooter: null,
+      landingPage: null,
       editorEndpoint: null,
       dataIssueReportSlackUrl: 'https://cscs-lugano.slack.com/archives/C077HV02F35'
     }
