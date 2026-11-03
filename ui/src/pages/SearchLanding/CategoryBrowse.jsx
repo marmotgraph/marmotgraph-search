@@ -33,7 +33,30 @@ const formatCount = count => {
   return Number.isFinite(value) ? value.toLocaleString() : '—';
 };
 
-const CategoryBrowse = ({ onCategorySelect }) => {
+const normalize = value => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+
+const keysFor = category => {
+  const type = normalize(category.type);
+  const label = normalize(category.label);
+  const shortName = type.includes('/') ? type.slice(type.lastIndexOf('/') + 1) : type;
+  return [type, label, shortName].filter(Boolean);
+};
+
+const guideFor = (category, guides) => {
+  const keys = new Set(keysFor(category));
+  return (Array.isArray(guides) ? guides : []).find(guide => keys.has(normalize(guide?.type)));
+};
+
+const trimmed = value => (typeof value === 'string' ? value.trim() : '');
+
+const unitFor = (category, count) => {
+  if (!category.unit) {
+    return '';
+  }
+  return Number(count) === 1 && category.unitSingular ? category.unitSingular : category.unit;
+};
+
+const CategoryBrowse = ({ intro, guides, onCategorySelect }) => {
   const types = useSelector(state => state.search.types);
   const group = useSelector(state => state.groups.group);
 
@@ -49,10 +72,18 @@ const CategoryBrowse = ({ onCategorySelect }) => {
     { skip: !types.length || !group }
   );
 
-  const categories = useMemo(() => types.map(type => ({
-    ...type,
-    count: data?.types?.[type.type]?.count ?? type.count ?? null
-  })), [types, data]);
+  const categories = useMemo(() => types.map(type => {
+    const guide = guideFor(type, guides);
+    const count = data?.types?.[type.type]?.count ?? type.count ?? null;
+    const base = {
+      ...type,
+      count,
+      text: trimmed(guide?.text),
+      unit: trimmed(guide?.unit),
+      unitSingular: trimmed(guide?.unitSingular)
+    };
+    return { ...base, unitLabel: unitFor(base, count ?? 0) };
+  }), [types, data, guides]);
 
   if (!types.length) {
     return null;
@@ -61,8 +92,11 @@ const CategoryBrowse = ({ onCategorySelect }) => {
   return (
     <section className="kgs-category-browse" aria-labelledby="kgs-category-browse-title">
       <h2 id="kgs-category-browse-title" className="kgs-category-browse__title">
-        Browse by category:
+        Browse by category
       </h2>
+      {typeof intro === 'string' && intro.trim() && (
+        <p className="kgs-category-browse__intro">{intro.trim()}</p>
+      )}
       <ul className="kgs-category-browse__grid">
         {categories.map(category => (
           <li key={category.type}>
@@ -73,10 +107,23 @@ const CategoryBrowse = ({ onCategorySelect }) => {
             >
               <span className="kgs-category-browse__label">{category.label}</span>
               <span className="kgs-category-browse__count">
-                {isFetching && category.count == null
-                  ? '…'
-                  : `${formatCount(category.count ?? 0)} results`}
+                {isFetching && category.count == null ? (
+                  '…'
+                ) : (
+                  <>
+                    <span className="kgs-category-browse__number">{formatCount(category.count ?? 0)}</span>
+                    {category.unitLabel && (
+                      <>
+                        {' '}
+                        <span className="kgs-category-browse__unit">{category.unitLabel}</span>
+                      </>
+                    )}
+                  </>
+                )}
               </span>
+              {category.text && (
+                <span className="kgs-category-browse__text">{category.text}</span>
+              )}
             </button>
           </li>
         ))}

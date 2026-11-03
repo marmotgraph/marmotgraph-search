@@ -35,6 +35,7 @@ import { getLocationSearchFromQuery, searchToObj } from '../helpers/BrowserHelpe
 
 import CategoryBrowse from './SearchLanding/CategoryBrowse';
 import ColumnPair from './SearchLanding/ColumnPair';
+import ExampleQueries from './SearchLanding/ExampleQueries';
 import FeatureCards from './SearchLanding/FeatureCards';
 import Hero from './SearchLanding/Hero';
 import '../features/search/SearchBox.css';
@@ -124,6 +125,15 @@ const SearchLanding = () => {
     navigate(buildSearchPath(query));
   }, [buildSearchPath, dispatch, navigate, value]);
 
+  const handleExample = useCallback(query => {
+    const trimmed = query.trim();
+    if (!trimmed) {
+      return;
+    }
+    dispatch(setQueryString(trimmed));
+    navigate(buildSearchPath(trimmed));
+  }, [buildSearchPath, dispatch, navigate]);
+
   const handleCategorySelect = useCallback(typeName => {
     const queryParams = { category: typeName };
     if (group && group !== defaultGroup) {
@@ -180,8 +190,15 @@ const SearchLanding = () => {
               </button>
             </div>
           </div>
+          <ExampleQueries examples={landingPage?.examples} onSelect={handleExample} />
         </Hero>
-        {showCategoryBrowse && <CategoryBrowse onCategorySelect={handleCategorySelect} />}
+        {showCategoryBrowse && (
+          <CategoryBrowse
+            intro={landingPage?.categoryIntro}
+            guides={landingPage?.categoryGuides}
+            onCategorySelect={handleCategorySelect}
+          />
+        )}
         <FeatureCards section={landingPage?.cards} />
         <ColumnPair section={landingPage?.columns} />
       </div>

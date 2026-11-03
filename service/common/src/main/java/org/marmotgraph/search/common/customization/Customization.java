@@ -50,6 +50,12 @@ public interface Customization {
      * or an image URL. A call to action needs both a label and a url ({@code /search}, {@code https://…}, or {@code mailto:…}).
      * A card shows {@code cta} and every entry in {@code ctas}.
      * {@link Hero#background()} is a path or URL of an SVG file, or the SVG markup. Animations in that SVG play.
+     * {@link LandingPage#examples()} are queries shown beside the search bar. {@link LandingPage#categoryGuides()}
+     * add a short description to a category, matched on its type name or label. The description and the {@code unit}
+     * are both optional: without a text no description is shown, and without a unit the count shows as a bare number.
+     * A guide {@code unit} names what the count stands for ("2,686 contributors"); {@code unitSingular} is used when
+     * the count is 1. {@link LandingPage#categoryIntro()}
+     * is a line of text above the category grid.
      */
     default LandingPage getLandingPage() {
         return null;
@@ -64,7 +70,30 @@ public interface Customization {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    record LandingPage(Hero hero, Boolean categoryBrowse, CardGrid cards, ColumnPair columns) {
+    record LandingPage(Hero hero, Boolean categoryBrowse, String categoryIntro,
+                       List<CategoryGuide> categoryGuides, List<ExampleQuery> examples,
+                       CardGrid cards, ColumnPair columns) {
+        public LandingPage(Hero hero, Boolean categoryBrowse, CardGrid cards, ColumnPair columns) {
+            this(hero, categoryBrowse, null, null, null, cards, columns);
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    record CategoryGuide(String type, String text, String unit, String unitSingular) {
+        public CategoryGuide(String type, String text) {
+            this(type, text, null, null);
+        }
+
+        public CategoryGuide(String type, String text, String unit) {
+            this(type, text, unit, null);
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    record ExampleQuery(String label, String query) {
+        public ExampleQuery(String query) {
+            this(query, query);
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
