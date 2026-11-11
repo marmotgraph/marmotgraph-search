@@ -76,6 +76,15 @@ public interface Customization {
         public LandingPage(Hero hero, Boolean categoryBrowse, CardGrid cards, ColumnPair columns) {
             this(hero, categoryBrowse, null, null, null, cards, columns);
         }
+
+        /**
+         * Landing page without the two-column section ({@code columns} stays null and is not rendered).
+         */
+        public LandingPage(Hero hero, Boolean categoryBrowse, String categoryIntro,
+                           List<CategoryGuide> categoryGuides, List<ExampleQuery> examples,
+                           CardGrid cards) {
+            this(hero, categoryBrowse, categoryIntro, categoryGuides, examples, cards, null);
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
