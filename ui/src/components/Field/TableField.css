@@ -395,9 +395,6 @@
     margin-bottom: 0;
 }
 
-.kgs-field__table .table td:first-child {
-    padding-left: 60px;
-}
 
 .kgs-field__table .table td.kg-cell_level_3:first-child {
     padding-left: 80px;
