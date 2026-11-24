@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven settings for the GitHub workflows (used via "mvn -s .github/maven/settings.xml").
+  The credentials are taken from environment variables - never put secrets into this file.
+
+  - "github": reads the MarmotGraph SDK from the packages of marmotgraph-core-v4. The GITHUB_TOKEN can't be used since
+    the Maven registry only grants it access to the packages of its own repository - so this requires a (classic)
+    personal access token with read:packages (MARMOTGRAPH_PACKAGES_TOKEN).
+  - "github-packages": publishes this project (see distributionManagement in service/pom.xml) with the GITHUB_TOKEN.
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>github</id>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MARMOTGRAPH_PACKAGES_TOKEN}</password>
+        </server>
+        <server>
+            <id>github-packages</id>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_TOKEN}</password>
+        </server>
+    </servers>
+    <profiles>
+        <profile>
+            <id>marmotgraph-sdk</id>
+            <repositories>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/marmotgraph/marmotgraph-core-v4</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>marmotgraph-sdk</activeProfile>
+    </activeProfiles>
+</settings>
