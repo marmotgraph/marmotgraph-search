@@ -41,7 +41,7 @@ public class SourceInstance {
     @Query.Field(required = true, path = @Query.PathElement(name = "http://schema.org/identifier"))
     private List<String> identifier;
     @Query.Field(required = true, path = @Query.PathElement(name = "@type"))
-    private List<String> type;
+    private String type;
 
     public String getUUID(){
         return IdUtils.getUUID(id);
@@ -49,9 +49,6 @@ public class SourceInstance {
 
     @JsonIgnore
     public String getPrimaryType(){
-        if(CollectionUtils.isEmpty(type)){
-            return null;
-        }
-        return type.getFirst();
+        return type;
     }
 }
