@@ -36,7 +36,10 @@ import java.util.List;
 public class TargetInstancesResult {
     private List<TargetInstance> targetInstances;
     private ErrorReport errors;
-    private Integer from;
+    /**
+     * The marker to continue from for the next page - null if there are no more results
+     */
+    private String nextMarker;
     private Integer size;
     private Integer total;
 }

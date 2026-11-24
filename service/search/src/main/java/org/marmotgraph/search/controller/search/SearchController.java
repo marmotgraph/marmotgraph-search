@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.marmotgraph.sdk.MarmotGraphException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.ObjectMapper;
@@ -93,24 +94,17 @@ public class SearchController extends FacetAggregationUtils {
         return invitationsFromKG.contains(fileRepositoryId);
     }
 
+    // Bookmarks are backed by the favorites of the user in MarmotGraph
     public boolean isBookmarked(UUID id) {
-        return !CollectionUtils.isEmpty(kg.getBookmarkIdsFromInstance(id));
+        return kg.isFavorite(id);
     }
 
     public void addBookmark(UUID id) {
-        List<UUID> bookmarkIdsFromInstance = kg.getBookmarkIdsFromInstance(id);
-        if (CollectionUtils.isEmpty(bookmarkIdsFromInstance)) {
-            kg.addBookmark(id);
-        }
+        kg.addFavorite(id);
     }
 
     public void deleteBookmark(UUID id) {
-        List<UUID> bookmarkIdsFromInstance = kg.getBookmarkIdsFromInstance(id);
-        bookmarkIdsFromInstance.forEach(kg::deleteBookmark);
-    }
-
-    public List<UUID> getBookmarkIdsFromInstance(UUID id) {
-        return kg.getBookmarkIdsFromInstance(id);
+        kg.removeFavorite(id);
     }
 
     private List<UUID> getBookmarkedIds(Map<String, FacetValue> facetValues, List<String> types) {
@@ -120,8 +114,8 @@ public class SearchController extends FacetAggregationUtils {
             List<UUID> ids = new ArrayList<>();
             semanticTypes.forEach(s -> {
                 try {
-                    ids.addAll(kg.getBookmarkedInstancesOfType(s));
-                } catch (WebClientResponseException e) {
+                    ids.addAll(kg.getFavoriteInstancesOfType(s));
+                } catch (MarmotGraphException e) {
                 }
             });
             return ids;

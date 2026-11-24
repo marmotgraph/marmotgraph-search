@@ -24,10 +24,11 @@
 
 package org.marmotgraph.search.common.configuration;
 
-import jakarta.servlet.http.HttpServletRequest;
+import org.marmotgraph.sdk.MarmotGraphClient;
+import org.marmotgraph.sdk.MarmotGraphException;
+import org.marmotgraph.sdk.auth.AuthenticationInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,12 +36,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.JacksonJsonDecoder;
 import org.springframework.http.codec.json.JacksonJsonEncoder;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.RemoveAuthorizedClientOAuth2AuthorizationFailureHandler;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import tools.jackson.databind.DeserializationFeature;
@@ -68,47 +64,54 @@ public class OauthClient {
         return defaultWebClientBuilder().build();
     }
 
+    /**
+     * The MarmotGraph client authenticated as the service account - configured by the SDK from the environment
+     * (MARMOTGRAPH_HOST, MARMOTGRAPH_CLIENT_ID and MARMOTGRAPH_CLIENT_SECRET). The core is only contacted on the first
+     * call, so the service starts even if the core isn't available. Clients acting on behalf of the user are derived
+     * from it (see {@link MarmotGraphClient#withToken(String)}) so they share the same connection pool.
+     */
     @Bean
-    @Qualifier("asServiceAccount")
-    WebClient serviceAccountWebClient(ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientService authorizedClientService) {
-        AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrations, authorizedClientService);
-        final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 = getServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientService, clientManager);
-        return defaultWebClientBuilder().apply(oauth2.oauth2Configuration()).filter((clientRequest, nextFilter) -> {
-            ClientRequest updatedHeaders = ClientRequest.from(clientRequest).headers(h -> {
-                h.put("Client-Authorization", h.get(Constants.AUTHORIZATION));
-            }).build();
-            return nextFilter.exchange(updatedHeaders);
-        }).build();
-    }
-
-    private ServletOAuth2AuthorizedClientExchangeFilterFunction getServletOAuth2AuthorizedClientExchangeFilterFunction(OAuth2AuthorizedClientService authorizedClientService, AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager) {
-        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 = new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientManager);
-        oauth2.setAuthorizationFailureHandler(new RemoveAuthorizedClientOAuth2AuthorizationFailureHandler(
-                (clientRegistrationId, principal, attributes) -> {
-                    logger.info("Resource server authorization failure for clientRegistrationId={}", clientRegistrationId);
-                    authorizedClientService.removeAuthorizedClient(clientRegistrationId, principal.getName());
-                })
-        );
-        oauth2.setDefaultClientRegistrationId("kg");
-        return oauth2;
+    MarmotGraphClient marmotGraphClient() {
+        return MarmotGraphClient.builder().build();
     }
 
     @Bean
-    @Qualifier("asUser")
-    WebClient userWebClient(HttpServletRequest request, @Value("${developmentMode:false}") boolean developmentMode, @Qualifier("asServiceAccount") WebClient serviceAccountWebClient) {
-        if(!developmentMode) {
-            return defaultWebClientBuilder().defaultRequest(r -> {
-                /**
-                 * We just reuse the original authorization header for the given request and we
-                 * explicitly don't want a client authorization to make the mechanism work with private
-                 * spaces too.
-                 */
-                r.header(Constants.AUTHORIZATION, request.getHeader(Constants.AUTHORIZATION));
-            }).build();
-        }
-        else{
-            return serviceAccountWebClient;
-        }
+    CoreAuthentication coreAuthentication(MarmotGraphClient marmotGraphClient, @Value("${MARMOTGRAPH_CLIENT_ID}") String clientId) {
+        return new CoreAuthentication(marmotGraphClient, clientId);
+    }
+
+    /**
+     * Validates the tokens of the users against the OpenID Connect provider of the core - resolved on the first
+     * request, so the service starts even if the core isn't available.
+     */
+    @Bean
+    JwtDecoder jwtDecoder(CoreAuthentication coreAuthentication) {
+        return new JwtDecoder() {
+            private volatile JwtDecoder delegate;
+
+            @Override
+            public Jwt decode(String token) throws JwtException {
+                return delegate().decode(token);
+            }
+
+            private JwtDecoder delegate() {
+                JwtDecoder result = delegate;
+                if (result == null) {
+                    final AuthenticationInformation config;
+                    try {
+                        config = coreAuthentication.authenticationInformation();
+                    } catch (MarmotGraphException e) {
+                        // Not a problem of the token -> results in a server error instead of a 401
+                        throw new JwtException("Was not able to load the authentication configuration from the MarmotGraph core", e);
+                    }
+                    NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(config.jwksUri()).build();
+                    decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(config.issuer()));
+                    result = decoder;
+                    delegate = result;
+                }
+                return result;
+            }
+        };
     }
 
 }

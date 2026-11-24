@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.controller.translation.models.Translator;
 import org.marmotgraph.search.common.services.KGServiceClient;
-import org.marmotgraph.search.common.utils.queryGenerator.MarmotGraphQuery;
+import org.marmotgraph.sdk.model.QuerySpecification;
 import org.marmotgraph.search.common.utils.queryGenerator.QueryGenerator;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ import java.util.Objects;
 public class QueryController {
 
 
-    private final KGServiceClient kgv3ServiceClient;
+    private final KGServiceClient kgServiceClient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TranslatorRegistry translatorRegistry;
     private final AppConfig appConfig;
@@ -59,10 +59,10 @@ public class QueryController {
             translatorRegistry.getTranslators().parallelStream().filter(Objects::nonNull).forEach(t -> {
                 Translator<?, ?> translator = t.translator();
                 for (String semanticType : t.semanticTypes()) {
-                    MarmotGraphQuery query = queryGenerator.generate(t.sourceClass(), semanticType);
+                    QuerySpecification query = queryGenerator.generate(t.sourceClass(), semanticType);
                     String queryId = t.queryId(semanticType);
                     logger.info(String.format("Uploading query %s (%s) for type %s", queryId, translator.getClass().getSimpleName(), semanticType));
-                    kgv3ServiceClient.uploadQuery(queryId, query);
+                    kgServiceClient.uploadQuery(queryId, query);
                 }
             });
             logger.info("Queries successfully uploaded!");

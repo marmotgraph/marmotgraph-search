@@ -42,7 +42,7 @@ import java.util.Map;
 @RestController
 public class Settings {
 
-    private final KGServiceClient kgv3ServiceClient;
+    private final KGServiceClient kgServiceClient;
     private final SettingsController definitionController;
     private final AuthEndpointCheck authEndpointCheck;
     private final Customization customization;
@@ -99,7 +99,7 @@ public class Settings {
             sentryConfig = new SentryConfig(sentryDsnUi, commit, sentryEnvironment);
         }
 
-        String authEndpoint = kgv3ServiceClient.getAuthEndpoint();
+        String authEndpoint = kgServiceClient.getAuthEndpoint();
         if (StringUtils.isNotBlank(authEndpoint)) {
             keycloakConfig = new KeycloakConfig(keycloakRealm, authEndpoint, keycloakClientId, authEndpointCheck.checkAuthEndpointIsAlive());
         }

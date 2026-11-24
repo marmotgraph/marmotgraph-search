@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.common.controller.kg;
 
+import org.marmotgraph.sdk.model.Instance;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.services.KGServiceClient;
@@ -49,8 +50,8 @@ public class KG {
         this.kgServiceClient = kgServiceClient;
     }
 
-    public <T> ResultsOfKG<T> executeQuery(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, int from, int size) {
-        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, semanticType, from, size);
+    public <T> ResultsOfKG<T> executeQuery(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String marker, int size) {
+        return kgServiceClient.executeQueryForIndexing(clazz, dataStage, queryId, semanticType, marker, size);
     }
 
     public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String id, boolean asServiceAccount) {
@@ -125,13 +126,9 @@ public class KG {
 
     @SuppressWarnings("java:S3740") // we keep the generics intentionally
     public List<String> getTypesOfInstance(String instanceId, DataStage stage, boolean asServiceAccount) {
-        final Map<?, ?> instance = kgServiceClient.getInstance(instanceId, stage, asServiceAccount);
+        final Instance instance = kgServiceClient.getInstance(instanceId, stage, asServiceAccount);
         if (instance != null) {
-            final Object data = instance.get("data");
-            if (data instanceof Map) {
-                final Object type = ((Map<?, ?>) data).get("@type");
-                return getType(type);
-            }
+            return getType(instance.get("@type"));
         }
         return Collections.emptyList();
     }
@@ -146,19 +143,19 @@ public class KG {
         return Collections.emptyList();
     }
 
-    public void addBookmark(UUID id) {
-        kgServiceClient.addBookmark(id);
+    public void addFavorite(UUID id) {
+        kgServiceClient.addFavorite(id);
     }
 
-    public void deleteBookmark(UUID id) {
-        kgServiceClient.deleteBookmark(id);
+    public void removeFavorite(UUID id) {
+        kgServiceClient.removeFavorite(id);
     }
 
-    public List<UUID> getBookmarkIdsFromInstance(UUID id) {
-        return kgServiceClient.getBookmarkIdsFromInstance(id);
+    public boolean isFavorite(UUID id) {
+        return kgServiceClient.isFavorite(id);
     }
 
-    public List<UUID> getBookmarkedInstancesOfType(String type) {
-        return kgServiceClient.getBookmarkedInstancesOfType(type);
+    public List<UUID> getFavoriteInstancesOfType(String type) {
+        return kgServiceClient.getFavoriteInstancesOfType(type);
     }
 }

@@ -28,8 +28,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.marmotgraph.search.common.configuration.CoreAuthentication;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -61,7 +60,7 @@ public class JwtUserInfoConverter implements Converter<Jwt, AbstractAuthenticati
     @Component
     public static class UserInfo {
 
-        private final ClientRegistrationRepository clients;
+        private final CoreAuthentication coreAuthentication;
         private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService = new DefaultOAuth2UserService();
         //private final UserRoles roleMapper;
         private final UserAuthorization userRoleMapper;
@@ -69,8 +68,7 @@ public class JwtUserInfoConverter implements Converter<Jwt, AbstractAuthenticati
 
         @Cacheable(value="userInfoCache", key="#token")
         public Set<? extends GrantedAuthority> getAuthorities(OAuth2AccessToken token) {
-            ClientRegistration clientRegistration = this.clients.findByRegistrationId("kg");
-            OAuth2UserRequest oauth2UserRequest = new OAuth2UserRequest(clientRegistration, token);
+            OAuth2UserRequest oauth2UserRequest = new OAuth2UserRequest(coreAuthentication.clientRegistration(), token);
             final OAuth2User oAuth2User = oauth2UserService.loadUser(oauth2UserRequest);
             return userRoleMapper.extractAuthorities(oAuth2User);
 //            final Object roles = oAuth2User.getAttribute("roles");

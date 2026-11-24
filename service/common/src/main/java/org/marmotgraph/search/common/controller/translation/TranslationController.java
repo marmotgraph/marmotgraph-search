@@ -61,19 +61,24 @@ public class TranslationController {
     private final ESHelper esHelper;
     private final TranslatorRegistry translatorRegistry;
 
-    public TargetInstancesResult translateToTargetInstances(KG kg, TranslatorModel translatorModel, String queryId, DataStage dataStage, int from, int size, Integer trendingThreshold, Map<String, Object> translationContext) {
+    /**
+     * Translates a single page of instances - starting at the given marker (null for the first page). The
+     * {@link TargetInstancesResult#getNextMarker()} of the result is the marker for the next page (null if there are no more).
+     *
+     * @param alreadyProcessed the number of instances processed in previous pages - for statistics only
+     */
+    public TargetInstancesResult translateToTargetInstances(KG kg, TranslatorModel translatorModel, String queryId, DataStage dataStage, String marker, int size, int alreadyProcessed, Integer trendingThreshold, Map<String, Object> translationContext) {
         Translator<? extends SourceInstance, ? extends TargetInstance> translator = translatorModel.translator();
         String semanticType = translatorModel.semanticType(queryId);
-        logger.info("Starting to query {} {} from {}", size, semanticType, from);
-        final ResultsOfKG<? extends SourceInstance> instanceResults = kg.executeQuery(translatorModel.sourceClass(), dataStage, queryId, semanticType, from, size);
+        logger.info("Starting to query {} {} after {} already processed", size, semanticType, alreadyProcessed);
+        final ResultsOfKG<? extends SourceInstance> instanceResults = kg.executeQuery(translatorModel.sourceClass(), dataStage, queryId, semanticType, marker, size);
         TargetInstancesResult result = new TargetInstancesResult();
         if (instanceResults == null) {
-            logger.info("Was not able to read results for {} from index {} of size {}", semanticType, from, size);
+            logger.info("Was not able to read results for {} after {} already processed (page size {})", semanticType, alreadyProcessed, size);
             result.setTargetInstances(Collections.emptyList());
-            result.setFrom(from);
-            result.setSize(size);
+            result.setSize(0);
         } else {
-            Stats stats = getStats(instanceResults, from);
+            Stats stats = getStats(instanceResults, alreadyProcessed);
             logger.info("Queried {} {} ({})", stats.getPageSize(), translatorModel.sourceClass().getCanonicalName(), stats.getInfo());
             if(instanceResults.getErrors() ==null){
                 instanceResults.setErrors(new ErrorReport());
@@ -106,7 +111,7 @@ public class TranslationController {
                 }
             }).filter(Objects::nonNull).collect(Collectors.toList());
             result.setTargetInstances(instances);
-            result.setFrom(instanceResults.getFrom());
+            result.setNextMarker(instanceResults.getNextMarker());
             result.setSize(instanceResults.getSize());
             result.setTotal(instanceResults.getTotal());
             if (instanceResults.getErrors() != null && !instanceResults.getErrors().isEmpty()) {

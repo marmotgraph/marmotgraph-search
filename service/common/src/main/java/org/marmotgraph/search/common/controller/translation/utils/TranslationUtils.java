@@ -43,9 +43,9 @@ public class TranslationUtils {
     private final static Logger logger = LoggerFactory.getLogger(TranslationUtils.class);
     private final static Map<Class<?>, Set<Field>> nonStaticTransientFields = new HashMap<>();
 
-    public static <E> Stats getStats(ResultsOfKG<E> result, int from) {
+    public static <E> Stats getStats(ResultsOfKG<E> result, int alreadyProcessed) {
         int pageSize = CollectionUtils.isEmpty(result.getData()) ? 0 : result.getData().size();
-        int cumulatedSize = from + pageSize;
+        int cumulatedSize = alreadyProcessed + pageSize;
         String percentage = (CollectionUtils.isEmpty(result.getData()) || result.getTotal() == null || result.getTotal() == 0) ? "unknown%" : String.format("%d%s", Math.round(100.0 * cumulatedSize / result.getTotal()), "%");
         String info = String.format("%d out of %d, %s", cumulatedSize, result.getTotal(), percentage);
         return new Stats(pageSize, info);

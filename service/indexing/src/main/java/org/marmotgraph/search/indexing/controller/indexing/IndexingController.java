@@ -134,10 +134,10 @@ public class IndexingController {
         translatorModel.semanticTypes().forEach(semanticType -> {
             String queryId = translatorModel.queryId(semanticType);
             translationContext.put(TranslatorUtils.SEMANTIC_TYPE, semanticType);
-            boolean hasMore = true;
-            int from = 0;
-            while (hasMore) {
-                TargetInstancesResult result = translationController.translateToTargetInstances(kg, translatorModel, queryId, dataStage, from, translatorModel.bulkSize(), trendThreshold, translationContext);
+            String marker = null;
+            int processed = 0;
+            do {
+                TargetInstancesResult result = translationController.translateToTargetInstances(kg, translatorModel, queryId, dataStage, marker, translatorModel.bulkSize(), processed, trendThreshold, translationContext);
                 if (result.getErrors() != null) {
                     updateResult.errors.putAll(result.getErrors());
                 }
@@ -179,13 +179,11 @@ public class IndexingController {
                         }
                     }
                 }
-                if (result.getTotal() == null && result.getSize() == 0) {
-                    hasMore = false;
-                } else if(result.getTotal() != null) {
-                    hasMore = from < result.getTotal();
-                }
-                from = result.getFrom() + result.getSize();
-            }
+                processed += result.getSize() != null ? result.getSize() : 0;
+                // Marker based pagination: we continue as long as the server provides a marker for the next page.
+                // If a page couldn't be read at all, there is no marker to continue from, so we stop for this type.
+                marker = result.getNextMarker();
+            } while (marker != null);
         });
         return updateResult;
     }

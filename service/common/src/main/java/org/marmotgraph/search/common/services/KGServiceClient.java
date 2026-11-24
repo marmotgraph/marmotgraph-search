@@ -22,333 +22,248 @@
  *  (Human Brain Project SGA1, SGA2 and SGA3).
  */
 
+
 package org.marmotgraph.search.common.services;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.marmotgraph.sdk.MarmotGraphApiException;
+import org.marmotgraph.sdk.MarmotGraphClient;
+import org.marmotgraph.sdk.MarmotGraphException;
+import org.marmotgraph.sdk.model.*;
+import org.marmotgraph.sdk.pagination.Page;
+import org.marmotgraph.sdk.resources.InstanceListOptions;
+import org.marmotgraph.sdk.resources.QueryRunOptions;
+import org.marmotgraph.sdk.resources.ResponseOptions;
+import org.marmotgraph.sdk.resources.TypeListOptions;
 import org.marmotgraph.search.common.configuration.AppConfig;
+import org.marmotgraph.search.common.configuration.Constants;
 import org.marmotgraph.search.common.configuration.GracefulDeserializationProblemHandler;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
 import org.marmotgraph.search.common.utils.MetaModelUtils;
-import org.marmotgraph.search.common.utils.queryGenerator.MarmotGraphQuery;
 import org.marmotgraph.search.common.utils.queryGenerator.QueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.ResolvableType;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import tools.jackson.databind.ObjectMapper;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 
 @Component
 public class KGServiceClient {
-    private static final String BookmarkedInstancesOfParametrisedTypeQuery = """
-             {
-              "@context": {
-                "@vocab": "https://core.kg.ebrains.eu/vocab/query/",
-                "query": "https://schema.hbp.eu/myQuery/",
-                "propertyName": {
-                  "@id": "propertyName",
-                  "@type": "@id"
-                },
-                "path": {
-                  "@id": "path",
-                  "@type": "@id"
-                }
-              },
-              "meta": {
-                "name": "BookmarkOf",
-                "responseVocab": "https://schema.hbp.eu/myQuery/",
-                "type": "https://core.kg.ebrains.eu/vocab/type/Bookmark"
-              },
-              "structure": [
-                {
-                  "propertyName": "query:bookmarkOfId",
-                  "singleValue": "FIRST",
-                  "path": [
-                    "https://core.kg.ebrains.eu/vocab/bookmarkOf",
-                    "@id"
-                  ]
-                },
-                {
-                  "propertyName": "query:BookmarkOfType",
-                  "singleValue": "FIRST",
-                  "filter": {
-                    "op": "EQUALS",
-                    "parameter": "type"
-                  },
-                  "path": [
-                    "https://core.kg.ebrains.eu/vocab/bookmarkOf",
-                    "@type"
-                  ]
-                }
-              ]
-            }""";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int MAX_RETRIES = 5;
-    private final String kgCoreEndpoint;
-    private final WebClient serviceAccountWebClient;
-    private final WebClient userWebClient;
+    private static final int NOT_FOUND = 404;
+    private static final int CONFLICT = 409;
+    private static final String BEARER_PREFIX = "Bearer ";
+
+    private final MarmotGraphClient serviceAccountClient;
     private final String serviceClientId;
+    private final boolean developmentMode;
     private final AppConfig appConfig;
     private final QueryGenerator queryGenerator;
-    private final ObjectMapper objectMapper;
 
-    public KGServiceClient(@Qualifier("asServiceAccount") WebClient serviceAccountWebClient, @Qualifier("asUser") WebClient userWebClient, @Value("${kgcore.endpoint}") String kgCoreEndpoint, @Value("${spring.security.oauth2.client.registration.kg.client-id}") String serviceClientId, AppConfig appConfig, QueryGenerator queryGenerator, ObjectMapper objectMapper) {
-        this.kgCoreEndpoint = kgCoreEndpoint;
-        this.serviceAccountWebClient = serviceAccountWebClient;
-        this.userWebClient = userWebClient;
+    /**
+     * The SDK returns plain JSON-LD documents - we bind them to our source models with a graceful mapper so a single
+     * unparseable value is reported instead of failing the whole page.
+     */
+    private final JsonMapper resultMapper = JsonMapper.builder().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).addHandler(new GracefulDeserializationProblemHandler()).build();
+
+    public KGServiceClient(MarmotGraphClient serviceAccountClient, @Value("${MARMOTGRAPH_CLIENT_ID}") String serviceClientId, @Value("${developmentMode:false}") boolean developmentMode, AppConfig appConfig, QueryGenerator queryGenerator) {
+        this.serviceAccountClient = serviceAccountClient;
         this.serviceClientId = serviceClientId;
+        this.developmentMode = developmentMode;
         this.appConfig = appConfig;
         this.queryGenerator = queryGenerator;
-        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * A client acting on behalf of the user of the current request - we just reuse the original authorization header
+     * of the request (without any client authorization to make the mechanism work with private spaces too).
+     */
+    private MarmotGraphClient userClient() {
+        if (developmentMode) {
+            return serviceAccountClient;
+        }
+        String authorization = null;
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {
+            authorization = attributes.getRequest().getHeader(Constants.AUTHORIZATION);
+        }
+        if (authorization != null && authorization.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
+            authorization = authorization.substring(BEARER_PREFIX.length());
+        }
+        return serviceAccountClient.withToken(authorization);
+    }
+
+    private MarmotGraphClient client(boolean asServiceAccount) {
+        return asServiceAccount ? serviceAccountClient : userClient();
+    }
+
+    private static Stage toStage(DataStage dataStage) {
+        return Stage.valueOf(dataStage.name());
+    }
+
+    private static boolean isNotFound(MarmotGraphException e) {
+        return e instanceof MarmotGraphApiException apiException && apiException.statusCode() == NOT_FOUND;
     }
 
     @Cacheable(value = "authEndpoint", unless = "#result == null")
     public String getAuthEndpoint() {
-        String url = String.format("%s/users/authorization", kgCoreEndpoint);
         try {
-            Map result = serviceAccountWebClient.get()
-                    .uri(url)
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            if (result != null) {
-                Map data = (Map) result.get("data");
-                return data.get("endpoint").toString();
-            }
-        } catch (WebClientResponseException e) {
+            AuthenticationConfig authenticationConfig = serviceAccountClient.setup().getAuthenticationConfig();
+            return authenticationConfig != null ? authenticationConfig.endpoint() : null;
+        } catch (MarmotGraphException e) {
             logger.error("Was not able to fetch the auth endpoint from KG", e);
         }
         return null;
     }
 
+    /**
+     * The ids of the instances the current user has been invited to - which are the instance level permissions.
+     */
     public Set<UUID> getInvitationsFromKG() {
-        String url = String.format("%s/users/me/roles", kgCoreEndpoint);
-        final Map<?, ?> result = userWebClient.get()
-                .uri(url)
-                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-        if (result != null) {
-            final Object data = result.get("data");
-            if (data instanceof Map) {
-                final Object invitations = ((Map<?, ?>) data).get("invitations");
-                if (invitations instanceof List) {
-                    return ((List<?>) invitations).stream().filter(i -> i instanceof String).map(i -> MetaModelUtils.castToUUID((String) i)).filter(Objects::nonNull).collect(Collectors.toSet());
-                }
-            }
+        UserWithRoles roles = userClient().users().myRoles();
+        if (roles != null && roles.permissions() != null) {
+            return roles.permissions().stream().map(FunctionalityInstance::id).filter(Objects::nonNull).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }
 
-    public void addBookmark(UUID instanceId) {
-        //save
-        String url = String.format("%s/instances?space=myspace", kgCoreEndpoint);
-        String fullyQualifyInstanceId = String.format("https://kg.ebrains.eu/api/instances/%s", instanceId);
-        Map<String, Object> payload = Map.of(
-                "@type", "https://core.kg.ebrains.eu/vocab/type/Bookmark",
-                "https://core.kg.ebrains.eu/vocab/bookmarkOf", Map.of("@id", fullyQualifyInstanceId)
-        );
-        final Map<?, ?> result = userWebClient.post()
-                .uri(url)
-                .body(BodyInserters.fromValue(payload))
-                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-        if (result != null) {
-            final Object data = result.get("data");
-            if (data instanceof Map) {
-                final Object fullyQualifyBookmarkId = ((Map<?, ?>) data).get("@id");
-                if (fullyQualifyBookmarkId instanceof String) {
-                    final String uuid = substringAfterLast((String) fullyQualifyBookmarkId, "/");
-                    final UUID bookmarkId = MetaModelUtils.castToUUID(uuid);
-                    if (bookmarkId != null) {
-                        //release
-                        String releaseUrl = String.format("%s/instances/%s/release", kgCoreEndpoint, bookmarkId);
-                        userWebClient.put()
-                                .uri(releaseUrl)
-                                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                                .retrieve()
-                                .bodyToMono(Void.class)
-                                .block();
-                    }
-                }
-            }
-        }
+    public void addFavorite(UUID instanceId) {
+        userClient().instances().addFavorite(instanceId);
     }
 
-    public void deleteBookmark(UUID bookmarkId) {
-        //unrelease
-        String releaseUrl = String.format("%s/instances/%s/release", kgCoreEndpoint, bookmarkId);
-        userWebClient.delete()
-                .uri(releaseUrl)
-                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
-        //delete
-        String url = String.format("%s/instances/%s", kgCoreEndpoint, bookmarkId);
-        userWebClient.delete()
-                .uri(url)
-                .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+    public void removeFavorite(UUID instanceId) {
+        userClient().instances().removeFavorite(instanceId);
     }
 
-    public List<UUID> getBookmarkIdsFromInstance(UUID id) {
+    public boolean isFavorite(UUID instanceId) {
         try {
-            String fullyQualifyId = String.format("https://kg.ebrains.eu/api/instances/%s", id);
-            String type = "https://core.kg.ebrains.eu/vocab/type/Bookmark";
-            String encodedType = URLEncoder.encode(type, StandardCharsets.UTF_8.toString());
-            String url = String.format("%s/instances?stage=%s&type=%s&space=myspace&from=0&size=1000", kgCoreEndpoint, DataStage.RELEASED, encodedType);
-            final Map<?, ?> result = userWebClient.get()
-                    .uri(url)
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            if (result != null) {
-                final Object data = result.get("data");
-                if (data instanceof List) {
-                    return ((List<?>) data).stream().filter(i -> i instanceof Map).map(i -> {
-                        final Map<?, ?> bookmark = (Map<?, ?>) i;
-                        final Object instance = bookmark.get("https://core.kg.ebrains.eu/vocab/bookmarkOf");
-                        if (instance instanceof Map) {
-                            final Object instanceId = ((Map<?, ?>) instance).get("@id");
-                            if (instanceId instanceof String && instanceId.equals(fullyQualifyId)) {
-                                final Object bookmarkId = bookmark.get("@id");
-                                if (bookmarkId instanceof String) {
-                                    final String uuid = substringAfterLast((String) bookmarkId, "/");
-                                    return MetaModelUtils.castToUUID(uuid);
-                                }
-                            }
-                        }
-                        return null;
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
-                }
+            Instance instance = userClient().instances().get(instanceId, Stage.RELEASED, ResponseOptions.builder().returnPayload(false).returnFavorite(true).build());
+            return instance != null && Boolean.TRUE.equals(instance.isFavorite());
+        } catch (MarmotGraphException e) {
+            if (isNotFound(e)) {
+                return false;
             }
-            return Collections.emptyList();
-        } catch (UnsupportedEncodingException e) {
-            return Collections.emptyList();
+            throw e;
         }
     }
 
-    public List<UUID> getBookmarkedInstancesOfType(String type) {
-        try {
-            String encodedType = URLEncoder.encode(type, StandardCharsets.UTF_8.toString());
-            String restrictToSpaces = "myspace,common,dataset,model,metadatamodel,software,webservice";
-            String url = String.format("%s/queries?size=1000&from=0&stage=%s&&restrictToSpaces=%s&type=%s", kgCoreEndpoint, DataStage.RELEASED, restrictToSpaces, encodedType);
-            String payload = BookmarkedInstancesOfParametrisedTypeQuery;
-
-            final Map<?, ?> result = userWebClient.post()
-                    .uri(url)
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .body(BodyInserters.fromValue(payload))
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            if (result != null) {
-                final Object data = result.get("data");
-                if (data instanceof List) {
-                    return ((List<?>) data).stream().filter(i -> i instanceof Map).map(i -> {
-                        final Map<?, ?> bookmark = (Map<?, ?>) i;
-                        final Object instanceId = bookmark.get("bookmarkOfId");
-                        if (instanceId instanceof String) {
-                            final String uuid = substringAfterLast((String) instanceId, "/");
-                            return MetaModelUtils.castToUUID(uuid);
-                        }
-                        return null;
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
-                }
-            }
-            return Collections.emptyList();
-        } catch (UnsupportedEncodingException e) {
-            return Collections.emptyList();
-        }
+    public List<UUID> getFavoriteInstancesOfType(String type) {
+        InstanceListOptions options = InstanceListOptions.builder()
+                .stage(Stage.RELEASED)
+                .types(type)
+                .favoritesOnly(true)
+                .returnTotalResults(false)
+                .size(1000)
+                .responseOptions(ResponseOptions.builder().returnPayload(false).build())
+                .build();
+        return userClient().instances().list(options).allItems().map(Instance::getUuid).flatMap(Optional::stream).toList();
     }
 
-
-    public <T> ResultsOfKG<T> executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, int from, int size) {
-        String url;
-        if (appConfig.localQueries()) {
-            url = String.format("%s/queries?stage=%s&from=%d&size=%d&returnTotalResults=false", kgCoreEndpoint, dataStage, from, size);
-        } else {
-            url = String.format("%s/queries/%s/instances?stage=%s&from=%d&size=%d", kgCoreEndpoint, queryId, dataStage, from, size);
-        }
-        return executeCallForIndexing(clazz, url, semanticType);
+    /**
+     * Executes the query for a single page - continuing from the given marker (null for the first page). The returned
+     * result provides the marker for the next page (null if there are no more results).
+     */
+    public <T> ResultsOfKG<T> executeQueryForIndexing(Class<T> clazz, DataStage dataStage, String queryId, String semanticType, String marker, int size) {
+        QueryRunOptions options = QueryRunOptions.builder()
+                .stage(toStage(dataStage))
+                .marker(marker)
+                .size(size)
+                .returnTotalResults(false)
+                .build();
+        return doExecuteCallForIndexing(clazz, queryId, semanticType, options, 0);
     }
-
 
     public <T> T executeQueryForInstance(Class<T> clazz, DataStage dataStage, String queryId, String id, String semanticType, boolean asServiceAccount) {
-        String url;
-        if (appConfig.localQueries()) {
-            url = String.format("%s/queries?stage=%s&instanceId=%s", kgCoreEndpoint, dataStage, id);
-        } else {
-            url = String.format("%s/queries/%s/instances?stage=%s&instanceId=%s", kgCoreEndpoint, queryId, dataStage, id);
-        }
-        try {
-            return executeCallForInstance(clazz, url, id, semanticType, asServiceAccount);
-        } catch (WebClientResponseException.NotFound e) {
+        UUID instanceId = MetaModelUtils.castToUUID(id);
+        if (instanceId == null) {
             return null;
         }
+        QueryRunOptions options = QueryRunOptions.builder()
+                .stage(toStage(dataStage))
+                .instanceId(instanceId)
+                .returnTotalResults(false)
+                .build();
+        try {
+            ResultsOfKG<T> result = toResults(clazz, runQuery(client(asServiceAccount), clazz, queryId, semanticType, options));
+            if (result.getData() == null || result.getData().isEmpty()) {
+                return null;
+            }
+            if (result.getData().size() > 1) {
+                throw new RuntimeException(String.format("Too many (%d) results when querying %s with id %s of type %s", result.getData().size(), semanticType, id, clazz.getSimpleName()));
+            }
+            return result.getData().getFirst();
+        } catch (MarmotGraphException e) {
+            if (isNotFound(e)) {
+                return null;
+            }
+            throw e;
+        }
     }
+
     @Getter
     @Setter
     public static class TypeInformationItem implements Serializable {
-        @JsonProperty("http://schema.org/name")
         private String name;
-        @JsonProperty("http://schema.org/identifier")
         private String identifier;
-        @JsonProperty("https://core.kg.ebrains.eu/vocab/meta/color")
         private String color;
     }
 
-
-    public static class TypeInformationResult extends ResultsOfKG<TypeInformationItem>{}
-
     public List<TypeInformationItem> getTypeInformation(DataStage dataStage) {
-        TypeInformationResult result = this.serviceAccountWebClient.get().uri(String.format("%s/types?stage=%s&reflect=false&returnTotalResults=false", kgCoreEndpoint, dataStage)).retrieve().bodyToMono(TypeInformationResult.class).block();
-        if(result != null && result.getData()!=null) {
-            return result.getData();
+        TypeListOptions options = TypeListOptions.builder()
+                .stage(toStage(dataStage))
+                .withOccurrenceCount(false)
+                .returnTotalResults(false)
+                .build();
+        try {
+            return serviceAccountClient.types().list(options).allItems().map(t -> {
+                TypeInformationItem item = new TypeInformationItem();
+                item.setName(t.name());
+                item.setIdentifier(t.identifier());
+                item.setColor(t.color());
+                return item;
+            }).toList();
+        } catch (MarmotGraphException e) {
+            throw new RuntimeException("Wasn't able to fetch type information from KG", e);
         }
-        throw new RuntimeException("Wasn't able to fetch type information from KG");
     }
 
-    @SuppressWarnings("java:S3740")
-    public Map getInstance(String id, DataStage dataStage, boolean asServiceAccount) {
-        String url = String.format("%s/instances/%s?stage=%s", kgCoreEndpoint, id, dataStage);
-        return executeCallForInstance(Map.class, url, id, null, asServiceAccount);
+    /**
+     * @return the instance or null if it doesn't exist (or isn't accessible)
+     */
+    public Instance getInstance(String id, DataStage dataStage, boolean asServiceAccount) {
+        UUID instanceId = MetaModelUtils.castToUUID(id);
+        if (instanceId == null) {
+            return null;
+        }
+        try {
+            return client(asServiceAccount).instances().get(instanceId, toStage(dataStage), ResponseOptions.DEFAULT);
+        } catch (MarmotGraphException e) {
+            if (isNotFound(e)) {
+                return null;
+            }
+            throw e;
+        }
     }
 
     private final static String ID_FOR_BADGE_REGISTRATION = "8909ab6c-45c9-4b57-9f8a-6111eef752f6";
 
     public void persistBadges(String type, Map<String, Object> badges) {
-        final String typeSpecificBadgeRegistration = UUID.nameUUIDFromBytes(String.format("%s/%s", ID_FOR_BADGE_REGISTRATION, type).getBytes(UTF_8)).toString();
+        final UUID typeSpecificBadgeRegistration = UUID.nameUUIDFromBytes(String.format("%s/%s", ID_FOR_BADGE_REGISTRATION, type).getBytes(UTF_8));
         Map<String, Object> document = new HashMap<>();
         document.put("@type", "https://search.kg.ebrains.eu/SearchAggregations");
         badges.put("@type", "https://search.kg.ebrains.eu/Badges");
@@ -356,137 +271,75 @@ public class KGServiceClient {
         document.put("https://search.kg.ebrains.eu/vocab/forType", type);
         try {
             try {
-                serviceAccountWebClient.put().uri(String.format("%s/instances/%s", kgCoreEndpoint, typeSpecificBadgeRegistration)).body(BodyInserters.fromValue(document)).headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                        .retrieve().bodyToMono(Void.class).block();
-            } catch (WebClientResponseException.NotFound e) {
-                serviceAccountWebClient.post().uri(String.format("%s/instances/%s?space=%s", kgCoreEndpoint, typeSpecificBadgeRegistration, serviceClientId)).body(BodyInserters.fromValue(document)).headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                        .retrieve().bodyToMono(Void.class).block();
+                serviceAccountClient.instances().replace(typeSpecificBadgeRegistration, document);
+            } catch (MarmotGraphException e) {
+                if (!isNotFound(e)) {
+                    throw e;
+                }
+                serviceAccountClient.instances().createWithId(typeSpecificBadgeRegistration, serviceClientId, document);
             }
-            serviceAccountWebClient.put().uri(String.format("%s/instances/%s/release", kgCoreEndpoint, typeSpecificBadgeRegistration)).retrieve().bodyToMono(Void.class).block();
-        } catch (WebClientResponseException e) {
+            serviceAccountClient.instances().release(typeSpecificBadgeRegistration);
+        } catch (MarmotGraphException e) {
             logger.error(String.format("Was not able to update the badge information in KG - %s", e.getMessage()), e);
         }
     }
 
-    public void uploadQuery(String queryId, MarmotGraphQuery payload) {
-        String url = String.format("%s/queries/%s?space=%s", kgCoreEndpoint, queryId, serviceClientId);
+    public void uploadQuery(String queryId, QuerySpecification query) {
+        UUID id = UUID.fromString(queryId);
         try {
-            serviceAccountWebClient.put()
-                    .uri(url)
-                    .bodyValue(payload)
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block();
-        } catch (WebClientResponseException.Conflict c) {
-            // The query is probably in a wrong space -> let's move it first
-
-            Map releaseStatus = serviceAccountWebClient.get()
-                    .uri(String.format("%s/instances/%s/release/status?releaseTreeScope=TOP_INSTANCE_ONLY", kgCoreEndpoint, queryId))
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            boolean released = false;
-            if (releaseStatus != null && releaseStatus.get("data") != null && !releaseStatus.get("data").equals("UNRELEASED")) {
-                released = true;
+            serviceAccountClient.queries().save(id, query, serviceClientId);
+        } catch (MarmotGraphApiException e) {
+            if (e.statusCode() != CONFLICT) {
+                throw e;
             }
-            if (released) {
-                //Unrelease first
-                serviceAccountWebClient.delete()
-                        .uri(String.format("%s/instances/%s/release", kgCoreEndpoint, queryId))
-                        .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                        .retrieve()
-                        .bodyToMono(Void.class)
-                        .block();
-            }
-            // Move
-            serviceAccountWebClient.put()
-                    .uri(String.format("%s/instances/%s/spaces/%s", kgCoreEndpoint, queryId, serviceClientId))
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block();
-            if (released) {
-                //Rerelease
-                serviceAccountWebClient.put()
-                        .uri(String.format("%s/instances/%s/release", kgCoreEndpoint, queryId))
-                        .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                        .retrieve()
-                        .bodyToMono(Void.class)
-                        .block();
-            }
-            //Update
-            serviceAccountWebClient.put()
-                    .uri(url)
-                    .body(BodyInserters.fromValue(payload))
-                    .headers(h -> h.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block();
+            // The query is probably in a wrong space -> let's move it first and then update it
+            serviceAccountClient.queries().move(id, serviceClientId);
+            serviceAccountClient.queries().save(id, query, serviceClientId);
         }
     }
 
-    private <T> T executeCallForInstance(Class<T> clazz, String url, String id, String semanticType, boolean asServiceAccount) {
-        WebClient webClient = asServiceAccount ? this.serviceAccountWebClient : this.userWebClient;
-        if (semanticType != null) {
-            WebClient.RequestHeadersSpec<?> request;
-            if (appConfig.localQueries()) {
-                MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
-                request = webClient.post().uri(url).bodyValue(query);
-            } else {
-                request = webClient.get().uri(url);
-            }
-            ResultsOfKG<T> result = (ResultsOfKG<T>) request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve().bodyToMono(ParameterizedTypeReference.forType(ResolvableType.forClassWithGenerics(ResultsOfKG.class, clazz).getType()))
-                    .doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
-                    .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
-                    .block();
-            if (result != null && result.getData() != null) {
-                if (result.getData().size() == 1) {
-                    return result.getData().getFirst();
-                } else {
-                    throw new RuntimeException(String.format("Too many (%d) results when querying %s with id %s of type %s", result.getData().size(), semanticType, id, clazz.getSimpleName()));
+    private Page<JsonLdDocument> runQuery(MarmotGraphClient client, Class<?> clazz, String queryId, String semanticType, QueryRunOptions options) {
+        if (appConfig.localQueries()) {
+            return client.queries().run(queryGenerator.generate(clazz, semanticType), options, Map.of());
+        }
+        return client.queries().execute(UUID.fromString(queryId), options, Map.of());
+    }
 
-                }
+    /**
+     * Binds the documents of the page to the given class - errors in the deserialization are reported in the
+     * result instead of failing the whole page.
+     */
+    <T> ResultsOfKG<T> toResults(Class<T> clazz, Page<JsonLdDocument> page) {
+        JavaType resultType = resultMapper.getTypeFactory().constructParametricType(ResultsOfKG.class, clazz);
+        try {
+            ResultsOfKG<T> result = resultMapper.convertValue(Map.of("data", page.items()), resultType);
+            result.setSize(page.count());
+            result.setTotal(page.total());
+            // The server only provides a next marker if the page is full - the following page can still be empty
+            result.setNextMarker(page.hasNext() ? page.nextMarker() : null);
+            if (page.execution() != null) {
+                result.setMessage(page.execution().message());
+                result.setStartTime(page.execution().startTime());
+                result.setDurationInMs(page.execution().durationInMs() != null ? page.execution().durationInMs().longValue() : null);
             }
-            return null;
-
-        } else {
-            return webClient.get().uri(url).headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve().bodyToMono(clazz).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
-                    .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
-                    .block();
+            GracefulDeserializationProblemHandler.parsingErrorHandler(result);
+            return result;
+        } finally {
+            GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove();
         }
     }
 
-    private <T> ResultsOfKG<T> executeCallForIndexing(Class<T> clazz, String url, String semanticType) {
-        return doExecuteCallForIndexing(clazz, url, semanticType, 0);
-    }
-
-    private <T> ResultsOfKG<T> doExecuteCallForIndexing(Class<T> clazz, String url, String semanticType, int currentTry) {
+    private <T> ResultsOfKG<T> doExecuteCallForIndexing(Class<T> clazz, String queryId, String semanticType, QueryRunOptions options, int currentTry) {
         try {
-            WebClient.RequestHeadersSpec<?> request;
-            if (appConfig.localQueries()) {
-                MarmotGraphQuery query = queryGenerator.generate(clazz, semanticType);
-                request = serviceAccountWebClient.post().uri(url).bodyValue(query);
-            } else {
-                request = serviceAccountWebClient.get().uri(url);
-            }
-            ResolvableType resolvableType = ResolvableType.forClassWithGenerics(ResultsOfKG.class, clazz);
-            return (ResultsOfKG<T>) request.headers(h -> h.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
-                    .retrieve()
-                    .bodyToMono(ParameterizedTypeReference.forType(resolvableType.getType())).doOnSuccess(GracefulDeserializationProblemHandler::parsingErrorHandler)
-                    .doFinally(t -> GracefulDeserializationProblemHandler.ERROR_REPORTING_THREAD_LOCAL.remove())
-                    .block();
-        } catch (WebClientResponseException e) {
+            return toResults(clazz, runQuery(serviceAccountClient, clazz, queryId, semanticType, options));
+        } catch (MarmotGraphException e) {
             logger.warn("Was not able to execute call for indexing", e);
             if (currentTry < MAX_RETRIES) {
                 final long waitingTime = currentTry * currentTry * 10000L;
                 logger.warn("Retrying to execute call for indexing for max {} more times - next time in {} seconds", MAX_RETRIES - currentTry, waitingTime / 1000);
                 try {
                     Thread.sleep(waitingTime);
-                    return doExecuteCallForIndexing(clazz, url, semanticType, currentTry + 1);
+                    return doExecuteCallForIndexing(clazz, queryId, semanticType, options, currentTry + 1);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return null;

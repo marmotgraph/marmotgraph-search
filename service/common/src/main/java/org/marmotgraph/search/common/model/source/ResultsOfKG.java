@@ -49,7 +49,10 @@ public class ResultsOfKG<E>{
     private Long durationInMs;
     private Integer total;
     private Integer size;
-    private Integer from;
+    /**
+     * The marker to continue from for the next page - null if there are no more results
+     */
+    private String nextMarker;
     private ErrorReport errors;
 
 

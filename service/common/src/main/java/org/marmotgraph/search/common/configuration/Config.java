@@ -32,9 +32,14 @@ import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.marmotgraph.sdk.MarmotGraphException;
+import org.marmotgraph.sdk.auth.AuthenticationInformation;
 import org.marmotgraph.search.common.customization.Customization;
 import org.marmotgraph.search.common.model.CommitInfo;
 import org.marmotgraph.search.common.security.JwtUserInfoConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -53,11 +58,12 @@ import java.util.Collections;
 @EnableScheduling
 public class Config {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Bean
-    public OpenAPI customOpenAPI(@Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}") String issuerUri, @Value("${eu.ebrains.kg.commit}") String commit, Customization customization, CommitInfo commitInfo) {
+    public OpenAPI customOpenAPI(@Value("${eu.ebrains.kg.commit}") String commit, Customization customization, CommitInfo commitInfo) {
+        // The URLs of the flow are resolved from the core when the API docs are requested (see oAuthFlowCustomizer)
         OAuthFlow oAuthFlow = new OAuthFlow();
-        oAuthFlow.authorizationUrl(String.format("%s/protocol/openid-connect/auth", issuerUri));
-        oAuthFlow.tokenUrl(String.format("%s/protocol/openid-connect/token", issuerUri));
         SecurityScheme userToken = new SecurityScheme().name(Constants.AUTHORIZATION).type(SecurityScheme.Type.OAUTH2).flows(new OAuthFlows().authorizationCode(oAuthFlow)).description("The user authentication");
         SecurityRequirement userWithoutClientReq = new SecurityRequirement().addList(Constants.AUTHORIZATION);
 
@@ -67,6 +73,21 @@ public class Config {
         return openapi.info(new Info().version("v3.0.0").title(String.format("This is the KG Search API for %s", customization.getConfiguration().name())).description(description).license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")).termsOfService("https://kg.ebrains.eu/search-terms-of-use.html"))
                 .components(new Components()).schemaRequirement(Constants.AUTHORIZATION, userToken)
                 .security(Collections.singletonList(userWithoutClientReq));
+    }
+
+    @Bean
+    public OpenApiCustomizer oAuthFlowCustomizer(CoreAuthentication coreAuthentication) {
+        return openApi -> {
+            SecurityScheme scheme = openApi.getComponents() != null && openApi.getComponents().getSecuritySchemes() != null ? openApi.getComponents().getSecuritySchemes().get(Constants.AUTHORIZATION) : null;
+            if (scheme != null && scheme.getFlows() != null && scheme.getFlows().getAuthorizationCode() != null) {
+                try {
+                    AuthenticationInformation config = coreAuthentication.authenticationInformation();
+                    scheme.getFlows().getAuthorizationCode().authorizationUrl(config.authorizationEndpoint()).tokenUrl(config.tokenEndpoint());
+                } catch (MarmotGraphException e) {
+                    logger.warn("Was not able to load the authentication configuration from the MarmotGraph core for the API docs", e);
+                }
+            }
+        };
     }
 
     @Bean

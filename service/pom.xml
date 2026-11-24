@@ -131,6 +131,12 @@
                 <version>2.8.14</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.marmotgraph</groupId>
+                <artifactId>marmotgraph-sdk</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -195,6 +201,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.4</version> <!-- the default of Maven (2.x) doesn't detect JUnit 5 tests -->
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -45,6 +45,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.marmotgraph.sdk.MarmotGraphApiException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collections;
@@ -105,6 +106,8 @@ public class Search {
             return ResponseEntity.notFound().build();
         } catch (WebClientResponseException e) {
             return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (MarmotGraphApiException e) {
+            return ResponseEntity.status(e.statusCode()).build();
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).build();
         }
@@ -309,8 +312,8 @@ public class Search {
                     "bookmarked", searchController.isBookmarked(uuid)
             );
             return ResponseEntity.ok(result);
-        } catch (WebClientResponseException e) {
-            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (MarmotGraphApiException e) {
+            return ResponseEntity.status(e.statusCode()).build();
         }
     }
 
@@ -328,8 +331,8 @@ public class Search {
                     "bookmarked", false
             );
             return ResponseEntity.ok(result);
-        } catch (WebClientResponseException e) {
-            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (MarmotGraphApiException e) {
+            return ResponseEntity.status(e.statusCode()).build();
         }
     }
 
@@ -347,8 +350,8 @@ public class Search {
                     "bookmarked", true
             );
             return ResponseEntity.ok(result);
-        } catch (WebClientResponseException e) {
-            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (MarmotGraphApiException e) {
+            return ResponseEntity.status(e.statusCode()).build();
         }
     }
 }

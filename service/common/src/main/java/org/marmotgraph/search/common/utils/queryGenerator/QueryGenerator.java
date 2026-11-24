@@ -25,6 +25,7 @@
 package org.marmotgraph.search.common.utils.queryGenerator;
 
 import io.micrometer.common.util.StringUtils;
+import org.marmotgraph.sdk.model.QuerySpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.MergedAnnotation;
@@ -55,37 +56,26 @@ public class QueryGenerator {
     }
 
 
-    private List<MarmotGraphQuery.Path> evaluatePath(Field field, MergedAnnotation<Query.Field> annotation, String defaultPropertyNamespace, String defaultTypeNamespace){
+    private List<QuerySpecification.Path> evaluatePath(Field field, MergedAnnotation<Query.Field> annotation, String defaultPropertyNamespace, String defaultTypeNamespace){
         if(annotation.isPresent()) {
             MergedAnnotation<Query.PathElement>[] path = annotation.getAnnotationArray("path", Query.PathElement.class);
             if(path.length > 0) {
                 return Arrays.stream(path).map(p -> {
-                    MarmotGraphQuery.Path result = new MarmotGraphQuery.Path();
                     String propertyNamespace = p.getString("namespace");
                     Optional<Boolean> reverse = p.getValue("reverse", Boolean.class);
-                    if(reverse.isPresent() && reverse.get()) {
-                        result.setReverse(true);
-                    }
                     String[] typeFilters = p.getStringArray("typeFilter");
-                    if(typeFilters.length > 0) {
-                        result.setTypeFilter(Arrays.stream(typeFilters).map(t ->{
-                            MarmotGraphQuery.Ref ref = new MarmotGraphQuery.Ref();
-                            ref.setId(qualifyType(t, defaultTypeNamespace));
-                            return ref;
-                        }).toList());
-                    }
                     String name = p.getString("name");
                     if(StringUtils.isBlank(name)){
                         name = field.getName();
                     }
-                    result.setId(qualifyProperty(name, StringUtils.isBlank(propertyNamespace) ? defaultPropertyNamespace : propertyNamespace));
-                    return result;
+                    return new QuerySpecification.Path(
+                            qualifyProperty(name, StringUtils.isBlank(propertyNamespace) ? defaultPropertyNamespace : propertyNamespace),
+                            reverse.isPresent() && reverse.get() ? Boolean.TRUE : null,
+                            typeFilters.length > 0 ? Arrays.stream(typeFilters).map(t -> qualifyType(t, defaultTypeNamespace)).toList() : null);
                 }).toList();
             }
         }
-        MarmotGraphQuery.Path path = new MarmotGraphQuery.Path();
-        path.setId(qualifyProperty(field.getName(), defaultPropertyNamespace));
-        return Collections.singletonList(path);
+        return Collections.singletonList(QuerySpecification.Path.outgoing(qualifyProperty(field.getName(), defaultPropertyNamespace)));
 
     }
 
@@ -107,21 +97,21 @@ public class QueryGenerator {
         }
     }
 
-    private List<MarmotGraphQuery.Property> evaluateStructure(Class<?> clazz, String defaultPropertyNamespace, String defaultTypeNamespace){
+    private List<QuerySpecification.StructureItem> evaluateStructure(Class<?> clazz, String defaultPropertyNamespace, String defaultTypeNamespace){
         return getAllFields(clazz).stream().filter(f -> !Modifier.isTransient(f.getModifiers())).map(field -> {
             if(!MergedAnnotations.from(field, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(Query.Ignore.class).isPresent()) {
-                MarmotGraphQuery.Property property = new MarmotGraphQuery.Property();
-                property.setPropertyName(String.format("query:%s", field.getName()));
                 MergedAnnotation<Query.Field> annotation = MergedAnnotations.from(field, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(Query.Field.class);
-                property.setPath(evaluatePath(field, annotation, defaultPropertyNamespace, defaultTypeNamespace));
+                List<QuerySpecification.Path> path = evaluatePath(field, annotation, defaultPropertyNamespace, defaultTypeNamespace);
+                Boolean required = null;
+                Boolean ensureOrder = null;
                 if(annotation.isPresent()){
-                    Optional<Boolean> required = annotation.getValue("required", Boolean.class);
-                    if(required.isPresent() && required.get()) {
-                        property.setRequired(true);
+                    Optional<Boolean> requiredValue = annotation.getValue("required", Boolean.class);
+                    if(requiredValue.isPresent() && requiredValue.get()) {
+                        required = true;
                     }
-                    Optional<Boolean> ensureOrder = annotation.getValue("ensureOrder", Boolean.class);
-                    if(ensureOrder.isPresent() && ensureOrder.get()) {
-                        property.setEnsureOrder(true);
+                    Optional<Boolean> ensureOrderValue = annotation.getValue("ensureOrder", Boolean.class);
+                    if(ensureOrderValue.isPresent() && ensureOrderValue.get()) {
+                        ensureOrder = true;
                     }
                 }
                 Type fieldType = field.getGenericType();
@@ -130,14 +120,14 @@ public class QueryGenerator {
                     // Get the first type argument → Foo.class
                     basicType = ((ParameterizedType)fieldType).getActualTypeArguments()[0];
                 }
-                if(!Collection.class.isAssignableFrom(field.getType())){
-                    property.setSingleValue("FIRST");
-                }
+                QuerySpecification.SingleValue singleValue = Collection.class.isAssignableFrom(field.getType()) ? null : QuerySpecification.SingleValue.FIRST;
+                List<QuerySpecification.StructureItem> structure = null;
                 if(basicType.getTypeName().startsWith("org.marmotgraph")){
                     //Complex type -> dive into it.
-                    property.setStructure(evaluateStructure((Class<?>) basicType, defaultPropertyNamespace, defaultTypeNamespace));
+                    structure = evaluateStructure((Class<?>) basicType, defaultPropertyNamespace, defaultTypeNamespace);
                 }
-                return property;
+                // The keys of the results are the property names - so they match the field names of the source classes
+                return new QuerySpecification.StructureItem(field.getName(), path, structure, required, null, ensureOrder, null, singleValue);
             }
             return null;
         }).filter(Objects::nonNull).toList();
@@ -146,10 +136,10 @@ public class QueryGenerator {
     }
 
 
-    private final Map<String, Map<String, MarmotGraphQuery>> queryCache = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, QuerySpecification>> queryCache = new ConcurrentHashMap<>();
 
-    public MarmotGraphQuery generate(Class<?> clazz, String targetType){
-        MarmotGraphQuery fromCache = queryCache.getOrDefault(clazz.getCanonicalName(), new HashMap<>()).get(targetType);
+    public QuerySpecification generate(Class<?> clazz, String targetType){
+        QuerySpecification fromCache = queryCache.getOrDefault(clazz.getCanonicalName(), new HashMap<>()).get(targetType);
         if(fromCache!=null){
             logger.info(String.format("Query for %s (%s) found in cache", clazz.getCanonicalName(), targetType));
             return fromCache;
@@ -160,8 +150,7 @@ public class QueryGenerator {
             MergedAnnotation<Query> queryAnnotation = classAnnotations.get(Query.class);
             String defaultTypeNamespace = queryAnnotation.getString("defaultTypeNamespace");
             String defaultPropertyNamespace = queryAnnotation.getString("defaultPropertyNamespace");
-            MarmotGraphQuery query = new MarmotGraphQuery("https://core.kg.ebrains.eu/vocab/query/", "https://schema.hbp.eu/myQuery/", targetType);
-            query.setStructure(evaluateStructure(clazz, defaultPropertyNamespace, defaultTypeNamespace));
+            QuerySpecification query = new QuerySpecification(new QuerySpecification.Meta(targetType, null, null), evaluateStructure(clazz, defaultPropertyNamespace, defaultTypeNamespace));
             queryCache.computeIfAbsent(clazz.getCanonicalName(), f -> new HashMap<>()).put(targetType, query);
             logger.info(String.format("Query for %s (%s) generated", clazz.getCanonicalName(), targetType));
             return query;

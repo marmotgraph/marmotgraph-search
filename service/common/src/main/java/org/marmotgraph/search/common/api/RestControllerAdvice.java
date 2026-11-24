@@ -24,6 +24,7 @@
 
 package org.marmotgraph.search.common.api;
 
+import org.marmotgraph.sdk.MarmotGraphApiException;
 import org.marmotgraph.search.common.utils.TranslationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,11 @@ public class RestControllerAdvice {
     @ExceptionHandler({WebClientResponseException.NotFound.class})
     protected ResponseEntity<?> notFound(RuntimeException ex, WebRequest request) { 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler({MarmotGraphApiException.class})
+    protected ResponseEntity<?> marmotGraphApiException(MarmotGraphApiException ex, WebRequest request) {
+        return ResponseEntity.status(ex.statusCode()).build();
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
