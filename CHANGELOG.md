@@ -30,6 +30,18 @@ This version requires a MarmotGraph **v4** core. It doesn't work against a KG co
 | *(hardcoded `kg-search`)* | `MARMOTGRAPH_CLIENT_ID` | The client id of the service account. It is also the space of the uploaded queries and of the badge instances. Set it to `kg-search` to keep the previous space. |
 | `CLIENT_SECRET` | `MARMOTGRAPH_CLIENT_SECRET` | The client secret of the service account. |
 | `KEYCLOAK_ISSUER_URI` | *(removed)* | The issuer, the signing keys (JWKS), the token / authorization / userinfo endpoints are loaded from the core (`GET /v4/setup/authentication` and the advertised OpenID Connect discovery document). |
+| `KG_EBRAINS_ENDPOINT` (`kgebrains.endpoint`) | *(removed)* | The absolute URLs of the sitemap are derived from the request to `/sitemap`, see below. |
+
+**Precondition for the sitemap:** the URLs in `/sitemap` are built from the scheme, host, port and context path of the
+incoming request. Behind a reverse proxy / ingress:
+
+- The proxy has to send `X-Forwarded-Proto`, `X-Forwarded-Host` (and `X-Forwarded-Port` / `X-Forwarded-Prefix` if
+  applicable).
+- The consuming application has to evaluate them, e.g. with `server.forward-headers-strategy=framework` (or `native`
+  for the headers supported by the embedded server). Only enable it if the service is reachable through the proxy
+  only, since it makes the service trust these headers from any client.
+
+Otherwise, the sitemap contains the internal address of the service (e.g. `http://my-service:8080/instances/...`).
 
 The SDK also understands its other `MARMOTGRAPH_*` variables (e.g. `MARMOTGRAPH_TIMEOUT`,
 `MARMOTGRAPH_DEFAULT_STAGE`), see the SDK's `docs/configuration.md`.
@@ -43,7 +55,11 @@ All `spring.security.oauth2.*` properties have been removed from `common.propert
 If a consuming project or a deployment still sets them, remove them. In particular, a leftover
 `spring.security.oauth2.client.registration.*` with a provider `issuer-uri` makes Spring Boot contact the identity
 provider while starting up, so the service would again fail to start without it. A leftover
-`spring.security.oauth2.resourceserver.jwt.issuer-uri` is ignored, because the service provides its own `JwtDecoder`. `keycloak.realm` and `keycloak.resource`, which `/api/settings` provides to the UI, are unchanged.
+`spring.security.oauth2.resourceserver.jwt.issuer-uri` is ignored, because the service provides its own `JwtDecoder`.
+
+The properties `keycloak.realm` and `keycloak.resource` have been removed as well. The Keycloak settings of the UI and
+the OAuth client of the Swagger UI are now loaded from the core (see "Behavioral changes"). An explicitly set
+`springdoc.swagger-ui.oauth.client-id` still takes precedence for the Swagger UI.
 
 #### 3. Startup and availability of the core
 
@@ -62,9 +78,14 @@ provider while starting up, so the service would again fail to start without it.
   kept. The REST endpoints (`GET/PUT/DELETE .../{id}/bookmark`) are unchanged.
 - **Invitations** ("is invited for the file repository") are now the instance-level permissions of the user
   (`GET /v4/users/me/roles`).
-- **The `keycloak.url` in `/api/settings`** is the authentication `endpoint` advertised by the core. In v4 this can
-  be the URL of the OpenID Connect discovery document rather than the Keycloak base URL of v3. Please verify it
-  against the configuration of the UI.
+- **The `keycloak` section of `/api/settings`** is derived from the authentication settings of the core:
+  - `url` and `realm` come from the `issuer` of the OpenID Connect discovery document, which for Keycloak is
+    `{url}/realms/{realm}` (e.g. `https://iam.example.org/auth/realms/hbp` gives the url `https://iam.example.org/auth`
+    and the realm `hbp`). If the issuer doesn't contain `/realms/`, the `realm` is `null` and the `url` is the issuer.
+  - `clientId` is the `loginClientId` of the core (`GET /v4/setup/authentication`).
+  - If the core isn't reachable, `keycloak` is `null` (the UI then can't log in), and it's retried on the next request.
+- **The OAuth client id of the Swagger UI** is the `loginClientId` of the core, too (previously `keycloak.resource`,
+  defaulting to `kg`).
 - **Queries** are generated as v4 query specifications. The response keys are the plain field names of the source
   classes (previously `query:<field>` with a response vocabulary). Queries are uploaded with the same (name-based)
   ids as before into the space `MARMOTGRAPH_CLIENT_ID`. A query in a wrong space is moved via the dedicated v4
@@ -75,6 +96,9 @@ provider while starting up, so the service would again fail to start without it.
     but there is no marker to continue from.
   - Totals aren't requested anymore, so the progress log shows the number of processed instances without a
     percentage.
+
+- **The root element of `/sitemap`** is `<urlset>` again, as the sitemap protocol requires. With Jackson 3 it had
+  become `<SitemapXML>`.
 
 #### 5. Java API changes (for code built on top of this library)
 
@@ -88,6 +112,7 @@ provider while starting up, so the service would again fail to start without it.
 | `KGServiceClient#addBookmark`, `#deleteBookmark`, `#getBookmarkIdsFromInstance`, `#getBookmarkedInstancesOfType` | `#addFavorite`, `#removeFavorite`, `#isFavorite`, `#getFavoriteInstancesOfType` (likewise on `KG`) |
 | `SearchController#getBookmarkIdsFromInstance` | `SearchController#isBookmarked` |
 | `ResultsOfKG#getFrom` / `#setFrom`, `TargetInstancesResult#getFrom` / `#setFrom` | `#getNextMarker` / `#setNextMarker` (null if there are no more results) |
+| `SitemapController#getSitemap()` returning `SitemapXML` | `SitemapController#getSitemapInstanceIds()` returning the ids (the cache `sitemap` now holds a `java.util.List`). `#updateSitemapCache()` returns the ids as well. |
 
 **Changed signatures**
 
@@ -135,6 +160,8 @@ do {
   project which defines its own `JwtDecoder` gets a conflicting bean definition. Remove yours, or tell us what it's
   needed for.
 - `OpenApiCustomizer` (`oAuthFlowCustomizer`): fills in the OAuth URLs of the API docs.
+- `SwaggerIndexTransformer` (`indexPageTransformer`, a `SwaggerIndexPageWithLoginClient`): replaces springdoc's
+  transformer of the Swagger UI index page to fill in the OAuth client id.
 
 **Exceptions**
 

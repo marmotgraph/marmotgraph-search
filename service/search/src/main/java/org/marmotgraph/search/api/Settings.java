@@ -26,11 +26,15 @@ package org.marmotgraph.search.api;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.marmotgraph.sdk.MarmotGraphException;
+import org.marmotgraph.sdk.auth.AuthenticationInformation;
+import org.marmotgraph.search.common.configuration.CoreAuthentication;
 import org.marmotgraph.search.common.model.CommitInfo;
 import org.marmotgraph.search.common.customization.Customization;
-import org.marmotgraph.search.common.services.KGServiceClient;
 import org.marmotgraph.search.controller.settings.AuthEndpointCheck;
 import org.marmotgraph.search.controller.settings.SettingsController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +46,10 @@ import java.util.Map;
 @RestController
 public class Settings {
 
-    private final KGServiceClient kgServiceClient;
+    private static final Logger logger = LoggerFactory.getLogger(Settings.class);
+    private static final String REALMS_PATH = "/realms/";
+
+    private final CoreAuthentication coreAuthentication;
     private final SettingsController definitionController;
     private final AuthEndpointCheck authEndpointCheck;
     private final Customization customization;
@@ -54,6 +61,21 @@ public class Settings {
     }
 
     public record KeycloakConfig(String realm, String url, String clientId, boolean authEndpointAvailable) {
+
+        /**
+         * The configuration of the Keycloak client of the UI, derived from the authentication settings of the core:
+         * The issuer of a Keycloak realm is "{keycloak base url}/realms/{realm}" and the client id is the login client
+         * advertised by the core.
+         */
+        static KeycloakConfig from(AuthenticationInformation authentication, boolean authEndpointAvailable) {
+            String issuer = StringUtils.removeEnd(authentication.issuer(), "/");
+            int realmsIndex = issuer.lastIndexOf(REALMS_PATH);
+            if (realmsIndex < 0) {
+                logger.warn("The issuer {} is not the one of a Keycloak realm - can not determine the realm", issuer);
+                return new KeycloakConfig(null, issuer, authentication.loginClientId(), authEndpointAvailable);
+            }
+            return new KeycloakConfig(issuer.substring(realmsIndex + REALMS_PATH.length()), issuer.substring(0, realmsIndex), authentication.loginClientId(), authEndpointAvailable);
+        }
     }
 
     public record SentryConfig(String dsn, String release, String environment) {
@@ -76,8 +98,6 @@ public class Settings {
     @GetMapping("/api/settings")
     public Setting getSettings(
             @Value("${eu.ebrains.kg.commit}") String commit,
-            @Value("${keycloak.realm}") String keycloakRealm,
-            @Value("${keycloak.resource}") String keycloakClientId,
             @Value("${sentry.dsn.ui}") String sentryDsnUi,
             @Value("${sentry.environment}") String sentryEnvironment,
             @Value("${matomo.url}") String matomoUrl,
@@ -99,9 +119,10 @@ public class Settings {
             sentryConfig = new SentryConfig(sentryDsnUi, commit, sentryEnvironment);
         }
 
-        String authEndpoint = kgServiceClient.getAuthEndpoint();
-        if (StringUtils.isNotBlank(authEndpoint)) {
-            keycloakConfig = new KeycloakConfig(keycloakRealm, authEndpoint, keycloakClientId, authEndpointCheck.checkAuthEndpointIsAlive());
+        try {
+            keycloakConfig = KeycloakConfig.from(coreAuthentication.authenticationInformation(), authEndpointCheck.checkAuthEndpointIsAlive());
+        } catch (MarmotGraphException e) {
+            logger.warn("Was not able to load the authentication configuration from the MarmotGraph core", e);
         }
 
         MatomoConfig matomoConfig = null;

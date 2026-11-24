@@ -38,8 +38,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping(value = "/sitemap", produces = MediaType.APPLICATION_XML_VALUE)
 @RestController
@@ -51,14 +54,32 @@ public class Sitemap {
     @SuppressWarnings("java:S1452") // we keep the generics intentionally
     public ResponseEntity<?> generateSitemap() {
         try {
-            SitemapXML sitemapXML = sitemapController.getSitemap();
-            if (sitemapXML == null) {
+            List<String> ids = sitemapController.getSitemapInstanceIds();
+            if (ids == null) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
             }
-            return ResponseEntity.ok(sitemapXML);
+            return ResponseEntity.ok(toSitemapXML(ids));
         } catch (WebClientResponseException e) {
             return ResponseEntity.status(e.getStatusCode()).build();
         }
+    }
+
+    /**
+     * The sitemap protocol requires absolute URLs. Since the sitemap is served by the same deployment as the instance
+     * pages, we derive them from the current request. Behind a reverse proxy, this requires the forwarded headers
+     * (X-Forwarded-Host, X-Forwarded-Proto, X-Forwarded-Prefix) to be sent by the proxy and to be evaluated
+     * ("server.forward-headers-strategy=framework").
+     */
+    private static SitemapXML toSitemapXML(List<String> ids) {
+        UriComponentsBuilder base = ServletUriComponentsBuilder.fromCurrentContextPath().path("/instances/{id}").queryParam("noSilentSSO", true);
+        List<SitemapXML.Url> urls = ids.stream().map(id -> {
+            SitemapXML.Url url = new SitemapXML.Url();
+            url.setLoc(base.cloneBuilder().buildAndExpand(id).encode().toUriString());
+            return url;
+        }).toList();
+        SitemapXML sitemapXML = new SitemapXML();
+        sitemapXML.setUrl(urls);
+        return sitemapXML;
     }
 
     @PutMapping

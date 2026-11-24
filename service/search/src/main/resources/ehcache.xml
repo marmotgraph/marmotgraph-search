@@ -79,7 +79,7 @@
 
     <cache alias="sitemap" uses-template="inmemory">
         <key-type>org.springframework.cache.interceptor.SimpleKey</key-type>
-        <value-type>org.marmotgraph.search.model.SitemapXML</value-type>
+        <value-type>java.util.List</value-type>
         <resources>
             <heap>1</heap>
         </resources>

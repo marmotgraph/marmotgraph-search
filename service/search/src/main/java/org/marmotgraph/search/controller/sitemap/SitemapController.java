@@ -30,10 +30,8 @@ import org.marmotgraph.search.common.model.elasticsearch.Document;
 import org.marmotgraph.search.common.services.ESServiceClient;
 import org.marmotgraph.search.common.utils.ESHelper;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
-import org.marmotgraph.search.model.SitemapXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -46,9 +44,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class SitemapController {
-
-    @Value("${kgebrains.endpoint}")
-    String ebrainsUrl;
 
     private final ESServiceClient esServiceClient;
     private final ESHelper esHelper;
@@ -68,39 +63,37 @@ public class SitemapController {
 //        return userInfoRoles.isInAnyOfRoles("kg-cron", "admin");
     }
 
+    /**
+     * @return the ids of the instances to be listed in the sitemap or null if there are none. We only cache the ids
+     * since the absolute URLs depend on the host the sitemap is requested from.
+     */
     @Cacheable(value = "sitemap", unless = "#result == null")
-    public SitemapXML getSitemap() {
-        return fetchSitemap();
+    public List<String> getSitemapInstanceIds() {
+        return fetchSitemapInstanceIds();
     }
 
 
-    private SitemapXML fetchSitemap() {
-        List<SitemapXML.Url> urls = new ArrayList<>();
+    private List<String> fetchSitemapInstanceIds() {
+        List<String> ids = new ArrayList<>();
         String index = esHelper.getIndexesForDocument(DataStage.RELEASED);
         final Set<String> relevantTypes = translatorRegistry.getTranslators().stream().filter(TranslatorModel::addToSitemap).map(TranslatorModel::category).filter(Objects::nonNull).collect(Collectors.toSet());
         try {
             List<Document> documents = esServiceClient.getDocumentsForSitemap(index, relevantTypes);
-            documents.forEach(doc -> {
-                SitemapXML.Url url = new SitemapXML.Url();
-                url.setLoc(String.format("%s/instances/%s?noSilentSSO=true", ebrainsUrl, doc.getId()));
-                urls.add(url);
-            });
+            documents.forEach(doc -> ids.add(doc.getId()));
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
                 throw e;
             }
         }
-        if (urls.isEmpty()) {
+        if (ids.isEmpty()) {
             return null;
         }
-        SitemapXML sitemapXML = new SitemapXML();
-        sitemapXML.setUrl(urls);
-        return sitemapXML;
+        return ids;
     }
 
     @CachePut(value = "sitemap", unless = "#result == null")
-    public SitemapXML updateSitemapCache() {
-        return fetchSitemap();
+    public List<String> updateSitemapCache() {
+        return fetchSitemapInstanceIds();
     }
 
 }

@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @XmlRootElement(name="urlset")
+@JsonRootName("urlset") // Jackson 3 doesn't evaluate the JAXB annotations
 public class SitemapXML implements Serializable {
     @JacksonXmlProperty(isAttribute = true)
     private String xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
