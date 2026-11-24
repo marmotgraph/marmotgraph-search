@@ -4,6 +4,7 @@ on:
   push:
     branches:
        - search_as_a_library
+       - marmotgraph-v4
     tags: [ 'v*' ]          # also publish on version tags
 
 jobs:
