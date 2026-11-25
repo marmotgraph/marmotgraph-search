@@ -48,7 +48,7 @@ class OauthClientTest {
             // In production, the default builder reads MARMOTGRAPH_* from the process environment, which a test can't
             // set - so we configure the same builder explicitly. Nothing listens on port 1 -> any connection fails.
             .withBean("marmotGraphClient", MarmotGraphClient.class, () -> MarmotGraphClient.builder("http://127.0.0.1:1").clientId("kg-search").clientSecret("secret").build())
-            .withBean(AppConfig.class, () -> new AppConfig(false))
+            .withBean(AppConfig.class, () -> new AppConfig(false, null))
             .withBean(QueryGenerator.class)
             .withBean(KGServiceClient.class)
             .withPropertyValues("MARMOTGRAPH_CLIENT_ID=kg-search");

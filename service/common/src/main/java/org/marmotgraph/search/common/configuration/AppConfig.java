@@ -27,6 +27,24 @@ package org.marmotgraph.search.common.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * @param tenant the tenant this search instance is serving (MARMOTGRAPH_TENANT) - null if not set
+ */
 @Component
-public record AppConfig(@Value("${localQueries:false}") boolean localQueries) {
+public record AppConfig(@Value("${localQueries:false}") boolean localQueries,
+                        @Value("${MARMOTGRAPH_TENANT:#{null}}") String tenant) {
+
+    private static final String SCOPE_NAME = "search";
+
+    public AppConfig {
+        tenant = tenant == null || tenant.isBlank() ? null : tenant.trim();
+    }
+
+    /**
+     * @return the name of the scope defined for the types indexed by search - prefixed by the tenant (if any) so
+     * multiple search instances can register their own scopes.
+     */
+    public String scopeName() {
+        return tenant == null ? SCOPE_NAME : String.format("%s-%s", tenant, SCOPE_NAME);
+    }
 }

@@ -298,6 +298,13 @@ public class KGServiceClient {
         }
     }
 
+    /**
+     * Defines (or replaces) the scope of the search for the given type in the core.
+     */
+    public void uploadScope(String type, ScopeSpecification scope) {
+        serviceAccountClient.types().createOrUpdateScope(type, appConfig.scopeName(), scope);
+    }
+
     private Page<JsonLdDocument> runQuery(MarmotGraphClient client, Class<?> clazz, String queryId, String semanticType, QueryRunOptions options) {
         if (appConfig.localQueries()) {
             return client.queries().run(queryGenerator.generate(clazz, semanticType), options, Map.of());

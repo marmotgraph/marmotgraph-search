@@ -32,6 +32,7 @@ import org.marmotgraph.sdk.MarmotGraphClient;
 import org.marmotgraph.sdk.http.HttpRequestSpec;
 import org.marmotgraph.sdk.http.HttpResponse;
 import org.marmotgraph.sdk.http.HttpTransport;
+import org.marmotgraph.sdk.model.ScopeSpecification;
 import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.model.DataStage;
 import org.marmotgraph.search.common.model.source.ResultsOfKG;
@@ -60,12 +61,16 @@ class KGServiceClientTest {
     private final List<HttpRequestSpec> requests = new ArrayList<>();
 
     private KGServiceClient client(Function<HttpRequestSpec, String> responder) {
+        return client(responder, null);
+    }
+
+    private KGServiceClient client(Function<HttpRequestSpec, String> responder, String tenant) {
         HttpTransport transport = request -> {
             requests.add(request);
             return new HttpResponse(200, Map.of(), responder.apply(request).getBytes(StandardCharsets.UTF_8));
         };
         MarmotGraphClient marmotGraphClient = MarmotGraphClient.builder("http://localhost:8080").token("token").transport(transport).build();
-        return new KGServiceClient(marmotGraphClient, "kg-search", true, new AppConfig(false), new QueryGenerator());
+        return new KGServiceClient(marmotGraphClient, "kg-search", true, new AppConfig(false, tenant), new QueryGenerator());
     }
 
     @Test
@@ -102,5 +107,29 @@ class KGServiceClientTest {
 
         assertTrue(page.getData().isEmpty());
         assertNull(page.getNextMarker());
+    }
+
+    @Test
+    void uploadScopeDefinesTheSearchScopeForTheType() {
+        KGServiceClient kgServiceClient = client(request -> "");
+
+        kgServiceClient.uploadScope("https://schema/Type", ScopeSpecification.of(ScopeSpecification.Step.of(ScopeSpecification.Path.outgoing("https://schema/author"))));
+
+        HttpRequestSpec request = requests.getFirst();
+        assertEquals("PUT", request.method());
+        assertTrue(request.url().startsWith("http://localhost:8080/v4/types/scopes/search?"), request.url());
+        assertTrue(request.url().contains("type=https"), request.url());
+        String body = new String(request.body(), StandardCharsets.UTF_8);
+        assertTrue(body.contains("\"@id\":\"https://schema/author\""), body);
+    }
+
+    @Test
+    void uploadScopePrefixesTheScopeWithTheTenant() {
+        KGServiceClient kgServiceClient = client(request -> "", "foo");
+
+        kgServiceClient.uploadScope("https://schema/Type", ScopeSpecification.of(ScopeSpecification.Step.of(ScopeSpecification.Path.outgoing("https://schema/author"))));
+
+        String url = requests.getFirst().url();
+        assertTrue(url.startsWith("http://localhost:8080/v4/types/scopes/foo-search?"), url);
     }
 }

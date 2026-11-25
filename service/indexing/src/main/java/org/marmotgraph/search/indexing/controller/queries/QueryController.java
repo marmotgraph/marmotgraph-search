@@ -29,6 +29,7 @@ import org.marmotgraph.search.common.configuration.AppConfig;
 import org.marmotgraph.search.common.controller.translation.models.Translator;
 import org.marmotgraph.search.common.services.KGServiceClient;
 import org.marmotgraph.sdk.model.QuerySpecification;
+import org.marmotgraph.sdk.model.ScopeSpecification;
 import org.marmotgraph.search.common.utils.queryGenerator.QueryGenerator;
 import org.marmotgraph.search.common.utils.translation.TranslatorRegistry;
 import org.slf4j.Logger;
@@ -36,7 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
 @Component
@@ -56,6 +58,8 @@ public class QueryController {
             logger.info("Local query usage enabled - this is not recommended for production mode!");
         } else {
             logger.info("Now uploading queries for search...");
+            // Multiple translators can serve the same type - we therefore collect the scopes first and combine them per type
+            Map<String, List<ScopeSpecification>> scopesByType = new ConcurrentHashMap<>();
             translatorRegistry.getTranslators().parallelStream().filter(Objects::nonNull).forEach(t -> {
                 Translator<?, ?> translator = t.translator();
                 for (String semanticType : t.semanticTypes()) {
@@ -63,9 +67,16 @@ public class QueryController {
                     String queryId = t.queryId(semanticType);
                     logger.info(String.format("Uploading query %s (%s) for type %s", queryId, translator.getClass().getSimpleName(), semanticType));
                     kgServiceClient.uploadQuery(queryId, query);
+                    scopesByType.computeIfAbsent(semanticType, k -> Collections.synchronizedList(new ArrayList<>())).add(queryGenerator.toScope(query));
                 }
             });
             logger.info("Queries successfully uploaded!");
+            logger.info("Now uploading scope definitions for search...");
+            scopesByType.forEach((semanticType, scopes) -> {
+                logger.info(String.format("Uploading scope \"%s\" for type %s", appConfig.scopeName(), semanticType));
+                kgServiceClient.uploadScope(semanticType, QueryGenerator.mergeScopes(scopes));
+            });
+            logger.info("Scope definitions successfully uploaded!");
         }
     }
 

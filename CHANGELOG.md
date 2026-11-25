@@ -29,6 +29,7 @@ This version requires a MarmotGraph **v4** core. It doesn't work against a KG co
 | `KG_CORE_ENDPOINT` | `MARMOTGRAPH_HOST` | The **bare host including the scheme**, e.g. `https://core.marmotgraph.org`. The SDK adds `/v4/...` itself, so a value ending with `/v3` breaks every call. |
 | *(hardcoded `kg-search`)* | `MARMOTGRAPH_CLIENT_ID` | The client id of the service account. It is also the space of the uploaded queries and of the badge instances. Set it to `kg-search` to keep the previous space. |
 | `CLIENT_SECRET` | `MARMOTGRAPH_CLIENT_SECRET` | The client secret of the service account. |
+| *(new)* | `MARMOTGRAPH_TENANT` | Optional (default: not set). The tenant this search instance is serving. It prefixes the scope registered in the core, e.g. `foo` gives the scope `foo-search` (without a tenant it's `search`), so several search instances can run against the same core. Further tenant resources (fonts, color schemes, logos) are planned for later. |
 | `KEYCLOAK_ISSUER_URI` | *(removed)* | The issuer, the signing keys (JWKS), the token / authorization / userinfo endpoints are loaded from the core (`GET /v4/setup/authentication` and the advertised OpenID Connect discovery document). |
 | `KG_EBRAINS_ENDPOINT` (`kgebrains.endpoint`) | *(removed)* | The absolute URLs of the sitemap are derived from the request to `/sitemap`, see below. |
 
@@ -90,6 +91,11 @@ the OAuth client of the Swagger UI are now loaded from the core (see "Behavioral
   classes (previously `query:<field>` with a response vocabulary). Queries are uploaded with the same (name-based)
   ids as before into the space `MARMOTGRAPH_CLIENT_ID`. A query in a wrong space is moved via the dedicated v4
   endpoint (no more unrelease / release around the move).
+- **Scope definitions** are uploaded together with the queries. For every indexed type, the queries are reduced to the
+  paths leading to further instances (plain values are dropped) and registered as the scope `search` (or
+  `<MARMOTGRAPH_TENANT>-search`) of the type via `PUT /v4/types/scopes/{name}`. If several queries serve the same type,
+  their scopes are combined. The service account needs the `DEFINE_SCOPES` permission. Like the queries, scopes aren't
+  uploaded with `localQueries=true`.
 - **Indexing** uses marker based pagination (`nextMarker`) instead of `from`/`size`:
   - Indexing of a type ends when the server doesn't provide a next marker, or when a page is empty.
   - If a page can't be read after all retries, indexing of that type stops. Before, it skipped to the next offset,

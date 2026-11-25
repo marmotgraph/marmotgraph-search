@@ -26,6 +26,7 @@ package org.marmotgraph.search.common.utils.queryGenerator;
 
 import io.micrometer.common.util.StringUtils;
 import org.marmotgraph.sdk.model.QuerySpecification;
+import org.marmotgraph.sdk.model.ScopeSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.MergedAnnotation;
@@ -159,5 +160,50 @@ public class QueryGenerator {
     }
 
 
+    /**
+     * Reduces the query to the scope it is covering: only the paths leading to further instances (the ones with a
+     * nested structure) are kept - plain values are dropped.
+     */
+    public ScopeSpecification toScope(QuerySpecification query) {
+        return new ScopeSpecification(mergeSteps(toSteps(query.structure())));
+    }
+
+    /**
+     * Combines the scopes (e.g. of multiple queries for the same type) into a single one.
+     */
+    public static ScopeSpecification mergeScopes(Collection<ScopeSpecification> scopes) {
+        return new ScopeSpecification(mergeSteps(scopes.stream().map(ScopeSpecification::structure).filter(Objects::nonNull).flatMap(Collection::stream).toList()));
+    }
+
+    private List<ScopeSpecification.Step> toSteps(List<QuerySpecification.StructureItem> structure) {
+        if (structure == null) {
+            return Collections.emptyList();
+        }
+        return structure.stream().filter(item -> item.structure() != null && item.path() != null && !item.path().isEmpty())
+                .map(item -> new ScopeSpecification.Step(item.path().stream().map(QueryGenerator::toScopePath).toList(), toSteps(item.structure())))
+                .toList();
+    }
+
+    private static ScopeSpecification.Path toScopePath(QuerySpecification.Path path) {
+        List<ScopeSpecification.TypeFilter> typeFilter = path.typeFilter() == null || path.typeFilter().isEmpty() ? null : path.typeFilter().stream().map(ScopeSpecification.TypeFilter::new).toList();
+        return new ScopeSpecification.Path(path.property(), Boolean.TRUE.equals(path.reverse()), typeFilter);
+    }
+
+    /**
+     * Steps following the same path are combined (recursively) so every path only shows up once per level.
+     */
+    private static List<ScopeSpecification.Step> mergeSteps(List<ScopeSpecification.Step> steps) {
+        Map<List<ScopeSpecification.Path>, List<ScopeSpecification.Step>> byPath = new LinkedHashMap<>();
+        for (ScopeSpecification.Step step : steps) {
+            List<ScopeSpecification.Step> children = byPath.computeIfAbsent(step.path(), p -> new ArrayList<>());
+            if (step.structure() != null) {
+                children.addAll(step.structure());
+            }
+        }
+        return byPath.entrySet().stream().map(e -> {
+            List<ScopeSpecification.Step> children = mergeSteps(e.getValue());
+            return new ScopeSpecification.Step(e.getKey(), children.isEmpty() ? null : children);
+        }).toList();
+    }
 
 }
